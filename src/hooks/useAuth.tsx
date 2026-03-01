@@ -1,44 +1,131 @@
-import React, { createContext, useContext, ReactNode } from "react";
-import { User } from "@/types";
-import { mockUser } from "@/lib/mock-data";
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { User as AppUser } from "@/types";
+import { supabase } from "@/integrations/supabase/client";
+import { Session, User } from "@supabase/supabase-js";
 
 interface AuthContextType {
   isLoggedIn: boolean;
-  user: User | null;
-  login: (email: string, password: string) => void;
-  logout: () => void;
-  toggleAuth: () => void;
+  user: AppUser | null;
+  session: Session | null;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signup: (email: string, password: string, name: string) => Promise<{ error: Error | null }>;
+  logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  updatePassword: (password: string) => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isLoggedIn: false,
   user: null,
-  login: () => {},
-  logout: () => {},
-  toggleAuth: () => {},
+  session: null,
+  loading: true,
+  login: async () => ({ error: null }),
+  signup: async () => ({ error: null }),
+  logout: async () => {},
+  resetPassword: async () => ({ error: null }),
+  updatePassword: async () => ({ error: null }),
 });
 
+function mapUser(supaUser: User, profile?: Partial<AppUser>): AppUser {
+  return {
+    id: supaUser.id,
+    email: supaUser.email ?? "",
+    display_name: profile?.display_name ?? supaUser.user_metadata?.full_name ?? supaUser.email ?? "",
+    avatar_url: profile?.avatar_url ?? supaUser.user_metadata?.avatar_url,
+    selected_ngo_id: profile?.selected_ngo_id,
+    created_at: supaUser.created_at,
+    updated_at: profile?.updated_at ?? supaUser.created_at,
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [user, setUser] = React.useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AppUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (_email: string, _password: string) => {
-    setIsLoggedIn(true);
-    setUser(mockUser);
+  const fetchProfile = async (supaUser: User) => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", supaUser.id)
+      .single();
+    setUser(mapUser(supaUser, data ?? undefined));
   };
 
-  const logout = () => {
-    setIsLoggedIn(false);
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, newSession) => {
+        setSession(newSession);
+        if (newSession?.user) {
+          await fetchProfile(newSession.user);
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      if (s?.user) {
+        fetchProfile(s.user);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error: error ? new Error(error.message) : null };
+  };
+
+  const signup = async (email: string, password: string, name: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: name },
+        emailRedirectTo: window.location.origin,
+      },
+    });
+    return { error: error ? new Error(error.message) : null };
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
+    setSession(null);
   };
 
-  const toggleAuth = () => {
-    if (isLoggedIn) logout();
-    else login(mockUser.email, '');
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/redefinir-senha`,
+    });
+    return { error: error ? new Error(error.message) : null };
+  };
+
+  const updatePassword = async (password: string) => {
+    const { error } = await supabase.auth.updateUser({ password });
+    return { error: error ? new Error(error.message) : null };
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout, toggleAuth }}>
+    <AuthContext.Provider
+      value={{
+        isLoggedIn: !!session,
+        user,
+        session,
+        loading,
+        login,
+        signup,
+        logout,
+        resetPassword,
+        updatePassword,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
