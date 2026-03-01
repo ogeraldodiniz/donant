@@ -26,6 +26,13 @@ export function AdminLayout() {
         return;
       }
 
+      const timeoutId = window.setTimeout(() => {
+        if (!isMounted) return;
+        console.error("Timeout ao validar acesso admin");
+        setIsAdmin(false);
+        navigate("/");
+      }, 10000);
+
       try {
         const { data, error } = await supabase
           .from("user_roles")
@@ -50,6 +57,8 @@ export function AdminLayout() {
         console.error("Erro ao validar acesso admin:", error);
         setIsAdmin(false);
         navigate("/");
+      } finally {
+        window.clearTimeout(timeoutId);
       }
     };
 
