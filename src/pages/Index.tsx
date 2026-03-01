@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, ArrowRight, ChevronDown, ShoppingCart, Gift, PartyPopper, Search, Target, Rocket, BadgeCheck, TrendingUp, Store, Users, Quote, HelpCircle, UserPlus, ShoppingBag, HandHeart, Coins, Star, MessageCircle } from "lucide-react";
+import { Heart, ArrowRight, ChevronDown, ShoppingCart, Gift, PartyPopper, Search, Target, Rocket, BadgeCheck, TrendingUp, Store, Users, Quote, HelpCircle, UserPlus, ShoppingBag, HandHeart, Coins, Star, MessageCircle, Download } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,6 +8,7 @@ import { mockNgos, mockStores, mockTransactions, ngoEmojis } from "@/lib/mock-da
 import { motion } from "framer-motion";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
+import { InstallAppBanner } from "@/components/InstallAppBanner";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
@@ -282,6 +283,11 @@ function PublicHome() {
         </div>
       </section>
 
+      {/* Install App */}
+      <section className="container py-8">
+        <InstallAppBanner />
+      </section>
+
       {/* Final CTA */}
       <section className="container py-20 text-center">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
@@ -372,6 +378,8 @@ function LoggedInHome() {
         <h1 className="text-2xl font-black">{t("home_greeting", "Olá,")} {user?.display_name?.split(' ')[0]}! 👋</h1>
         <p className="text-muted-foreground text-sm">{t("home_subtitle", "Veja o impacto das suas compras.")}</p>
       </div>
+
+      <InstallAppBanner />
 
       <Link to={`/ongs/${selectedNgo.slug}`}>
         <DuoCard hover className="flex items-center gap-4 bg-primary/5 border-primary/20">
