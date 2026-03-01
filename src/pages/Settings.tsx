@@ -52,9 +52,15 @@ export default function Settings() {
   };
 
   const handleLogout = async () => {
-    await logout();
-    toast.info("Você saiu da sua conta");
-    navigate("/");
+    try {
+      await logout();
+      toast.info("Você saiu da sua conta");
+      navigate("/");
+    } catch (e) {
+      // Force logout even if signOut fails
+      navigate("/");
+      window.location.reload();
+    }
   };
 
   const handleDelete = async () => {

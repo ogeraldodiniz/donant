@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe } from "lucide-react";
+import { Home, Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
