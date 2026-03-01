@@ -8,6 +8,7 @@ import { mockNgos, mockStores, mockTransactions, ngoEmojis } from "@/lib/mock-da
 import { motion } from "framer-motion";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
+import { InstallAppBanner } from "@/components/InstallAppBanner";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
