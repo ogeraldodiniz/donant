@@ -20,6 +20,12 @@ export function useNgos() {
   useEffect(() => {
     let isMounted = true;
 
+    const timeoutId = window.setTimeout(() => {
+      if (!isMounted) return;
+      console.error("Timeout ao carregar ONGs");
+      setLoading(false);
+    }, 10000);
+
     const fetchNgos = async () => {
       setLoading(true);
       try {
@@ -43,6 +49,7 @@ export function useNgos() {
         console.error("Falha de rede ao carregar ONGs:", error);
         setNgos([]);
       } finally {
+        window.clearTimeout(timeoutId);
         if (isMounted) setLoading(false);
       }
     };
