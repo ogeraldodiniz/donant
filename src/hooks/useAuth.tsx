@@ -26,6 +26,7 @@ const AuthContext = createContext<AuthContextType>({
   logout: async () => {},
   resetPassword: async () => ({ error: null }),
   updatePassword: async () => ({ error: null }),
+  refreshProfile: async () => {},
 });
 
 function mapUser(supaUser: User, profile?: Partial<AppUser>): AppUser {
