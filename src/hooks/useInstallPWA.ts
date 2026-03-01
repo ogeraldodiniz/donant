@@ -9,12 +9,15 @@ export function useInstallPWA() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
+  const [isInIframe, setIsInIframe] = useState(false);
 
   useEffect(() => {
-    // Check if already installed (works for Android/desktop PWA)
+    setIsInIframe(window.self !== window.top);
+
+    // Check if already installed (Android/Desktop + iOS Safari)
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
-      (navigator as any).standalone === true; // Safari iOS
+      (navigator as Navigator & { standalone?: boolean }).standalone === true;
 
     if (isStandalone) {
       setIsInstalled(true);
@@ -25,7 +28,7 @@ export function useInstallPWA() {
     const isIOSDevice =
       /iPad|iPhone|iPod/.test(ua) ||
       (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    setIsIOS(isIOSDevice && !(window as any).MSStream);
+    setIsIOS(isIOSDevice && !(window as Window & { MSStream?: unknown }).MSStream);
 
     const handler = (e: Event) => {
       e.preventDefault();
@@ -42,16 +45,24 @@ export function useInstallPWA() {
 
   const install = async () => {
     if (!deferredPrompt) return false;
-    await deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    setDeferredPrompt(null);
-    return outcome === "accepted";
+
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      setDeferredPrompt(null);
+      return outcome === "accepted";
+    } catch (error) {
+      console.warn("PWA install prompt failed:", error);
+      setDeferredPrompt(null);
+      return false;
+    }
   };
 
   return {
     canInstall: !!deferredPrompt && !isInstalled,
     isInstalled,
     isIOS,
+    isInIframe,
     install,
   };
 }
