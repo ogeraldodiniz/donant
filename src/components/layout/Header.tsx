@@ -4,6 +4,7 @@ import { Home, Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe, Shield } fr
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
+import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 export function Header() {
