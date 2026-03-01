@@ -47,6 +47,7 @@ const App = () => (
               <Route path="/transparencia" element={<Transparency />} />
               <Route path="/privacidade" element={<Privacy />} />
               <Route path="/termos" element={<Terms />} />
+              <Route path="/redefinir-senha" element={<ResetPassword />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
