@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Plus, Pencil, Trash2, Save, X, Loader2 } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
@@ -7,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -34,26 +32,12 @@ const emptyNgo = {
 };
 
 export default function AdminNgos() {
-  const { session } = useAuth();
-  const navigate = useNavigate();
   const [ngos, setNgos] = useState<Ngo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState(emptyNgo);
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (!session?.user?.id) return;
-    supabase.from("user_roles").select("role").eq("user_id", session.user.id).eq("role", "admin").then(({ data }) => {
-      if (data && data.length > 0) {
-        setIsAdmin(true);
-      } else {
-        navigate("/configuracoes");
-      }
-    });
-  }, [session?.user?.id, navigate]);
 
   const fetchNgos = async () => {
     setLoading(true);
@@ -63,8 +47,8 @@ export default function AdminNgos() {
   };
 
   useEffect(() => {
-    if (isAdmin) fetchNgos();
-  }, [isAdmin]);
+    fetchNgos();
+  }, []);
 
   const generateSlug = (name: string) =>
     name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -136,10 +120,8 @@ export default function AdminNgos() {
     }
   };
 
-  if (!isAdmin) return null;
-
   return (
-    <div className="container py-6 space-y-6 max-w-2xl">
+    <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-black">Gerenciar ONGs</h1>
         <DuoButton size="sm" onClick={handleCreate} disabled={creating}>

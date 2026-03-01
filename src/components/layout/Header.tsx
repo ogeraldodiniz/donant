@@ -41,7 +41,7 @@ export function Header() {
           {isLoggedIn && (
             <>
               <NavItem to="/impacto" icon={BarChart3} label={t("nav_impact", "Impacto")} />
-              {isAdmin && <NavItem to="/admin/ongs" icon={Shield} label="Admin" />}
+              {isAdmin && <NavItem to="/admin" icon={Shield} label="Admin" />}
               <Link to="/notificacoes" className="relative p-2 rounded-xl hover:bg-muted transition-colors">
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
@@ -105,7 +105,7 @@ export function Header() {
               <MobileLink to="/impacto" label={t("nav_impact", "Meu Impacto")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/notificacoes" label={t("nav_notifications", "Notificações")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/configuracoes" label={t("nav_settings", "Configurações")} onClick={() => setMobileOpen(false)} />
-              {isAdmin && <MobileLink to="/admin/ongs" label="Admin ONGs" onClick={() => setMobileOpen(false)} />}
+              {isAdmin && <MobileLink to="/admin" label="Painel Admin" onClick={() => setMobileOpen(false)} />}
             </>
           )}
           {!isLoggedIn && <MobileLink to="/auth" label={t("nav_login", "Entrar / Cadastrar")} onClick={() => setMobileOpen(false)} />}
