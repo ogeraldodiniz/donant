@@ -12,7 +12,7 @@ export default function Ngos() {
   const filtered = mockNgos.filter(n => n.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
       <div>
         <h1 className="text-xl sm:text-2xl font-black">ONGs Parceiras</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">Escolha a ONG que vai receber suas doações</p>

@@ -10,7 +10,7 @@ export default function Stores() {
   const filtered = mockStores.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
       <div>
         <h1 className="text-xl sm:text-2xl font-black">Lojas Parceiras</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">Compre e gere cashback solidário</p>

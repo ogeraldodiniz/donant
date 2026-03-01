@@ -24,7 +24,7 @@ export default function Impact() {
     txns.filter(t => statuses.includes(t.status)).reduce((s, t) => s + t.amount, 0);
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6 max-w-3xl">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-3xl">
       <div>
         <h1 className="text-xl sm:text-2xl font-black">Seu Impacto 💜</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">Acompanhe suas doações</p>

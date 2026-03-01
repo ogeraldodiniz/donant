@@ -9,7 +9,7 @@ export default function Transparency() {
   const chartData = mockNgos.map(n => ({ name: n.name.split(' ').slice(0, 2).join(' '), value: n.total_received }));
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6 max-w-3xl">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-3xl">
       <div>
         <h1 className="text-xl sm:text-2xl font-black">Transparência 📊</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">Dados abertos sobre todas as doações</p>
