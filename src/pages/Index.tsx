@@ -379,6 +379,8 @@ function LoggedInHome() {
         <p className="text-muted-foreground text-sm">{t("home_subtitle", "Veja o impacto das suas compras.")}</p>
       </div>
 
+      <InstallAppBanner />
+
       <Link to={`/ongs/${selectedNgo.slug}`}>
         <DuoCard hover className="flex items-center gap-4 bg-primary/5 border-primary/20">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
