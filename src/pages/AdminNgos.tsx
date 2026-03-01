@@ -207,8 +207,8 @@ export default function AdminNgos() {
                 <p className="text-xs text-muted-foreground">/{ngo.slug} · {ngo.is_active ? "Ativa" : "Inativa"} · R$ {Number(ngo.total_received).toFixed(2)}</p>
               </div>
               <div className="flex gap-1">
-                <DuoButton variant="ghost" size="sm" onClick={() => handleEdit(ngo)}><Pencil className="w-4 h-4" /></DuoButton>
-                <DuoButton variant="ghost" size="sm" onClick={() => handleDelete(ngo.id, ngo.name)}><Trash2 className="w-4 h-4 text-destructive" /></DuoButton>
+                <DuoButton variant="outline" size="sm" onClick={() => handleEdit(ngo)}><Pencil className="w-4 h-4" /></DuoButton>
+                <DuoButton variant="outline" size="sm" onClick={() => handleDelete(ngo.id, ngo.name)}><Trash2 className="w-4 h-4 text-destructive" /></DuoButton>
               </div>
             </DuoCard>
           ))}
