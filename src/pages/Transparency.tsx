@@ -1,0 +1,80 @@
+import { DuoCard } from "@/components/ui/duo-card";
+import { mockNgos, mockDonations, ngoEmojis } from "@/lib/mock-data";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+
+const chartColors = ['hsl(103,95%,40%)', 'hsl(199,91%,54%)', 'hsl(45,100%,49%)', 'hsl(275,100%,75%)', 'hsl(0,100%,64%)', 'hsl(25,100%,55%)'];
+
+export default function Transparency() {
+  const totalDonated = mockNgos.reduce((s, n) => s + n.total_received, 0);
+  const chartData = mockNgos.map(n => ({ name: n.name.split(' ').slice(0, 2).join(' '), value: n.total_received }));
+
+  return (
+    <div className="container py-6 space-y-6 max-w-3xl">
+      <div>
+        <h1 className="text-2xl font-black">Transparência 📊</h1>
+        <p className="text-muted-foreground text-sm">Dados abertos sobre todas as doações</p>
+      </div>
+
+      <DuoCard className="text-center bg-primary/5 border-primary/20">
+        <p className="text-sm font-bold text-muted-foreground">Total doado pela plataforma</p>
+        <p className="text-3xl md:text-4xl font-black text-primary">R$ {totalDonated.toLocaleString('pt-BR')}</p>
+        <div className="flex justify-center gap-6 mt-3 text-sm">
+          <span className="font-bold">{mockNgos.length} ONGs</span>
+          <span className="font-bold">{mockDonations.length} doações</span>
+        </div>
+      </DuoCard>
+
+      {/* Chart */}
+      <DuoCard>
+        <h3 className="font-bold mb-4">Distribuição por ONG</h3>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 20 }}>
+              <XAxis type="number" tickFormatter={(v) => `R$${(v / 1000).toFixed(0)}k`} className="text-xs" />
+              <YAxis type="category" dataKey="name" width={100} className="text-xs" tick={{ fontSize: 11 }} />
+              <Tooltip formatter={(v: number) => `R$ ${v.toLocaleString('pt-BR')}`} />
+              <Bar dataKey="value" radius={[0, 8, 8, 0]}>
+                {chartData.map((_, i) => <Cell key={i} fill={chartColors[i % chartColors.length]} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </DuoCard>
+
+      {/* NGO Breakdown */}
+      <DuoCard>
+        <h3 className="font-bold mb-4">Detalhamento por ONG</h3>
+        <div className="space-y-3">
+          {mockNgos.map((ngo, i) => (
+            <div key={ngo.id} className="flex items-center gap-3">
+              <span className="text-xl">{ngoEmojis[i]}</span>
+              <div className="flex-1">
+                <p className="font-bold text-sm">{ngo.name}</p>
+                <div className="w-full bg-muted rounded-full h-2 mt-1">
+                  <div className="h-2 rounded-full" style={{ width: `${(ngo.total_received / totalDonated) * 100}%`, backgroundColor: chartColors[i] }} />
+                </div>
+              </div>
+              <p className="text-sm font-bold shrink-0">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
+            </div>
+          ))}
+        </div>
+      </DuoCard>
+
+      {/* Recent donations */}
+      <DuoCard>
+        <h3 className="font-bold mb-4">Últimas doações</h3>
+        <div className="space-y-2">
+          {mockDonations.slice(0, 7).map(d => (
+            <div key={d.id} className="flex items-center justify-between py-2 border-b last:border-0 border-border">
+              <div>
+                <p className="font-bold text-sm">{d.ngo?.name}</p>
+                <p className="text-xs text-muted-foreground">{new Date(d.donated_at).toLocaleDateString('pt-BR')}</p>
+              </div>
+              <p className="font-bold text-primary text-sm">R$ {d.amount.toFixed(2)}</p>
+            </div>
+          ))}
+        </div>
+      </DuoCard>
+    </div>
+  );
+}
