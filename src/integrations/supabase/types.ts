@@ -14,16 +14,428 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cashback_transactions: {
+        Row: {
+          amount: number
+          clickout_id: string | null
+          confirmed_at: string | null
+          created_at: string
+          donated_at: string | null
+          id: string
+          mycashbacks_transaction_id: string | null
+          ngo_id: string
+          reverted_at: string | null
+          status: Database["public"]["Enums"]["cashback_status"]
+          store_id: string
+          tracked_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          clickout_id?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          donated_at?: string | null
+          id?: string
+          mycashbacks_transaction_id?: string | null
+          ngo_id: string
+          reverted_at?: string | null
+          status?: Database["public"]["Enums"]["cashback_status"]
+          store_id: string
+          tracked_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          clickout_id?: string | null
+          confirmed_at?: string | null
+          created_at?: string
+          donated_at?: string | null
+          id?: string
+          mycashbacks_transaction_id?: string | null
+          ngo_id?: string
+          reverted_at?: string | null
+          status?: Database["public"]["Enums"]["cashback_status"]
+          store_id?: string
+          tracked_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cashback_transactions_clickout_id_fkey"
+            columns: ["clickout_id"]
+            isOneToOne: false
+            referencedRelation: "clickouts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cashback_transactions_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cashback_transactions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clickouts: {
+        Row: {
+          clicked_at: string
+          id: string
+          redirect_url: string | null
+          store_id: string
+          user_id: string
+          utm_campaign: string | null
+          utm_medium: string | null
+          utm_source: string | null
+        }
+        Insert: {
+          clicked_at?: string
+          id?: string
+          redirect_url?: string | null
+          store_id: string
+          user_id: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Update: {
+          clicked_at?: string
+          id?: string
+          redirect_url?: string | null
+          store_id?: string
+          user_id?: string
+          utm_campaign?: string | null
+          utm_medium?: string | null
+          utm_source?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clickouts_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      donation_ledger: {
+        Row: {
+          amount: number
+          donated_at: string
+          id: string
+          ngo_id: string
+          transaction_id: string | null
+        }
+        Insert: {
+          amount: number
+          donated_at?: string
+          id?: string
+          ngo_id: string
+          transaction_id?: string | null
+        }
+        Update: {
+          amount?: number
+          donated_at?: string
+          id?: string
+          ngo_id?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donation_ledger_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "donation_ledger_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "cashback_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ngos: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          mission: string | null
+          name: string
+          slug: string
+          total_received: number
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          mission?: string | null
+          name: string
+          slug: string
+          total_received?: number
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          mission?: string | null
+          name?: string
+          slug?: string
+          total_received?: number
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          related_transaction_id: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          related_transaction_id?: string | null
+          title: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          related_transaction_id?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_related_transaction_id_fkey"
+            columns: ["related_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "cashback_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payout_batches: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          ngo_id: string
+          status: Database["public"]["Enums"]["payout_status"]
+          total_amount: number
+          transaction_count: number
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          ngo_id: string
+          status?: Database["public"]["Enums"]["payout_status"]
+          total_amount?: number
+          transaction_count?: number
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          ngo_id?: string
+          status?: Database["public"]["Enums"]["payout_status"]
+          total_amount?: number
+          transaction_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payout_batches_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          deleted_at: string | null
+          display_name: string | null
+          email: string | null
+          id: string
+          selected_ngo_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          display_name?: string | null
+          email?: string | null
+          id: string
+          selected_ngo_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          deleted_at?: string | null
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          selected_ngo_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_selected_ngo"
+            columns: ["selected_ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_subscriptions: {
+        Row: {
+          auth_key: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_id: string | null
+        }
+        Insert: {
+          auth_key: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_id?: string | null
+        }
+        Update: {
+          auth_key?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      stores: {
+        Row: {
+          cashback_rate: number
+          category: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          mycashbacks_store_id: string | null
+          name: string
+          slug: string
+          terms: string | null
+          website_url: string | null
+        }
+        Insert: {
+          cashback_rate?: number
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          mycashbacks_store_id?: string | null
+          name: string
+          slug: string
+          terms?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          cashback_rate?: number
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          mycashbacks_store_id?: string | null
+          name?: string
+          slug?: string
+          terms?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      cashback_status:
+        | "tracked"
+        | "pending"
+        | "confirmed"
+        | "donated"
+        | "reverted"
+      notification_type: "status_change" | "donation_confirmed" | "general"
+      payout_status: "pending" | "processing" | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +562,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      cashback_status: [
+        "tracked",
+        "pending",
+        "confirmed",
+        "donated",
+        "reverted",
+      ],
+      notification_type: ["status_change", "donation_confirmed", "general"],
+      payout_status: ["pending", "processing", "completed"],
+    },
   },
 } as const
