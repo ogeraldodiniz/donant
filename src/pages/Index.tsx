@@ -4,12 +4,13 @@ import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { mockNgos, mockStores, mockTransactions, ngoEmojis } from "@/lib/mock-data";
+import { mockStores, mockTransactions } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { LevelBadge } from "@/components/LevelBadge";
+import { useNgos } from "@/hooks/useNgos";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
