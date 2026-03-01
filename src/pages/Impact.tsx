@@ -26,7 +26,7 @@ export default function Impact() {
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">Seu Impacto 💚</h1>
+        <h1 className="text-xl sm:text-2xl font-black">Seu Impacto 💜</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">Acompanhe suas doações</p>
       </div>
 

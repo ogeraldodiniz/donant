@@ -288,11 +288,6 @@ function PublicHome() {
         </div>
       </section>
 
-      {/* Install App */}
-      <section className="container py-6 sm:py-8">
-        <InstallAppBanner />
-      </section>
-
       {/* Final CTA */}
       <section className="container py-12 sm:py-20 text-center">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
@@ -318,7 +313,7 @@ function PublicHome() {
             <Link to="/privacidade" className="hover:text-foreground transition-colors">Privacidade</Link>
             <Link to="/termos" className="hover:text-foreground transition-colors">Termos</Link>
           </div>
-          <p className="font-semibold">{t("footer_copyright", "© 2025 MyCashbacks. Feito com 💚")}</p>
+          <p className="font-semibold">{t("footer_copyright", "© 2025 MyCashbacks. Feito com 💜")}</p>
         </div>
       </footer>
     </div>
@@ -387,7 +382,7 @@ function LoggedInHome() {
   const donated = mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0);
 
   return (
-    <div className="container py-5 sm:py-6 space-y-5 sm:space-y-6">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
       <div>
         <h1 className="text-xl sm:text-2xl font-black">{t("home_greeting", "Olá,")} {user?.display_name?.split(' ')[0]}! 👋</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">{t("home_subtitle", "Veja o impacto das suas compras.")}</p>

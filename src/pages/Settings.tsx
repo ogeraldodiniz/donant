@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Loader2 } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Loader2, Download } from "lucide-react";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -8,6 +8,7 @@ import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { InstallAppBanner } from "@/components/InstallAppBanner";
 
 interface Ngo {
   id: string;
@@ -150,6 +151,9 @@ export default function Settings() {
           </div>
         </DuoCard>
       )}
+
+      {/* Install App */}
+      <InstallAppBanner forceShow />
 
       <div className="flex gap-4 justify-center text-[10px] sm:text-xs text-muted-foreground">
         <Link to="/privacidade" className="hover:text-primary font-semibold">Privacidade</Link>
