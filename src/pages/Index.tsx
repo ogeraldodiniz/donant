@@ -24,6 +24,12 @@ const fadeUp = {
 
 const ngoIcons: LucideIcon[] = [Heart, Target, Users, Star, BadgeCheck, Rocket];
 
+// Used by PublicHome for NGO display from DB
+function usePublicNgos() {
+  const { ngos } = useNgos();
+  return ngos;
+}
+
 function PublicHome() {
   const { t } = useSiteContent();
 
