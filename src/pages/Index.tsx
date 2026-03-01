@@ -208,16 +208,20 @@ function PublicHome() {
           <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">{t("ngos_subtitle", "Organizações verificadas que recebem 100% do cashback doado.")}</p>
         </motion.div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
-          {mockNgos.slice(0, 6).map((ngo, i) => {
+          {usePublicNgos().slice(0, 6).map((ngo, i) => {
             const NgoIcon = ngoIcons[i % ngoIcons.length];
             return (
               <motion.div key={ngo.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
                 <Link to={`/ongs/${ngo.slug}`}>
-                  <DuoCard hover className="text-center py-3 sm:py-5">
+                  <DuoCard hover className="text-center py-3 sm:py-5 h-full">
                     <div className="flex justify-center mb-2">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                        <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                      </div>
+                      {ngo.logo_url ? (
+                        <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                          <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                        </div>
+                      )}
                     </div>
                     <h3 className="font-bold text-xs sm:text-sm mb-1 truncate px-1">{ngo.name}</h3>
                     <p className="text-[10px] sm:text-xs text-primary font-black">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
