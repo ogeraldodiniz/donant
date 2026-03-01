@@ -1,4 +1,4 @@
-import { Download, Share, Smartphone } from "lucide-react";
+import { Download, Share, Smartphone, Plus } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useInstallPWA } from "@/hooks/useInstallPWA";
@@ -8,6 +8,9 @@ export function InstallAppBanner() {
   const { canInstall, isInstalled, isIOS, install } = useInstallPWA();
 
   if (isInstalled) return null;
+
+  // If not iOS and can't install (e.g. already dismissed or unsupported browser), hide
+  if (!isIOS && !canInstall) return null;
 
   return (
     <motion.div
@@ -22,21 +25,25 @@ export function InstallAppBanner() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-bold text-sm">Instale o MyCashbacks</p>
-            <p className="text-xs text-muted-foreground">
-              {isIOS
-                ? "Toque em Compartilhar e \"Adicionar à Tela Inicial\""
-                : "Adicione à tela inicial para acesso rápido"}
-            </p>
+            {isIOS ? (
+              <p className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
+                Toque em{" "}
+                <Share className="w-3.5 h-3.5 inline text-primary" />{" "}
+                <span className="font-medium">Compartilhar</span> e depois{" "}
+                <Plus className="w-3.5 h-3.5 inline text-primary" />{" "}
+                <span className="font-medium">Tela de Início</span>
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                Adicione à tela inicial para acesso rápido
+              </p>
+            )}
           </div>
-          {canInstall ? (
+          {canInstall && (
             <DuoButton size="sm" onClick={install}>
               <Download className="w-4 h-4" /> Instalar
             </DuoButton>
-          ) : isIOS ? (
-            <div className="flex items-center gap-1 text-primary">
-              <Share className="w-5 h-5" />
-            </div>
-          ) : null}
+          )}
         </div>
       </DuoCard>
     </motion.div>

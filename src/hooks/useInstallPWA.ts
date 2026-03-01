@@ -11,14 +11,21 @@ export function useInstallPWA() {
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia("(display-mode: standalone)").matches) {
+    // Check if already installed (works for Android/desktop PWA)
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (navigator as any).standalone === true; // Safari iOS
+
+    if (isStandalone) {
       setIsInstalled(true);
     }
 
-    // Check iOS
+    // Detect iOS (including iPadOS 13+ which reports as Mac)
     const ua = navigator.userAgent;
-    setIsIOS(/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream);
+    const isIOSDevice =
+      /iPad|iPhone|iPod/.test(ua) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    setIsIOS(isIOSDevice && !(window as any).MSStream);
 
     const handler = (e: Event) => {
       e.preventDefault();
@@ -28,7 +35,9 @@ export function useInstallPWA() {
     window.addEventListener("beforeinstallprompt", handler);
     window.addEventListener("appinstalled", () => setIsInstalled(true));
 
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+    };
   }, []);
 
   const install = async () => {
