@@ -33,13 +33,13 @@ export default function Impact() {
       <LevelBadge totalDonated={totals(['donated'])} showAllLevels />
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
-        <DuoCard className="text-center p-3 sm:p-5 bg-accent/10 border-accent/30">
+        <DuoCard className="text-center p-3 sm:p-5 bg-destructive/10 border-destructive/30">
           <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">Pendente</p>
-          <p className="text-sm sm:text-lg font-black text-accent-foreground">R$ {totals(['tracked', 'pending']).toFixed(2)}</p>
+          <p className="text-sm sm:text-lg font-black text-destructive">R$ {totals(['tracked', 'pending']).toFixed(2)}</p>
         </DuoCard>
-        <DuoCard className="text-center p-3 sm:p-5 bg-secondary/10 border-secondary/30">
+        <DuoCard className="text-center p-3 sm:p-5 bg-accent/10 border-accent/30">
           <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">Confirmado</p>
-          <p className="text-sm sm:text-lg font-black text-secondary">R$ {totals(['confirmed']).toFixed(2)}</p>
+          <p className="text-sm sm:text-lg font-black text-accent">R$ {totals(['confirmed']).toFixed(2)}</p>
         </DuoCard>
         <DuoCard className="text-center p-3 sm:p-5 bg-primary/10 border-primary/30">
           <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">Doado</p>
