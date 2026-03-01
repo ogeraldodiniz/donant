@@ -121,11 +121,11 @@ function PublicHome() {
               { Icon: Gift, titleKey: "how_step3_title", descKey: "how_step3_desc", titleFb: "Cashback vira doação", descFb: "O cashback gerado é enviado diretamente para a ONG escolhida. Sem custo pra você!" },
             ] as const).map((step, i) => (
               <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
-                <DuoCard className="text-center relative pt-14 pb-5 h-full">
+                <DuoCard className="text-center relative pt-16 sm:pt-18 pb-5 h-full">
                   <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-black text-lg duo-shadow">
                     {i + 1}
                   </div>
-                  <div className="flex justify-center mb-4">
+                  <div className="flex justify-center mb-4 mt-2">
                     <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
                       <step.Icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" strokeWidth={1.5} />
                     </div>
