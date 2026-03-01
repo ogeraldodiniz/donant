@@ -3,19 +3,39 @@ import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useInstallPWA } from "@/hooks/useInstallPWA";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
-export function InstallAppBanner() {
+const DISMISSED_KEY = "mycashbacks_install_dismissed";
+
+interface InstallAppBannerProps {
+  /** Force show even if previously dismissed (for Settings page) */
+  forceShow?: boolean;
+}
+
+export function InstallAppBanner({ forceShow = false }: InstallAppBannerProps) {
   const { canInstall, isInstalled, isIOS, isInIframe, install } = useInstallPWA();
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    if (!forceShow) {
+      setDismissed(localStorage.getItem(DISMISSED_KEY) === "true");
+    }
+  }, [forceShow]);
 
   if (isInstalled) return null;
-
-  // Show only when installation is possible or when we can guide the user
+  if (!forceShow && dismissed) return null;
   if (!isIOS && !canInstall && !isInIframe) return null;
+
+  const handleDismiss = () => {
+    localStorage.setItem(DISMISSED_KEY, "true");
+    setDismissed(true);
+  };
 
   const handleInstall = async () => {
     const accepted = await install();
-
-    if (!accepted) {
+    if (accepted) {
+      handleDismiss();
+    } else {
       if (isInIframe) {
         window.alert("A instalação não funciona dentro do preview. Abra o app publicado no navegador do celular para instalar.");
       } else {
@@ -65,19 +85,26 @@ export function InstallAppBanner() {
             )}
           </div>
 
-          {canInstall ? (
-            <DuoButton size="sm" onClick={handleInstall}>
-              <Download className="w-4 h-4" /> Instalar
-            </DuoButton>
-          ) : isIOS ? (
-            <DuoButton variant="outline" size="sm" onClick={showIOSSteps}>
-              <Share className="w-4 h-4" /> Como instalar
-            </DuoButton>
-          ) : isInIframe ? (
-            <DuoButton variant="outline" size="sm" onClick={openOutsidePreview}>
-              <ExternalLink className="w-4 h-4" /> Abrir fora
-            </DuoButton>
-          ) : null}
+          <div className="flex items-center gap-2 shrink-0">
+            {canInstall ? (
+              <DuoButton size="sm" onClick={handleInstall}>
+                <Download className="w-4 h-4" /> Instalar
+              </DuoButton>
+            ) : isIOS ? (
+              <DuoButton variant="outline" size="sm" onClick={showIOSSteps}>
+                <Share className="w-4 h-4" /> Como instalar
+              </DuoButton>
+            ) : isInIframe ? (
+              <DuoButton variant="outline" size="sm" onClick={openOutsidePreview}>
+                <ExternalLink className="w-4 h-4" /> Abrir fora
+              </DuoButton>
+            ) : null}
+            {!forceShow && (
+              <button onClick={handleDismiss} className="text-muted-foreground hover:text-foreground text-xs font-bold p-1">
+                ✕
+              </button>
+            )}
+          </div>
         </div>
       </DuoCard>
     </motion.div>

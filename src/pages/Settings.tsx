@@ -152,6 +152,9 @@ export default function Settings() {
         </DuoCard>
       )}
 
+      {/* Install App */}
+      <InstallAppBanner forceShow />
+
       <div className="flex gap-4 justify-center text-[10px] sm:text-xs text-muted-foreground">
         <Link to="/privacidade" className="hover:text-primary font-semibold">Privacidade</Link>
         <Link to="/termos" className="hover:text-primary font-semibold">Termos de Uso</Link>

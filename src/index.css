@@ -106,10 +106,10 @@
 
 @layer utilities {
   .duo-shadow {
-    box-shadow: 0 4px 0 0 hsl(var(--duo-green-dark));
+    box-shadow: 0 4px 0 0 hsl(262 70% 45%);
   }
   .duo-shadow-blue {
-    box-shadow: 0 4px 0 0 hsl(199 80% 40%);
+    box-shadow: 0 4px 0 0 hsl(348 70% 50%);
   }
   .duo-shadow-sm {
     box-shadow: 0 2px 0 0 hsl(210 20% 85%);
