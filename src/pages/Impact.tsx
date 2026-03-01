@@ -12,10 +12,10 @@ const statusLabels: Record<CashbackStatus, string> = {
 };
 const statusColors: Record<CashbackStatus, string> = {
   tracked: 'bg-muted text-muted-foreground',
-  pending: 'bg-accent/20 text-accent-foreground',
-  confirmed: 'bg-secondary/20 text-secondary',
+  pending: 'bg-destructive/20 text-destructive',
+  confirmed: 'bg-accent/20 text-accent',
   donated: 'bg-primary/20 text-primary',
-  reverted: 'bg-destructive/20 text-destructive',
+  reverted: 'bg-muted text-muted-foreground',
 };
 
 export default function Impact() {
