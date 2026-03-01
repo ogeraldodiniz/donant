@@ -2,7 +2,7 @@ import { DuoCard } from "@/components/ui/duo-card";
 import { mockNgos, mockDonations, ngoEmojis } from "@/lib/mock-data";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
-const chartColors = ['hsl(103,95%,40%)', 'hsl(199,91%,54%)', 'hsl(45,100%,49%)', 'hsl(275,100%,75%)', 'hsl(0,100%,64%)', 'hsl(25,100%,55%)'];
+const chartColors = ['hsl(262,80%,58%)', 'hsl(348,80%,65%)', 'hsl(145,65%,48%)', 'hsl(25,95%,55%)', 'hsl(45,100%,49%)', 'hsl(262,60%,75%)'];
 
 export default function Transparency() {
   const totalDonated = mockNgos.reduce((s, n) => s + n.total_received, 0);
