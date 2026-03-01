@@ -105,6 +105,7 @@ export function Header() {
               <MobileLink to="/impacto" label={t("nav_impact", "Meu Impacto")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/notificacoes" label={t("nav_notifications", "Notificações")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/configuracoes" label={t("nav_settings", "Configurações")} onClick={() => setMobileOpen(false)} />
+              {isAdmin && <MobileLink to="/admin/ongs" label="Admin ONGs" onClick={() => setMobileOpen(false)} />}
             </>
           )}
           {!isLoggedIn && <MobileLink to="/auth" label={t("nav_login", "Entrar / Cadastrar")} onClick={() => setMobileOpen(false)} />}
