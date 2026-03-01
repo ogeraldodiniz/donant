@@ -7,11 +7,19 @@ import { useLocale } from "@/hooks/useLocale";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 export function Header() {
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, user, logout, session } = useAuth();
   const { locale, setLocale } = useLocale();
   const { t } = useSiteContent("nav");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const unreadCount = 2; // mock
+
+  useEffect(() => {
+    if (!session?.user?.id) { setIsAdmin(false); return; }
+    supabase.from("user_roles").select("role").eq("user_id", session.user.id).eq("role", "admin").then(({ data }) => {
+      setIsAdmin(!!(data && data.length > 0));
+    });
+  }, [session?.user?.id]);
 
   return (
     <header className="sticky top-0 z-50 bg-card border-b-2 border-border">
