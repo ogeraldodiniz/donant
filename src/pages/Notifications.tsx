@@ -18,7 +18,7 @@ export default function Notifications() {
   };
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6 max-w-lg">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-lg">
       <div>
         <h1 className="text-xl sm:text-2xl font-black">Notificações</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">{notifications.filter(n => !n.is_read).length} não lidas</p>

@@ -72,7 +72,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6 max-w-lg">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-lg">
       <div>
         <h1 className="text-xl sm:text-2xl font-black">Configurações</h1>
       </div>

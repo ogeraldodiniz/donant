@@ -23,7 +23,7 @@ export default function NgoDetail() {
   };
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6 max-w-2xl">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-2xl">
       <Link to="/ongs" className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-muted-foreground hover:text-foreground">
         <ArrowLeft className="w-4 h-4" /> Voltar
       </Link>
@@ -55,7 +55,7 @@ export default function NgoDetail() {
 
       {donations.length > 0 && (
         <DuoCard>
-          <h3 className="font-bold text-sm sm:text-base mb-3">💚 Últimas doações</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-3">💜 Últimas doações</h3>
           <div className="space-y-2">
             {donations.map(d => (
               <div key={d.id} className="flex justify-between items-center py-2 border-b last:border-0 border-border">
