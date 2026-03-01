@@ -1,6 +1,7 @@
 import { mockTransactions } from "@/lib/mock-data";
 import { DuoCard } from "@/components/ui/duo-card";
 import { CashbackStatus } from "@/types";
+import { LevelBadge } from "@/components/LevelBadge";
 
 const statusLabels: Record<CashbackStatus, string> = {
   tracked: 'Rastreado',
