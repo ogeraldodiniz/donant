@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
+import { LevelBadge } from "@/components/LevelBadge";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
