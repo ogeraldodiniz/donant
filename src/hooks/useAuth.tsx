@@ -118,6 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error ? new Error(error.message) : null };
   };
 
+  const refreshProfile = async () => {
+    if (session?.user) {
+      await fetchProfile(session.user);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
