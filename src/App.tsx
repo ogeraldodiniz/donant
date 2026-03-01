@@ -21,6 +21,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
+import AdminNgos from "./pages/AdminNgos";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/privacidade" element={<Privacy />} />
               <Route path="/termos" element={<Terms />} />
               <Route path="/redefinir-senha" element={<ResetPassword />} />
+              <Route path="/admin/ongs" element={<AdminNgos />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
