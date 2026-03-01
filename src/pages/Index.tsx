@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
+import { LevelBadge } from "@/components/LevelBadge";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
@@ -393,6 +394,8 @@ function LoggedInHome() {
       </div>
 
       <InstallAppBanner />
+
+      <LevelBadge totalDonated={donated} />
 
       <Link to={`/ongs/${selectedNgo.slug}`}>
         <DuoCard hover className="flex items-center gap-3 sm:gap-4 bg-primary/5 border-primary/20">

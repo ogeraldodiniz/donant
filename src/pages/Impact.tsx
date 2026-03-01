@@ -1,6 +1,7 @@
 import { mockTransactions } from "@/lib/mock-data";
 import { DuoCard } from "@/components/ui/duo-card";
 import { CashbackStatus } from "@/types";
+import { LevelBadge } from "@/components/LevelBadge";
 
 const statusLabels: Record<CashbackStatus, string> = {
   tracked: 'Rastreado',
@@ -28,6 +29,8 @@ export default function Impact() {
         <h1 className="text-xl sm:text-2xl font-black">Seu Impacto 💚</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">Acompanhe suas doações</p>
       </div>
+
+      <LevelBadge totalDonated={totals(['donated'])} showAllLevels />
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <DuoCard className="text-center p-3 sm:p-5 bg-accent/10 border-accent/30">
