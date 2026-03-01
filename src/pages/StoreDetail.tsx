@@ -11,7 +11,7 @@ export default function StoreDetail() {
   const { isLoggedIn } = useAuth();
   const store = mockStores.find(s => s.slug === slug);
 
-  if (!store) return <div className="container py-12 text-center"><p className="text-xl font-bold">Loja não encontrada</p></div>;
+  if (!store) return <div className="container py-12 text-center"><p className="text-lg sm:text-xl font-bold">Loja não encontrada</p></div>;
 
   const handleRedirect = () => {
     if (!isLoggedIn) { navigate("/auth"); return; }
@@ -19,25 +19,25 @@ export default function StoreDetail() {
   };
 
   return (
-    <div className="container py-6 space-y-6 max-w-2xl">
-      <Link to="/lojas" className="inline-flex items-center gap-2 text-sm font-bold text-muted-foreground hover:text-foreground">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6 max-w-2xl">
+      <Link to="/lojas" className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-muted-foreground hover:text-foreground">
         <ArrowLeft className="w-4 h-4" /> Voltar
       </Link>
 
-      <div className="flex items-center gap-4">
-        <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center text-4xl font-bold">
+      <div className="flex items-center gap-3 sm:gap-4">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-muted flex items-center justify-center text-3xl sm:text-4xl font-bold">
           {store.name.charAt(0)}
         </div>
         <div>
-          <h1 className="text-2xl font-black">{store.name}</h1>
-          <p className="text-muted-foreground text-sm">{categoryEmojis[store.category]} {store.category}</p>
+          <h1 className="text-xl sm:text-2xl font-black">{store.name}</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm">{categoryEmojis[store.category]} {store.category}</p>
         </div>
       </div>
 
       <DuoCard className="text-center bg-primary/5 border-primary/20">
-        <p className="text-sm font-bold text-muted-foreground mb-1">Cashback solidário de até</p>
-        <p className="text-4xl font-black text-primary">{store.cashback_rate}%</p>
-        <p className="text-xs text-muted-foreground mt-1">100% doado para sua ONG</p>
+        <p className="text-xs sm:text-sm font-bold text-muted-foreground mb-1">Cashback solidário de até</p>
+        <p className="text-3xl sm:text-4xl font-black text-primary">{store.cashback_rate}%</p>
+        <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">100% doado para sua ONG</p>
       </DuoCard>
 
       <DuoButton size="lg" className="w-full" onClick={handleRedirect}>
@@ -45,13 +45,13 @@ export default function StoreDetail() {
       </DuoButton>
 
       <DuoCard>
-        <h3 className="font-bold mb-2 flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /> Termos e condições</h3>
-        <p className="text-sm text-muted-foreground">{store.terms}</p>
+        <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /> Termos e condições</h3>
+        <p className="text-xs sm:text-sm text-muted-foreground">{store.terms}</p>
       </DuoCard>
 
       <DuoCard>
-        <h3 className="font-bold mb-2 flex items-center gap-2"><Clock className="w-4 h-4 text-secondary" /> Como funciona</h3>
-        <ul className="text-sm text-muted-foreground space-y-2">
+        <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><Clock className="w-4 h-4 text-secondary" /> Como funciona</h3>
+        <ul className="text-xs sm:text-sm text-muted-foreground space-y-1.5 sm:space-y-2">
           <li>1. Clique em "Comprar e gerar cashback"</li>
           <li>2. Você será redirecionado para {store.name}</li>
           <li>3. Faça sua compra normalmente</li>

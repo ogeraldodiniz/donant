@@ -10,7 +10,7 @@ const DuoCard = React.forwardRef<HTMLDivElement, DuoCardProps>(
     <div
       ref={ref}
       className={cn(
-        "rounded-2xl border-2 border-border bg-card p-5 transition-all duration-200",
+        "rounded-2xl border-2 border-border bg-card p-3.5 sm:p-5 transition-all duration-200",
         hover && "hover:border-primary hover:shadow-lg cursor-pointer hover:-translate-y-1",
         className
       )}
