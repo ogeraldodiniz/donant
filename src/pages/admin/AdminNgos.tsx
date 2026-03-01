@@ -34,26 +34,12 @@ const emptyNgo = {
 };
 
 export default function AdminNgos() {
-  const { session } = useAuth();
-  const navigate = useNavigate();
   const [ngos, setNgos] = useState<Ngo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState(emptyNgo);
   const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (!session?.user?.id) return;
-    supabase.from("user_roles").select("role").eq("user_id", session.user.id).eq("role", "admin").then(({ data }) => {
-      if (data && data.length > 0) {
-        setIsAdmin(true);
-      } else {
-        navigate("/configuracoes");
-      }
-    });
-  }, [session?.user?.id, navigate]);
 
   const fetchNgos = async () => {
     setLoading(true);
@@ -63,8 +49,8 @@ export default function AdminNgos() {
   };
 
   useEffect(() => {
-    if (isAdmin) fetchNgos();
-  }, [isAdmin]);
+    fetchNgos();
+  }, []);
 
   const generateSlug = (name: string) =>
     name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
