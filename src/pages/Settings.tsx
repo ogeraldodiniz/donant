@@ -85,9 +85,13 @@ export default function Settings() {
           <div className="min-w-0">
             <p className="font-bold text-sm sm:text-base truncate">{user?.display_name}</p>
             <p className="text-xs sm:text-sm text-muted-foreground truncate">{user?.email}</p>
+            <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} compact />
           </div>
         </div>
       </DuoCard>
+
+      {/* Level */}
+      <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
 
       {/* Selected NGO */}
       <DuoCard className="p-3.5 sm:p-5">
