@@ -41,7 +41,7 @@ export function Header() {
           {isLoggedIn && (
             <>
               <NavItem to="/impacto" icon={BarChart3} label={t("nav_impact", "Impacto")} />
-              {isAdmin && <NavItem to="/admin/ongs" icon={Shield} label="Admin" />}
+              {isAdmin && <NavItem to="/admin" icon={Shield} label="Admin" />}
               <Link to="/notificacoes" className="relative p-2 rounded-xl hover:bg-muted transition-colors">
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
