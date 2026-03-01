@@ -20,6 +20,7 @@ import Transparency from "./pages/Transparency";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
               <Route path="/transparencia" element={<Transparency />} />
               <Route path="/privacidade" element={<Privacy />} />
               <Route path="/termos" element={<Terms />} />
+              <Route path="/redefinir-senha" element={<ResetPassword />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
