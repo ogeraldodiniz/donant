@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Heart, LogOut, Trash2, Check, Loader2 } from "lucide-react";
+import { LevelBadge } from "@/components/LevelBadge";
+import { mockTransactions } from "@/lib/mock-data";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";

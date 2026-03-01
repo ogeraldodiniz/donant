@@ -395,6 +395,8 @@ function LoggedInHome() {
 
       <InstallAppBanner />
 
+      <LevelBadge totalDonated={donated} />
+
       <Link to={`/ongs/${selectedNgo.slug}`}>
         <DuoCard hover className="flex items-center gap-3 sm:gap-4 bg-primary/5 border-primary/20">
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">

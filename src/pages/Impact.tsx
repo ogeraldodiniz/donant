@@ -30,6 +30,8 @@ export default function Impact() {
         <p className="text-muted-foreground text-xs sm:text-sm">Acompanhe suas doações</p>
       </div>
 
+      <LevelBadge totalDonated={totals(['donated'])} showAllLevels />
+
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <DuoCard className="text-center p-3 sm:p-5 bg-accent/10 border-accent/30">
           <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">Pendente</p>
