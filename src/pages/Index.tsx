@@ -389,7 +389,8 @@ function FaqItem({ question, answer, index }: { question: string; answer: string
 function LoggedInHome() {
   const { user } = useAuth();
   const { t } = useSiteContent("home_logged");
-  const selectedNgo = mockNgos[0];
+  const { ngos } = useNgos();
+  const selectedNgo = ngos.find(n => n.id === user?.selected_ngo_id) || ngos[0];
   const pending = mockTransactions.filter(tx => tx.status === 'pending' || tx.status === 'tracked').reduce((s, tx) => s + tx.amount, 0);
   const confirmed = mockTransactions.filter(tx => tx.status === 'confirmed').reduce((s, tx) => s + tx.amount, 0);
   const donated = mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0);
@@ -405,18 +406,24 @@ function LoggedInHome() {
 
       <LevelBadge totalDonated={donated} />
 
-      <Link to={`/ongs/${selectedNgo.slug}`}>
-        <DuoCard hover className="flex items-center gap-3 sm:gap-4 bg-primary/5 border-primary/20">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] sm:text-xs text-primary font-bold uppercase">{t("home_your_ngo", "Sua ONG")}</p>
-            <p className="font-bold text-sm sm:text-base truncate">{selectedNgo.name}</p>
-          </div>
-          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
-        </DuoCard>
-      </Link>
+      {selectedNgo && (
+        <Link to={`/ongs/${selectedNgo.slug}`}>
+          <DuoCard hover className="flex items-center gap-3 sm:gap-4 bg-primary/5 border-primary/20">
+            {selectedNgo.logo_url ? (
+              <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
+            ) : (
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] sm:text-xs text-primary font-bold uppercase">{t("home_your_ngo", "Sua ONG")}</p>
+              <p className="font-bold text-sm sm:text-base truncate">{selectedNgo.name}</p>
+            </div>
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
+          </DuoCard>
+        </Link>
+      )}
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <DuoCard className="text-center p-3 sm:p-5 bg-destructive/10 border-destructive/30">
