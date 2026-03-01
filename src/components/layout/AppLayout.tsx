@@ -9,7 +9,7 @@ export function AppLayout() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <main className="flex-1 pb-20 md:pb-0">
+      <main className="flex-1 pb-[4.5rem] md:pb-0">
         <Outlet />
       </main>
       {isLoggedIn && <BottomNav />}
