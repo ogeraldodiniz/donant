@@ -66,7 +66,6 @@ export function AdminLayout() {
 
     return () => {
       isMounted = false;
-      setIsAdmin((prev) => prev);
     };
   }, [session?.user?.id, authLoading, navigate]);
 
