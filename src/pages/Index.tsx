@@ -114,19 +114,21 @@ function PublicHome() {
           <motion.p className="text-center text-muted-foreground text-sm sm:text-base mb-8 sm:mb-12 max-w-md mx-auto" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}>
             {t("how_subtitle", "Em 3 passos simples, suas compras viram doações.")}
           </motion.p>
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 sm:gap-10 max-w-4xl mx-auto">
             {([
               { Icon: UserPlus, titleKey: "how_step1_title", descKey: "how_step1_desc", titleFb: "Cadastre-se grátis", descFb: "Crie sua conta em segundos e escolha a ONG que quer apoiar." },
               { Icon: ShoppingBag, titleKey: "how_step2_title", descKey: "how_step2_desc", titleFb: "Compre normalmente", descFb: "Acesse as lojas parceiras pelo nosso link e compre o que já ia comprar." },
               { Icon: Gift, titleKey: "how_step3_title", descKey: "how_step3_desc", titleFb: "Cashback vira doação", descFb: "O cashback gerado é enviado diretamente para a ONG escolhida. Sem custo pra você!" },
             ] as const).map((step, i) => (
               <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
-                <DuoCard className="text-center relative pt-10">
+                <DuoCard className="text-center relative pt-14 pb-5 h-full">
                   <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-black text-lg duo-shadow">
                     {i + 1}
                   </div>
-                  <div className="flex justify-center mb-3">
-                    <step.Icon className="w-8 h-8 sm:w-10 sm:h-10 text-primary" strokeWidth={1.5} />
+                  <div className="flex justify-center mb-4">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                      <step.Icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" strokeWidth={1.5} />
+                    </div>
                   </div>
                   <h3 className="text-base sm:text-lg font-black mb-2">{t(step.titleKey, step.titleFb)}</h3>
                   <p className="text-muted-foreground text-xs sm:text-sm">{t(step.descKey, step.descFb)}</p>
