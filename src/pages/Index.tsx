@@ -313,7 +313,7 @@ function PublicHome() {
             <Link to="/privacidade" className="hover:text-foreground transition-colors">Privacidade</Link>
             <Link to="/termos" className="hover:text-foreground transition-colors">Termos</Link>
           </div>
-          <p className="font-semibold">{t("footer_copyright", "© 2025 MyCashbacks. Feito com 💚")}</p>
+          <p className="font-semibold">{t("footer_copyright", "© 2025 MyCashbacks. Feito com 💜")}</p>
         </div>
       </footer>
     </div>

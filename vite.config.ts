@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => ({
         name: "MyCashbacks",
         short_name: "MyCashbacks",
         description: "Compre online e doe sem gastar nada. Cashback solidário.",
-        theme_color: "#22c55e",
+        theme_color: "#7c3aed",
         background_color: "#f8fafc",
         display: "standalone",
         orientation: "portrait",
