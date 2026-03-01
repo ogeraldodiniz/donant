@@ -23,7 +23,7 @@ export default function NgoDetail() {
   };
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-6 max-w-2xl">
+    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-2xl">
       <Link to="/ongs" className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-muted-foreground hover:text-foreground">
         <ArrowLeft className="w-4 h-4" /> Voltar
       </Link>
