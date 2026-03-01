@@ -136,6 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         resetPassword,
         updatePassword,
+        refreshProfile,
       }}
     >
       {children}
