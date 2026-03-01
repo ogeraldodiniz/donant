@@ -353,6 +353,36 @@ export type Database = {
         }
         Relationships: []
       }
+      site_content: {
+        Row: {
+          content_key: string
+          created_at: string
+          id: string
+          locale: string
+          section: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          content_key: string
+          created_at?: string
+          id?: string
+          locale?: string
+          section?: string
+          updated_at?: string
+          value?: string
+        }
+        Update: {
+          content_key?: string
+          created_at?: string
+          id?: string
+          locale?: string
+          section?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       stores: {
         Row: {
           cashback_rate: number

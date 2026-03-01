@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-import { Heart, ShoppingBag, ArrowRight, TrendingUp, Store, Users, Shield, Eye, Zap, CheckCircle2, ChevronDown } from "lucide-react";
+import { Heart, ArrowRight, ChevronDown } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
-import { mockNgos, mockStores, mockTransactions, ngoEmojis, categoryEmojis } from "@/lib/mock-data";
+import { useSiteContent } from "@/hooks/useSiteContent";
+import { mockNgos, mockStores, mockTransactions, ngoEmojis } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
 export default function Index() {
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn } = useAuth();
   return isLoggedIn ? <LoggedInHome /> : <PublicHome />;
 }
 
@@ -18,31 +19,33 @@ const fadeUp = {
 };
 
 function PublicHome() {
+  const { t } = useSiteContent();
+
   return (
     <div className="min-h-screen">
-      {/* Hero — full-width, bold */}
+      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="container py-20 md:py-32 flex flex-col md:flex-row items-center gap-10">
           <motion.div className="flex-1 text-center md:text-left" initial="hidden" animate="visible" variants={fadeUp}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-extrabold text-sm mb-6">
-              <Heart className="w-4 h-4" fill="currentColor" /> 100% gratuito. 100% solidário.
+              <Heart className="w-4 h-4" fill="currentColor" /> {t("hero_badge", "100% gratuito. 100% solidário.")}
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-foreground leading-[1.08] mb-5">
-              Compre online.<br />
-              <span className="text-primary">Doe sem gastar nada.</span>
+              {t("hero_title_1", "Compre online.")}<br />
+              <span className="text-primary">{t("hero_title_2", "Doe sem gastar nada.")}</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-lg mb-8">
-              Cada compra nas lojas parceiras gera cashback que é doado automaticamente para a ONG que você escolher. Simples assim.
+              {t("hero_subtitle", "Cada compra nas lojas parceiras gera cashback que é doado automaticamente para a ONG que você escolher. Simples assim.")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link to="/auth">
                 <DuoButton size="lg">
-                  Comece agora — é grátis <ArrowRight className="w-5 h-5" />
+                  {t("hero_cta_primary", "Comece agora — é grátis")} <ArrowRight className="w-5 h-5" />
                 </DuoButton>
               </Link>
               <Link to="/transparencia">
                 <DuoButton variant="outline" size="lg">
-                  Ver impacto global
+                  {t("hero_cta_secondary", "Ver impacto global")}
                 </DuoButton>
               </Link>
             </div>
@@ -55,12 +58,7 @@ function PublicHome() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <div className="relative w-72 h-72 md:w-96 md:h-96">
-              {/* Animated floating cards */}
-              <motion.div
-                className="absolute top-0 left-4 md:left-0"
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
+              <motion.div className="absolute top-0 left-4 md:left-0" animate={{ y: [0, -12, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
                 <DuoCard className="bg-card shadow-xl px-5 py-4 w-56">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-lg">🛒</div>
@@ -71,12 +69,7 @@ function PublicHome() {
                   </div>
                 </DuoCard>
               </motion.div>
-
-              <motion.div
-                className="absolute top-28 right-0 md:right-[-20px]"
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              >
+              <motion.div className="absolute top-28 right-0 md:right-[-20px]" animate={{ y: [0, 10, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}>
                 <DuoCard className="bg-card shadow-xl px-5 py-4 w-60">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-duo-red/10 flex items-center justify-center text-lg">❤️</div>
@@ -87,12 +80,7 @@ function PublicHome() {
                   </div>
                 </DuoCard>
               </motion.div>
-
-              <motion.div
-                className="absolute bottom-4 left-8 md:left-4"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              >
+              <motion.div className="absolute bottom-4 left-8 md:left-4" animate={{ y: [0, -8, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}>
                 <DuoCard className="bg-primary text-primary-foreground shadow-xl px-5 py-4 w-52">
                   <div className="flex items-center gap-3">
                     <div className="text-2xl">🎉</div>
@@ -108,20 +96,20 @@ function PublicHome() {
         </div>
       </section>
 
-      {/* How it works — Duolingo-style numbered steps */}
+      {/* How it works */}
       <section className="bg-card border-y-2 border-border py-16 md:py-24">
         <div className="container">
           <motion.h2 className="text-3xl md:text-4xl font-black text-center mb-4" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            como funciona?
+            {t("how_title", "como funciona?")}
           </motion.h2>
           <motion.p className="text-center text-muted-foreground mb-12 max-w-md mx-auto" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}>
-            Em 3 passos simples, suas compras viram doações.
+            {t("how_subtitle", "Em 3 passos simples, suas compras viram doações.")}
           </motion.p>
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {[
-              { emoji: "📝", title: "Cadastre-se grátis", desc: "Crie sua conta em segundos e escolha a ONG que quer apoiar." },
-              { emoji: "🛍️", title: "Compre normalmente", desc: "Acesse as lojas parceiras pelo nosso link e compre o que já ia comprar." },
-              { emoji: "💚", title: "Cashback vira doação", desc: "O cashback gerado é enviado diretamente para a ONG escolhida. Sem custo pra você!" },
+              { emoji: "📝", titleKey: "how_step1_title", descKey: "how_step1_desc", titleFb: "Cadastre-se grátis", descFb: "Crie sua conta em segundos e escolha a ONG que quer apoiar." },
+              { emoji: "🛍️", titleKey: "how_step2_title", descKey: "how_step2_desc", titleFb: "Compre normalmente", descFb: "Acesse as lojas parceiras pelo nosso link e compre o que já ia comprar." },
+              { emoji: "💚", titleKey: "how_step3_title", descKey: "how_step3_desc", titleFb: "Cashback vira doação", descFb: "O cashback gerado é enviado diretamente para a ONG escolhida. Sem custo pra você!" },
             ].map((step, i) => (
               <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
                 <DuoCard className="text-center relative pt-10">
@@ -129,8 +117,8 @@ function PublicHome() {
                     {i + 1}
                   </div>
                   <div className="text-4xl mb-3">{step.emoji}</div>
-                  <h3 className="text-lg font-black mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm">{step.desc}</p>
+                  <h3 className="text-lg font-black mb-2">{t(step.titleKey, step.titleFb)}</h3>
+                  <p className="text-muted-foreground text-sm">{t(step.descKey, step.descFb)}</p>
                 </DuoCard>
               </motion.div>
             ))}
@@ -138,58 +126,44 @@ function PublicHome() {
         </div>
       </section>
 
-      {/* Feature Section 1 — alternating layout */}
+      {/* Feature 1 */}
       <FeatureSection
-        reverse={false}
-        emoji="🔍"
-        label="transparência total"
-        title="Acompanhe cada centavo."
-        description="Todas as doações são públicas e rastreáveis. Você vê exatamente quanto foi gerado, confirmado e doado para cada ONG."
-        color="primary"
-        linkTo="/transparencia"
-        linkLabel="Ver transparência"
+        reverse={false} emoji="🔍" color="primary" linkTo="/transparencia"
+        label={t("feat1_label", "transparência total")}
+        title={t("feat1_title", "Acompanhe cada centavo.")}
+        description={t("feat1_desc", "Todas as doações são públicas e rastreáveis.")}
+        linkLabel={t("feat1_link", "Ver transparência")}
+      />
+      {/* Feature 2 */}
+      <FeatureSection
+        reverse={true} emoji="🎯" color="secondary" linkTo="/ongs"
+        label={t("feat2_label", "você escolhe")}
+        title={t("feat2_title", "Apoie a causa que importa pra você.")}
+        description={t("feat2_desc", "Escolha entre nossas ONGs parceiras verificadas.")}
+        linkLabel={t("feat2_link", "Conhecer ONGs")}
+      />
+      {/* Feature 3 */}
+      <FeatureSection
+        reverse={false} emoji="🚀" color="accent" linkTo="/lojas"
+        label={t("feat3_label", "sem custo extra")}
+        title={t("feat3_title", "Não muda nada na sua compra.")}
+        description={t("feat3_desc", "Você paga o mesmo preço.")}
+        linkLabel={t("feat3_link", "Ver lojas parceiras")}
       />
 
-      {/* Feature Section 2 */}
-      <FeatureSection
-        reverse={true}
-        emoji="🎯"
-        label="você escolhe"
-        title="Apoie a causa que importa pra você."
-        description="Criança, meio ambiente, saúde, educação… Escolha entre nossas ONGs parceiras verificadas e mude a direção do seu cashback."
-        color="secondary"
-        linkTo="/ongs"
-        linkLabel="Conhecer ONGs"
-      />
-
-      {/* Feature Section 3 */}
-      <FeatureSection
-        reverse={false}
-        emoji="🚀"
-        label="sem custo extra"
-        title="Não muda nada na sua compra."
-        description="Você paga o mesmo preço. A diferença é que parte do valor volta como cashback solidário. Quem paga é a loja, não você."
-        color="accent"
-        linkTo="/lojas"
-        linkLabel="Ver lojas parceiras"
-      />
-
-      {/* Stores showcase */}
+      {/* Stores */}
       <section className="bg-card border-y-2 border-border py-16">
         <div className="container">
           <motion.div className="text-center mb-10" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-3xl md:text-4xl font-black mb-3">lojas parceiras</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">Suas marcas favoritas gerando impacto social.</p>
+            <h2 className="text-3xl md:text-4xl font-black mb-3">{t("stores_title", "lojas parceiras")}</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">{t("stores_subtitle", "Suas marcas favoritas gerando impacto social.")}</p>
           </motion.div>
-
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 max-w-4xl mx-auto mb-8">
             {mockStores.slice(0, 10).map((store, i) => (
               <motion.div key={store.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
                 <Link to={`/lojas/${store.slug}`}>
                   <DuoCard hover className="text-center py-4 px-3">
-                    <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-xl font-black mx-auto mb-2">
-                      {store.name.charAt(0)}
-                    </div>
+                    <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center text-xl font-black mx-auto mb-2">{store.name.charAt(0)}</div>
                     <p className="font-bold text-xs truncate">{store.name}</p>
                     <p className="text-primary font-black text-sm">{store.cashback_rate}%</p>
                   </DuoCard>
@@ -197,13 +171,8 @@ function PublicHome() {
               </motion.div>
             ))}
           </div>
-
           <div className="text-center">
-            <Link to="/lojas">
-              <DuoButton variant="outline">
-                Ver todas as lojas <ArrowRight className="w-4 h-4" />
-              </DuoButton>
-            </Link>
+            <Link to="/lojas"><DuoButton variant="outline">{t("stores_cta", "Ver todas as lojas")} <ArrowRight className="w-4 h-4" /></DuoButton></Link>
           </div>
         </div>
       </section>
@@ -211,8 +180,8 @@ function PublicHome() {
       {/* NGOs */}
       <section className="container py-16">
         <motion.div className="text-center mb-10" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="text-3xl md:text-4xl font-black mb-3">ONGs parceiras</h2>
-          <p className="text-muted-foreground max-w-md mx-auto">Organizações verificadas que recebem 100% do cashback doado.</p>
+          <h2 className="text-3xl md:text-4xl font-black mb-3">{t("ngos_title", "ONGs parceiras")}</h2>
+          <p className="text-muted-foreground max-w-md mx-auto">{t("ngos_subtitle", "Organizações verificadas que recebem 100% do cashback doado.")}</p>
         </motion.div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8">
           {mockNgos.slice(0, 6).map((ngo, i) => (
@@ -228,54 +197,48 @@ function PublicHome() {
           ))}
         </div>
         <div className="text-center">
-          <Link to="/ongs">
-            <DuoButton variant="outline">
-              Conhecer todas as ONGs <ArrowRight className="w-4 h-4" />
-            </DuoButton>
-          </Link>
+          <Link to="/ongs"><DuoButton variant="outline">{t("ngos_cta", "Conhecer todas as ONGs")} <ArrowRight className="w-4 h-4" /></DuoButton></Link>
         </div>
       </section>
 
-      {/* Stats bar */}
+      {/* Stats */}
       <section className="bg-primary text-primary-foreground py-14">
         <div className="container">
           <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }}>
             {[
-              { label: "Total doado", value: "R$ 158K+", emoji: "💰" },
-              { label: "ONGs apoiadas", value: "6", emoji: "❤️" },
-              { label: "Lojas parceiras", value: "10+", emoji: "🏪" },
-              { label: "Usuários ativos", value: "1.2K+", emoji: "👥" },
+              { labelKey: "stat1_label", valueKey: "stat1_value", emoji: "💰", labelFb: "Total doado", valueFb: "R$ 158K+" },
+              { labelKey: "stat2_label", valueKey: "stat2_value", emoji: "❤️", labelFb: "ONGs apoiadas", valueFb: "6" },
+              { labelKey: "stat3_label", valueKey: "stat3_value", emoji: "🏪", labelFb: "Lojas parceiras", valueFb: "10+" },
+              { labelKey: "stat4_label", valueKey: "stat4_value", emoji: "👥", labelFb: "Usuários ativos", valueFb: "1.2K+" },
             ].map((s, i) => (
               <motion.div key={i} variants={fadeUp} custom={i}>
                 <div className="text-3xl mb-1">{s.emoji}</div>
-                <div className="text-3xl md:text-4xl font-black">{s.value}</div>
-                <div className="text-sm opacity-90 font-bold">{s.label}</div>
+                <div className="text-3xl md:text-4xl font-black">{t(s.valueKey, s.valueFb)}</div>
+                <div className="text-sm opacity-90 font-bold">{t(s.labelKey, s.labelFb)}</div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Social proof / Testimonials */}
+      {/* Testimonials */}
       <section className="container py-16">
         <motion.div className="text-center mb-10" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="text-3xl md:text-4xl font-black mb-3">o que dizem sobre nós</h2>
+          <h2 className="text-3xl md:text-4xl font-black mb-3">{t("testimonial_title", "o que dizem sobre nós")}</h2>
         </motion.div>
         <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {[
-            { name: "Ana Paula", text: "Incrível saber que minhas compras estão ajudando crianças. Não muda nada no meu bolso!", avatar: "A" },
-            { name: "Carlos Mendes", text: "Uso sempre que vou comprar online. A transparência me dá confiança que a doação chega mesmo.", avatar: "C" },
-            { name: "Mariana Silva", text: "Já doei mais de R$200 sem gastar nada a mais. Todo mundo deveria conhecer!", avatar: "M" },
-          ].map((t, i) => (
+            { nameKey: "testimonial1_name", textKey: "testimonial1_text", nameFb: "Ana Paula", textFb: "Incrível saber que minhas compras estão ajudando crianças.", avatar: "A" },
+            { nameKey: "testimonial2_name", textKey: "testimonial2_text", nameFb: "Carlos Mendes", textFb: "Uso sempre que vou comprar online.", avatar: "C" },
+            { nameKey: "testimonial3_name", textKey: "testimonial3_text", nameFb: "Mariana Silva", textFb: "Já doei mais de R$200 sem gastar nada a mais.", avatar: "M" },
+          ].map((item, i) => (
             <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
               <DuoCard className="h-full">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-sm">
-                    {t.avatar}
-                  </div>
-                  <p className="font-bold">{t.name}</p>
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-sm">{item.avatar}</div>
+                  <p className="font-bold">{t(item.nameKey, item.nameFb)}</p>
                 </div>
-                <p className="text-muted-foreground text-sm leading-relaxed">"{t.text}"</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">"{t(item.textKey, item.textFb)}"</p>
               </DuoCard>
             </motion.div>
           ))}
@@ -286,17 +249,16 @@ function PublicHome() {
       <section className="bg-card border-y-2 border-border py-16">
         <div className="container max-w-2xl">
           <motion.h2 className="text-3xl md:text-4xl font-black text-center mb-10" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            perguntas frequentes
+            {t("faq_title", "perguntas frequentes")}
           </motion.h2>
           <div className="space-y-3">
-            {[
-              { q: "É realmente grátis?", a: "Sim! Você não paga nada a mais. O cashback é pago pela loja parceira e redirecionado para a ONG." },
-              { q: "Como sei que a doação chegou?", a: "Todas as doações são registradas publicamente na nossa página de transparência. Você pode acompanhar em tempo real." },
-              { q: "Posso escolher qual ONG recebe?", a: "Sim! Ao se cadastrar, você escolhe a ONG que deseja apoiar e pode trocar a qualquer momento." },
-              { q: "Quais lojas participam?", a: "Temos mais de 10 lojas parceiras como Amazon, Magazine Luiza, Netshoes e muitas outras." },
-              { q: "O cashback é instantâneo?", a: "O cashback é rastreado na hora da compra, confirmado pela loja em até 60 dias, e então doado para a ONG." },
-            ].map((faq, i) => (
-              <FaqItem key={i} question={faq.q} answer={faq.a} index={i} />
+            {[1, 2, 3, 4, 5].map(n => (
+              <FaqItem
+                key={n}
+                question={t(`faq${n}_q`, `FAQ ${n}`)}
+                answer={t(`faq${n}_a`, "")}
+                index={n}
+              />
             ))}
           </div>
         </div>
@@ -305,21 +267,15 @@ function PublicHome() {
       {/* Final CTA */}
       <section className="container py-20 text-center">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="text-3xl md:text-5xl font-black mb-4">
-            Pronto para fazer a diferença?
-          </h2>
-          <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-            Cadastre-se grátis e transforme suas compras em doações.
-          </p>
+          <h2 className="text-3xl md:text-5xl font-black mb-4">{t("cta_title", "Pronto para fazer a diferença?")}</h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">{t("cta_subtitle", "Cadastre-se grátis e transforme suas compras em doações.")}</p>
           <Link to="/auth">
-            <DuoButton size="lg">
-              Criar minha conta grátis <ArrowRight className="w-5 h-5" />
-            </DuoButton>
+            <DuoButton size="lg">{t("cta_button", "Criar minha conta grátis")} <ArrowRight className="w-5 h-5" /></DuoButton>
           </Link>
         </motion.div>
       </section>
 
-      {/* Footer-like info */}
+      {/* Footer */}
       <footer className="border-t-2 border-border py-8">
         <div className="container flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
@@ -329,78 +285,50 @@ function PublicHome() {
             <span className="font-extrabold text-foreground">MyCashbacks</span>
           </div>
           <div className="flex gap-6 font-semibold">
-            <Link to="/transparencia" className="hover:text-foreground transition-colors">Transparência</Link>
+            <Link to="/transparencia" className="hover:text-foreground transition-colors">{t("nav_transparency", "Transparência")}</Link>
             <Link to="/privacidade" className="hover:text-foreground transition-colors">Privacidade</Link>
             <Link to="/termos" className="hover:text-foreground transition-colors">Termos</Link>
           </div>
-          <p className="font-semibold">© 2025 MyCashbacks. Feito com 💚</p>
+          <p className="font-semibold">{t("footer_copyright", "© 2025 MyCashbacks. Feito com 💚")}</p>
         </div>
       </footer>
     </div>
   );
 }
 
-/* ========== Feature Section Component ========== */
 function FeatureSection({ reverse, emoji, label, title, description, color, linkTo, linkLabel }: {
   reverse: boolean; emoji: string; label: string; title: string; description: string; color: string; linkTo: string; linkLabel: string;
 }) {
   return (
     <section className="py-16 md:py-24">
       <div className={`container flex flex-col ${reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center gap-10 md:gap-16`}>
-        <motion.div
-          className="flex-1 flex justify-center"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-        >
+        <motion.div className="flex-1 flex justify-center" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
           <div className={`w-48 h-48 md:w-64 md:h-64 rounded-3xl bg-${color}/10 flex items-center justify-center`}>
             <span className="text-7xl md:text-8xl">{emoji}</span>
           </div>
         </motion.div>
-        <motion.div
-          className="flex-1 text-center md:text-left"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          custom={1}
-        >
-          <span className={`inline-block px-3 py-1 rounded-full bg-${color}/10 text-${color} font-extrabold text-xs uppercase tracking-wider mb-4`}>
-            {label}
-          </span>
+        <motion.div className="flex-1 text-center md:text-left" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}>
+          <span className={`inline-block px-3 py-1 rounded-full bg-${color}/10 text-${color} font-extrabold text-xs uppercase tracking-wider mb-4`}>{label}</span>
           <h2 className="text-2xl md:text-4xl font-black mb-4">{title}</h2>
           <p className="text-muted-foreground text-base md:text-lg mb-6 max-w-md">{description}</p>
-          <Link to={linkTo}>
-            <DuoButton variant="outline" size="md">
-              {linkLabel} <ArrowRight className="w-4 h-4" />
-            </DuoButton>
-          </Link>
+          <Link to={linkTo}><DuoButton variant="outline" size="md">{linkLabel} <ArrowRight className="w-4 h-4" /></DuoButton></Link>
         </motion.div>
       </div>
     </section>
   );
 }
 
-/* ========== FAQ Item ========== */
 function FaqItem({ question, answer, index }: { question: string; answer: string; index: number }) {
   const [open, setOpen] = useState(false);
   return (
     <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={index * 0.5}>
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full text-left p-5 rounded-2xl border-2 border-border bg-background hover:border-primary/50 transition-colors"
-      >
+      <button onClick={() => setOpen(!open)} className="w-full text-left p-5 rounded-2xl border-2 border-border bg-background hover:border-primary/50 transition-colors">
         <div className="flex items-center justify-between">
           <span className="font-bold text-base">{question}</span>
           <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
         </div>
         {open && (
-          <motion.p
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="text-muted-foreground text-sm mt-3 leading-relaxed"
-          >
+          <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="text-muted-foreground text-sm mt-3 leading-relaxed">
             {answer}
           </motion.p>
         )}
@@ -409,9 +337,9 @@ function FaqItem({ question, answer, index }: { question: string; answer: string
   );
 }
 
-/* ========== Logged-in Home ========== */
 function LoggedInHome() {
   const { user } = useAuth();
+  const { t } = useSiteContent("home_logged");
   const selectedNgo = mockNgos[0];
   const pending = mockTransactions.filter(t => t.status === 'pending' || t.status === 'tracked').reduce((s, t) => s + t.amount, 0);
   const confirmed = mockTransactions.filter(t => t.status === 'confirmed').reduce((s, t) => s + t.amount, 0);
@@ -419,55 +347,49 @@ function LoggedInHome() {
 
   return (
     <div className="container py-6 space-y-6">
-      {/* Greeting */}
       <div>
-        <h1 className="text-2xl font-black">Olá, {user?.display_name?.split(' ')[0]}! 👋</h1>
-        <p className="text-muted-foreground text-sm">Veja o impacto das suas compras.</p>
+        <h1 className="text-2xl font-black">{t("home_greeting", "Olá,")} {user?.display_name?.split(' ')[0]}! 👋</h1>
+        <p className="text-muted-foreground text-sm">{t("home_subtitle", "Veja o impacto das suas compras.")}</p>
       </div>
 
-      {/* Selected NGO */}
       <Link to={`/ongs/${selectedNgo.slug}`}>
         <DuoCard hover className="flex items-center gap-4 bg-primary/5 border-primary/20">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl">🧒</div>
           <div className="flex-1">
-            <p className="text-xs text-primary font-bold uppercase">Sua ONG</p>
+            <p className="text-xs text-primary font-bold uppercase">{t("home_your_ngo", "Sua ONG")}</p>
             <p className="font-bold">{selectedNgo.name}</p>
           </div>
           <ArrowRight className="w-5 h-5 text-primary" />
         </DuoCard>
       </Link>
 
-      {/* Status cards */}
       <div className="grid grid-cols-3 gap-3">
         <DuoCard className="text-center bg-duo-yellow/10 border-duo-yellow/30">
-          <p className="text-xs font-bold text-muted-foreground">Pendente</p>
+          <p className="text-xs font-bold text-muted-foreground">{t("home_pending", "Pendente")}</p>
           <p className="text-lg font-black text-duo-yellow">R$ {pending.toFixed(2)}</p>
         </DuoCard>
         <DuoCard className="text-center bg-secondary/10 border-secondary/30">
-          <p className="text-xs font-bold text-muted-foreground">Confirmado</p>
+          <p className="text-xs font-bold text-muted-foreground">{t("home_confirmed", "Confirmado")}</p>
           <p className="text-lg font-black text-secondary">R$ {confirmed.toFixed(2)}</p>
         </DuoCard>
         <DuoCard className="text-center bg-primary/10 border-primary/30">
-          <p className="text-xs font-bold text-muted-foreground">Doado</p>
+          <p className="text-xs font-bold text-muted-foreground">{t("home_donated", "Doado")}</p>
           <p className="text-lg font-black text-primary">R$ {donated.toFixed(2)}</p>
         </DuoCard>
       </div>
 
-      {/* Featured stores */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-black">Lojas em destaque</h2>
+          <h2 className="text-lg font-black">{t("home_featured_stores", "Lojas em destaque")}</h2>
           <Link to="/lojas" className="text-primary font-bold text-sm flex items-center gap-1">
-            Ver todas <ArrowRight className="w-4 h-4" />
+            {t("home_see_all", "Ver todas")} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {mockStores.slice(0, 4).map(store => (
             <Link key={store.id} to={`/lojas/${store.slug}`}>
               <DuoCard hover>
-                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-lg font-bold mb-2">
-                  {store.name.charAt(0)}
-                </div>
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-lg font-bold mb-2">{store.name.charAt(0)}</div>
                 <p className="font-bold text-sm">{store.name}</p>
                 <p className="text-xs text-primary font-bold">{store.cashback_rate}% cashback</p>
               </DuoCard>
