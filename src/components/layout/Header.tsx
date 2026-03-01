@@ -1,17 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe } from "lucide-react";
+import { Home, Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
+import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
 
 export function Header() {
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, user, logout, session } = useAuth();
   const { locale, setLocale } = useLocale();
   const { t } = useSiteContent("nav");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const unreadCount = 2; // mock
+
+  useEffect(() => {
+    if (!session?.user?.id) { setIsAdmin(false); return; }
+    supabase.from("user_roles").select("role").eq("user_id", session.user.id).eq("role", "admin").then(({ data }) => {
+      setIsAdmin(!!(data && data.length > 0));
+    });
+  }, [session?.user?.id]);
 
   return (
     <header className="sticky top-0 z-50 bg-card border-b-2 border-border">
@@ -32,6 +41,7 @@ export function Header() {
           {isLoggedIn && (
             <>
               <NavItem to="/impacto" icon={BarChart3} label={t("nav_impact", "Impacto")} />
+              {isAdmin && <NavItem to="/admin/ongs" icon={Shield} label="Admin" />}
               <Link to="/notificacoes" className="relative p-2 rounded-xl hover:bg-muted transition-colors">
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
@@ -95,6 +105,7 @@ export function Header() {
               <MobileLink to="/impacto" label={t("nav_impact", "Meu Impacto")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/notificacoes" label={t("nav_notifications", "Notificações")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/configuracoes" label={t("nav_settings", "Configurações")} onClick={() => setMobileOpen(false)} />
+              {isAdmin && <MobileLink to="/admin/ongs" label="Admin ONGs" onClick={() => setMobileOpen(false)} />}
             </>
           )}
           {!isLoggedIn && <MobileLink to="/auth" label={t("nav_login", "Entrar / Cadastrar")} onClick={() => setMobileOpen(false)} />}
