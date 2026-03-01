@@ -283,6 +283,11 @@ function PublicHome() {
         </div>
       </section>
 
+      {/* Install App */}
+      <section className="container py-8">
+        <InstallAppBanner />
+      </section>
+
       {/* Final CTA */}
       <section className="container py-20 text-center">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
