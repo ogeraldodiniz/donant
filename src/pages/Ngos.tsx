@@ -1,15 +1,26 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Check } from "lucide-react";
+import { Search, Check, Heart, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
-import { mockNgos, ngoEmojis } from "@/lib/mock-data";
 import { useAuth } from "@/hooks/useAuth";
+import { useNgos } from "@/hooks/useNgos";
+import { useSelectNgo } from "@/hooks/useSelectNgo";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Ngos() {
   const [search, setSearch] = useState("");
   const { isLoggedIn, user } = useAuth();
-  const filtered = mockNgos.filter(n => n.name.toLowerCase().includes(search.toLowerCase()));
+  const { ngos, loading } = useNgos();
+  const { selectNgo, saving } = useSelectNgo();
+
+  const filtered = ngos.filter(n => n.name.toLowerCase().includes(search.toLowerCase()));
+
+  const handleSelect = (e: React.MouseEvent, ngoId: string, ngoName: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    selectNgo(ngoId, ngoName);
+  };
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
@@ -28,32 +39,59 @@ export default function Ngos() {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-        {filtered.map((ngo, i) => {
-          const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
-          return (
-            <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
-              <DuoCard hover className={`p-3.5 sm:p-5 ${isSelected ? "border-primary bg-primary/5" : ""}`}>
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center text-xl sm:text-2xl shrink-0">
-                    {ngoEmojis[i % ngoEmojis.length]}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-sm truncate">{ngo.name}</p>
-                      {isSelected && <Check className="w-4 h-4 text-primary shrink-0" />}
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {[1, 2, 3].map(i => (
+            <Skeleton key={i} className="h-28 rounded-2xl" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {filtered.map((ngo) => {
+            const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
+            return (
+              <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
+                <DuoCard hover className={`p-3.5 sm:p-5 h-full ${isSelected ? "border-primary bg-primary/5" : ""}`}>
+                  <div className="flex items-start gap-3">
+                    {ngo.logo_url ? (
+                      <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover shrink-0" />
+                    ) : (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                        <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-bold text-sm truncate">{ngo.name}</p>
+                        {isSelected && <Check className="w-4 h-4 text-primary shrink-0" />}
+                      </div>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-1">{ngo.description}</p>
+                      <div className="flex items-center justify-between mt-1.5 sm:mt-2">
+                        <p className="text-[10px] sm:text-xs text-primary font-bold">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
+                        {isLoggedIn && !isSelected && (
+                          <button
+                            onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
+                            disabled={saving !== null}
+                            className="text-[10px] sm:text-xs font-bold text-primary hover:underline"
+                          >
+                            {saving === ngo.id ? (
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                            ) : (
+                              "Selecionar"
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </div>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-1">{ngo.description}</p>
-                    <p className="text-[10px] sm:text-xs text-primary font-bold mt-1.5 sm:mt-2">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
                   </div>
-                </div>
-              </DuoCard>
-            </Link>
-          );
-        })}
-      </div>
+                </DuoCard>
+              </Link>
+            );
+          })}
+        </div>
+      )}
 
-      {filtered.length === 0 && (
+      {!loading && filtered.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           <p className="text-4xl mb-2">🔍</p>
           <p className="font-semibold text-sm">Nenhuma ONG encontrada</p>

@@ -13,6 +13,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   updatePassword: (password: string) => Promise<{ error: Error | null }>;
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -25,6 +26,7 @@ const AuthContext = createContext<AuthContextType>({
   logout: async () => {},
   resetPassword: async () => ({ error: null }),
   updatePassword: async () => ({ error: null }),
+  refreshProfile: async () => {},
 });
 
 function mapUser(supaUser: User, profile?: Partial<AppUser>): AppUser {
@@ -116,6 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error ? new Error(error.message) : null };
   };
 
+  const refreshProfile = async () => {
+    if (session?.user) {
+      await fetchProfile(session.user);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -128,6 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         resetPassword,
         updatePassword,
+        refreshProfile,
       }}
     >
       {children}

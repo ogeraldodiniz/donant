@@ -4,12 +4,13 @@ import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { mockNgos, mockStores, mockTransactions, ngoEmojis } from "@/lib/mock-data";
+import { mockStores, mockTransactions } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { LevelBadge } from "@/components/LevelBadge";
+import { useNgos } from "@/hooks/useNgos";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
@@ -22,6 +23,12 @@ const fadeUp = {
 };
 
 const ngoIcons: LucideIcon[] = [Heart, Target, Users, Star, BadgeCheck, Rocket];
+
+// Used by PublicHome for NGO display from DB
+function usePublicNgos() {
+  const { ngos } = useNgos();
+  return ngos;
+}
 
 function PublicHome() {
   const { t } = useSiteContent();
@@ -201,16 +208,20 @@ function PublicHome() {
           <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">{t("ngos_subtitle", "Organizações verificadas que recebem 100% do cashback doado.")}</p>
         </motion.div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
-          {mockNgos.slice(0, 6).map((ngo, i) => {
+          {usePublicNgos().slice(0, 6).map((ngo, i) => {
             const NgoIcon = ngoIcons[i % ngoIcons.length];
             return (
               <motion.div key={ngo.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
                 <Link to={`/ongs/${ngo.slug}`}>
-                  <DuoCard hover className="text-center py-3 sm:py-5">
+                  <DuoCard hover className="text-center py-3 sm:py-5 h-full">
                     <div className="flex justify-center mb-2">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                        <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                      </div>
+                      {ngo.logo_url ? (
+                        <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                          <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                        </div>
+                      )}
                     </div>
                     <h3 className="font-bold text-xs sm:text-sm mb-1 truncate px-1">{ngo.name}</h3>
                     <p className="text-[10px] sm:text-xs text-primary font-black">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
@@ -378,7 +389,8 @@ function FaqItem({ question, answer, index }: { question: string; answer: string
 function LoggedInHome() {
   const { user } = useAuth();
   const { t } = useSiteContent("home_logged");
-  const selectedNgo = mockNgos[0];
+  const { ngos } = useNgos();
+  const selectedNgo = ngos.find(n => n.id === user?.selected_ngo_id) || ngos[0];
   const pending = mockTransactions.filter(tx => tx.status === 'pending' || tx.status === 'tracked').reduce((s, tx) => s + tx.amount, 0);
   const confirmed = mockTransactions.filter(tx => tx.status === 'confirmed').reduce((s, tx) => s + tx.amount, 0);
   const donated = mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0);
@@ -394,18 +406,24 @@ function LoggedInHome() {
 
       <LevelBadge totalDonated={donated} />
 
-      <Link to={`/ongs/${selectedNgo.slug}`}>
-        <DuoCard hover className="flex items-center gap-3 sm:gap-4 bg-primary/5 border-primary/20">
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-            <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] sm:text-xs text-primary font-bold uppercase">{t("home_your_ngo", "Sua ONG")}</p>
-            <p className="font-bold text-sm sm:text-base truncate">{selectedNgo.name}</p>
-          </div>
-          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
-        </DuoCard>
-      </Link>
+      {selectedNgo && (
+        <Link to={`/ongs/${selectedNgo.slug}`}>
+          <DuoCard hover className="flex items-center gap-3 sm:gap-4 bg-primary/5 border-primary/20">
+            {selectedNgo.logo_url ? (
+              <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
+            ) : (
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] sm:text-xs text-primary font-bold uppercase">{t("home_your_ngo", "Sua ONG")}</p>
+              <p className="font-bold text-sm sm:text-base truncate">{selectedNgo.name}</p>
+            </div>
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
+          </DuoCard>
+        </Link>
+      )}
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <DuoCard className="text-center p-3 sm:p-5 bg-destructive/10 border-destructive/30">

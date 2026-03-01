@@ -1,58 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Loader2, Download } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Loader2 } from "lucide-react";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
-
-interface Ngo {
-  id: string;
-  name: string;
-  logo_url: string | null;
-  slug: string;
-}
+import { useNgos } from "@/hooks/useNgos";
+import { useSelectNgo } from "@/hooks/useSelectNgo";
 
 export default function Settings() {
-  const { user, logout, session } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showDelete, setShowDelete] = useState(false);
-  const [ngos, setNgos] = useState<Ngo[]>([]);
-  const [selectedNgoId, setSelectedNgoId] = useState<string | null>(null);
-  const [saving, setSaving] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase.from("ngos").select("id, name, logo_url, slug").eq("is_active", true).then(({ data }) => {
-      if (data) setNgos(data);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (user?.selected_ngo_id) {
-      setSelectedNgoId(user.selected_ngo_id);
-    }
-  }, [user?.selected_ngo_id]);
-
-  const handleSelectNgo = async (ngoId: string) => {
-    if (!session?.user?.id) return;
-    setSaving(ngoId);
-    const { error } = await supabase
-      .from("profiles")
-      .update({ selected_ngo_id: ngoId })
-      .eq("id", session.user.id);
-    setSaving(null);
-    if (error) {
-      toast.error("Erro ao salvar ONG");
-    } else {
-      setSelectedNgoId(ngoId);
-      const ngo = ngos.find(n => n.id === ngoId);
-      toast.success(`ONG alterada para ${ngo?.name}`);
-    }
-  };
+  const { ngos, loading: ngosLoading } = useNgos();
+  const { selectNgo, saving } = useSelectNgo();
 
   const handleLogout = async () => {
     try {
@@ -98,12 +62,14 @@ export default function Settings() {
       <DuoCard className="p-3.5 sm:p-5">
         <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Sua ONG</h3>
         <div className="space-y-1.5 sm:space-y-2">
-          {ngos.map((ngo) => {
-            const isSelected = selectedNgoId === ngo.id;
+          {ngosLoading ? (
+            <p className="text-xs text-muted-foreground">Carregando...</p>
+          ) : ngos.map((ngo) => {
+            const isSelected = user?.selected_ngo_id === ngo.id;
             return (
               <button
                 key={ngo.id}
-                onClick={() => handleSelectNgo(ngo.id)}
+                onClick={() => selectNgo(ngo.id, ngo.name)}
                 disabled={saving !== null}
                 className={`w-full flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl text-left transition-all ${
                   isSelected
@@ -112,10 +78,10 @@ export default function Settings() {
                 }`}
               >
                 {ngo.logo_url ? (
-                  <img src={ngo.logo_url} alt={ngo.name} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover" />
+                  <img src={ngo.logo_url} alt={ngo.name} className="w-8 h-8 rounded-xl object-cover" />
                 ) : (
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-muted flex items-center justify-center text-[10px] sm:text-xs font-bold">
-                    {ngo.name.charAt(0)}
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Heart className="w-4 h-4 text-primary" />
                   </div>
                 )}
                 <span className="font-semibold text-xs sm:text-sm flex-1 truncate">{ngo.name}</span>

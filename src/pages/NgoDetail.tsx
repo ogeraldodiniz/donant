@@ -1,26 +1,61 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ExternalLink, Heart } from "lucide-react";
+import { ArrowLeft, ExternalLink, Heart, Loader2 } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
-import { mockNgos, mockDonations, ngoEmojis } from "@/lib/mock-data";
 import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
+import { useNgos } from "@/hooks/useNgos";
+import { useSelectNgo } from "@/hooks/useSelectNgo";
+import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+interface Donation {
+  id: string;
+  amount: number;
+  donated_at: string;
+}
 
 export default function NgoDetail() {
   const { slug } = useParams();
   const { isLoggedIn, user } = useAuth();
-  const ngoIndex = mockNgos.findIndex(n => n.slug === slug);
-  const ngo = mockNgos[ngoIndex];
+  const { ngos, loading: ngosLoading } = useNgos();
+  const { selectNgo, saving } = useSelectNgo();
+  const [donations, setDonations] = useState<Donation[]>([]);
 
-  if (!ngo) return <div className="container py-12 text-center"><p className="text-lg sm:text-xl font-bold">ONG não encontrada</p></div>;
+  const ngo = ngos.find(n => n.slug === slug);
+  const isSelected = isLoggedIn && user?.selected_ngo_id === ngo?.id;
 
-  const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
-  const donations = mockDonations.filter(d => d.ngo_id === ngo.id);
+  useEffect(() => {
+    if (!ngo) return;
+    supabase
+      .from("donation_ledger")
+      .select("id, amount, donated_at")
+      .eq("ngo_id", ngo.id)
+      .order("donated_at", { ascending: false })
+      .limit(10)
+      .then(({ data }) => {
+        if (data) setDonations(data);
+      });
+  }, [ngo?.id]);
 
-  const handleSelect = () => {
-    if (!isLoggedIn) { toast.error("Faça login para selecionar uma ONG"); return; }
-    toast.success(`Agora suas doações vão para ${ngo.name}!`);
-  };
+  if (ngosLoading) {
+    return (
+      <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-2xl">
+        <Skeleton className="h-8 w-20" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-24 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (!ngo) {
+    return (
+      <div className="container py-12 text-center">
+        <p className="text-lg sm:text-xl font-bold">ONG não encontrada</p>
+        <Link to="/ongs" className="text-primary font-bold text-sm mt-2 inline-block">Ver todas as ONGs</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-2xl">
@@ -29,7 +64,13 @@ export default function NgoDetail() {
       </Link>
 
       <div className="text-center">
-        <div className="text-4xl sm:text-5xl mb-3">{ngoEmojis[ngoIndex % ngoEmojis.length]}</div>
+        {ngo.logo_url ? (
+          <img src={ngo.logo_url} alt={ngo.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover mx-auto mb-3" />
+        ) : (
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+            <Heart className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
+          </div>
+        )}
         <h1 className="text-xl sm:text-2xl font-black">{ngo.name}</h1>
         {isSelected && (
           <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-primary bg-primary/10 px-2.5 sm:px-3 py-1 rounded-full mt-2">
@@ -43,15 +84,19 @@ export default function NgoDetail() {
         <p className="text-2xl sm:text-3xl font-black text-primary">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
       </DuoCard>
 
-      <DuoCard>
-        <h3 className="font-bold text-sm sm:text-base mb-2">🎯 Missão</h3>
-        <p className="text-xs sm:text-sm text-muted-foreground">{ngo.mission}</p>
-      </DuoCard>
+      {ngo.mission && (
+        <DuoCard>
+          <h3 className="font-bold text-sm sm:text-base mb-2">🎯 Missão</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">{ngo.mission}</p>
+        </DuoCard>
+      )}
 
-      <DuoCard>
-        <h3 className="font-bold text-sm sm:text-base mb-2">📖 Sobre</h3>
-        <p className="text-xs sm:text-sm text-muted-foreground">{ngo.description}</p>
-      </DuoCard>
+      {ngo.description && (
+        <DuoCard>
+          <h3 className="font-bold text-sm sm:text-base mb-2">📖 Sobre</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">{ngo.description}</p>
+        </DuoCard>
+      )}
 
       {donations.length > 0 && (
         <DuoCard>
@@ -68,16 +113,19 @@ export default function NgoDetail() {
       )}
 
       {!isSelected && (
-        <DuoButton size="lg" className="w-full" onClick={handleSelect}>
-          <Heart className="w-5 h-5" /> Quero doar para esta ONG
+        <DuoButton size="lg" className="w-full" onClick={() => selectNgo(ngo.id, ngo.name)} disabled={saving !== null}>
+          {saving === ngo.id ? <Loader2 className="w-5 h-5 animate-spin" /> : <Heart className="w-5 h-5" />}
+          Quero doar para esta ONG
         </DuoButton>
       )}
 
-      <a href={ngo.website_url} target="_blank" rel="noopener noreferrer" className="block">
-        <DuoButton variant="outline" size="md" className="w-full">
-          <ExternalLink className="w-4 h-4" /> Visitar site da ONG
-        </DuoButton>
-      </a>
+      {ngo.website_url && (
+        <a href={ngo.website_url} target="_blank" rel="noopener noreferrer" className="block">
+          <DuoButton variant="outline" size="md" className="w-full">
+            <ExternalLink className="w-4 h-4" /> Visitar site da ONG
+          </DuoButton>
+        </a>
+      )}
     </div>
   );
 }
