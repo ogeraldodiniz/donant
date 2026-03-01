@@ -16,22 +16,48 @@ export function AdminLayout() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!session?.user?.id) {
-      navigate("/auth");
-      return;
-    }
-    supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", session.user.id)
-      .eq("role", "admin")
-      .then(({ data }) => {
+
+    let isMounted = true;
+
+    const checkAdminAccess = async () => {
+      if (!session?.user?.id) {
+        if (isMounted) setIsAdmin(false);
+        navigate("/auth");
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .eq("role", "admin");
+
+        if (!isMounted) return;
+
+        if (error) {
+          throw error;
+        }
+
         if (data && data.length > 0) {
           setIsAdmin(true);
         } else {
+          setIsAdmin(false);
           navigate("/");
         }
-      });
+      } catch (error) {
+        if (!isMounted) return;
+        console.error("Erro ao validar acesso admin:", error);
+        setIsAdmin(false);
+        navigate("/");
+      }
+    };
+
+    void checkAdminAccess();
+
+    return () => {
+      isMounted = false;
+    };
   }, [session?.user?.id, authLoading, navigate]);
 
   if (authLoading || isAdmin === null) {
