@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { I18nProvider } from "@/hooks/useLocale";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import Index from "./pages/Index";
 import Stores from "./pages/Stores";
 import StoreDetail from "./pages/StoreDetail";
@@ -19,9 +20,13 @@ import Notifications from "./pages/Notifications";
 import Transparency from "./pages/Transparency";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
-import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
-import AdminNgos from "./pages/AdminNgos";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminNgos from "./pages/admin/AdminNgos";
+import AdminStores from "./pages/admin/AdminStores";
+import AdminBlog from "./pages/admin/AdminBlog";
+import AdminPush from "./pages/admin/AdminPush";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +54,13 @@ const App = () => (
               <Route path="/privacidade" element={<Privacy />} />
               <Route path="/termos" element={<Terms />} />
               <Route path="/redefinir-senha" element={<ResetPassword />} />
+            </Route>
+            <Route element={<AdminLayout />}>
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/ongs" element={<AdminNgos />} />
+              <Route path="/admin/lojas" element={<AdminStores />} />
+              <Route path="/admin/blog" element={<AdminBlog />} />
+              <Route path="/admin/push" element={<AdminPush />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
