@@ -272,9 +272,17 @@ Deno.serve(async (req) => {
       const name = prog.display_name || prog.name;
       if (!name) { skipped++; continue; }
 
-      // Extract description from details if available
-      const details = prog.details || {};
-      const description = (details.short_description || details.description || details.long_description || "") as string;
+      // Build website URL from domain if url not available
+      const websiteUrl = prog.url || (prog.domain ? `https://${prog.domain}` : null);
+
+      // Extract category from categories array or network
+      const category = (() => {
+        if (prog.categories && Array.isArray(prog.categories) && prog.categories.length > 0) {
+          const first = prog.categories[0];
+          return typeof first === "string" ? first : first?.name || null;
+        }
+        return prog.network_description || prog.network || null;
+      })();
 
       const cashbackRate = cashbackMap.get(prog.id) ?? 0;
 
@@ -283,18 +291,13 @@ Deno.serve(async (req) => {
         name,
         slug: slugify(name),
         logo_url: prog.logo_url || null,
-        website_url: prog.url || null,
-        category: prog.network_description || null,
+        website_url: websiteUrl,
+        category,
       };
 
-      // Only set cashback_rate if we got a value from contracts (don't overwrite manually set rates with 0)
+      // Only set cashback_rate if we got a value from contracts
       if (cashbackRate > 0) {
         storeData.cashback_rate = Math.round(cashbackRate * 100) / 100;
-      }
-
-      // Store description in terms if we have one and terms is empty
-      if (description) {
-        storeData.terms = description;
       }
 
       const { error } = await supabase
