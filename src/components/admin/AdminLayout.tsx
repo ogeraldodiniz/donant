@@ -78,19 +78,44 @@ export function AdminLayout() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-[calc(100vh-4rem)] flex w-full">
-        <AdminSidebar />
-        <div className="flex-1 flex flex-col">
-          <header className="h-12 flex items-center border-b border-border px-2">
-            <SidebarTrigger className="ml-1" />
-            <span className="ml-3 font-bold text-sm text-muted-foreground">Painel Admin</span>
-          </header>
-          <main className="flex-1 p-4 md:p-6 overflow-auto">
-            <Outlet />
-          </main>
+    <AdminLocaleProvider>
+      <SidebarProvider>
+        <div className="min-h-[calc(100vh-4rem)] flex w-full">
+          <AdminSidebar />
+          <div className="flex-1 flex flex-col">
+            <AdminHeader />
+            <main className="flex-1 p-4 md:p-6 overflow-auto">
+              <Outlet />
+            </main>
+          </div>
         </div>
+      </SidebarProvider>
+    </AdminLocaleProvider>
+  );
+}
+
+function AdminHeader() {
+  const { adminLocale, setAdminLocale } = useAdminLocale();
+
+  return (
+    <header className="h-12 flex items-center border-b border-border px-2">
+      <SidebarTrigger className="ml-1" />
+      <span className="ml-3 font-bold text-sm text-muted-foreground flex-1">Painel Admin</span>
+      <div className="flex gap-1 bg-muted rounded-lg p-0.5 mr-2">
+        {(["pt", "es"] as const).map((loc) => (
+          <button
+            key={loc}
+            onClick={() => setAdminLocale(loc)}
+            className={`px-2.5 py-1 rounded-md text-xs font-bold transition-colors ${
+              adminLocale === loc
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {loc === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
+          </button>
+        ))}
       </div>
-    </SidebarProvider>
+    </header>
   );
 }
