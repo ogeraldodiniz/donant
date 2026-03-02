@@ -118,39 +118,6 @@ export default function Settings() {
           </div>
         </DuoCard>
 
-        {/* Notifications */}
-        <DuoCard className="p-3.5 sm:p-5">
-          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Bell className="w-4 h-4 text-primary" /> Notificações</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs sm:text-sm font-semibold">Push (navegador)</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba alertas no navegador</p>
-              </div>
-              <Switch checked={notifyWeb} onCheckedChange={(v) => toggleNotification("notify_web", v)} disabled={savingPrefs} />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs sm:text-sm font-semibold">WhatsApp</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba atualizações no WhatsApp</p>
-              </div>
-              <Switch checked={notifyWhatsapp} onCheckedChange={(v) => toggleNotification("notify_whatsapp", v)} disabled={savingPrefs || !phone} />
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs sm:text-sm font-semibold">E-mail</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba novidades por e-mail</p>
-              </div>
-              <Switch checked={notifyEmail} onCheckedChange={(v) => toggleNotification("notify_email", v)} disabled={savingPrefs} />
-            </div>
-          </div>
-        </DuoCard>
-      </div>
-
-      {/* Right column */}
-      <div className="space-y-4 sm:space-y-5">
-        {/* Level */}
-        <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
         {/* Selected NGO */}
         <DuoCard className="p-3.5 sm:p-5">
           <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Sua ONG</h3>
@@ -183,6 +150,39 @@ export default function Settings() {
             Trocar ONG
           </Link>
         </DuoCard>
+
+        <DuoCard className="p-3.5 sm:p-5">
+          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Bell className="w-4 h-4 text-primary" /> Notificações</h3>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm font-semibold">Push (navegador)</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba alertas no navegador</p>
+              </div>
+              <Switch checked={notifyWeb} onCheckedChange={(v) => toggleNotification("notify_web", v)} disabled={savingPrefs} />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm font-semibold">WhatsApp</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba atualizações no WhatsApp</p>
+              </div>
+              <Switch checked={notifyWhatsapp} onCheckedChange={(v) => toggleNotification("notify_whatsapp", v)} disabled={savingPrefs || !phone} />
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs sm:text-sm font-semibold">E-mail</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba novidades por e-mail</p>
+              </div>
+              <Switch checked={notifyEmail} onCheckedChange={(v) => toggleNotification("notify_email", v)} disabled={savingPrefs} />
+            </div>
+          </div>
+        </DuoCard>
+      </div>
+
+      {/* Right column */}
+      <div className="space-y-4 sm:space-y-5">
+        {/* Level */}
+        <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
 
         {/* Theme */}
         <DuoCard className="p-3.5 sm:p-5">
