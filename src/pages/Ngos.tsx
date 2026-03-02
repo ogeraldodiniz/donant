@@ -53,11 +53,11 @@ export default function Ngos() {
               <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
                 <DuoCard hover className={`p-0 h-full overflow-hidden ${isSelected ? "border-primary bg-primary/5" : ""}`}>
                   {ngo.logo_url ? (
-                    <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
+                    <div className="aspect-[4/3] w-full overflow-hidden bg-muted rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
                       <img src={ngo.logo_url} alt={ngo.name} className="w-full h-full object-cover" />
                     </div>
                   ) : (
-                    <div className="aspect-[4/3] w-full bg-primary/10 flex items-center justify-center">
+                    <div className="aspect-[4/3] w-full bg-primary/10 flex items-center justify-center rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
                       <Heart className="w-10 h-10 text-primary" />
                     </div>
                   )}
