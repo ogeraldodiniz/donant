@@ -101,6 +101,13 @@ export function Header() {
         {/* Mobile hamburger */}
         <div className="flex md:hidden items-center gap-1">
           <button
+            onClick={cycleTheme}
+            className="p-2 rounded-xl hover:bg-muted"
+            title={theme === "dark" ? "Modo escuro" : theme === "light" ? "Modo claro" : "Automático"}
+          >
+            <ThemeIcon className="w-5 h-5" />
+          </button>
+          <button
             onClick={() => setLocale(locale === "pt" ? "es" : "pt")}
             className="p-2 rounded-xl hover:bg-muted text-sm font-bold"
           >
