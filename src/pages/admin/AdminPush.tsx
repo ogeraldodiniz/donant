@@ -43,7 +43,7 @@ export default function AdminPush() {
     setLastResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("send-push", {
-        body: { title: title.trim(), body: body.trim(), url: url.trim() || "/notificacoes" },
+        body: { title: title.trim(), body: body.trim(), url: url.trim() || "/notificacoes", targetLocale: targetLocale === "all" ? undefined : targetLocale },
       });
       if (error) throw error;
       setLastResult(data);
