@@ -132,7 +132,7 @@ function PublicHome() {
             ] as const).map((step, i) => (
               <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
                 <DuoCard className="text-center relative pt-16 sm:pt-18 pb-5 h-full">
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-black text-lg duo-shadow">
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-black text-lg">
                     {i + 1}
                   </div>
                   <div className="flex justify-center mb-4 mt-2">
