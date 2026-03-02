@@ -223,7 +223,7 @@ function PublicHome() {
                   <DuoCard hover className="text-center py-3 sm:py-5 h-full">
                     <div className="flex justify-center mb-2">
                       {ngo.logo_url ? (
-                        <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" />
+                        <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
                       ) : (
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
                           <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
@@ -420,8 +420,8 @@ function LoggedInHome() {
           {selectedNgo ? (
             <div className="flex flex-row h-full">
               {selectedNgo.logo_url ? (
-                <div className="w-28 sm:w-36 shrink-0 overflow-hidden bg-muted self-stretch">
-                  <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-full h-full object-cover" />
+                <div className="w-28 sm:w-36 shrink-0 overflow-hidden rounded-2xl bg-muted self-stretch m-2">
+                  <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-full h-full object-cover rounded-2xl" />
                 </div>
               ) : (
                 <div className="w-28 sm:w-36 shrink-0 bg-primary/10 flex items-center justify-center self-stretch">
