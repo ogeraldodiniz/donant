@@ -87,7 +87,7 @@ export default function AdminStores() {
   const activeCount = stores.filter((s) => s.is_active).length;
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-black">Lojas ({adminLocale.toUpperCase()})</h1>

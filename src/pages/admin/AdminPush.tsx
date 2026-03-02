@@ -103,7 +103,7 @@ export default function AdminPush() {
   };
 
   return (
-    <div className="space-y-6 max-w-xl">
+    <div className="space-y-6">
       <h1 className="text-2xl font-black">Push Notifications</h1>
 
       {/* Subscribe this browser */}

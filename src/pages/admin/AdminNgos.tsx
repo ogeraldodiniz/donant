@@ -127,7 +127,7 @@ export default function AdminNgos() {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-black">ONGs ({adminLocale.toUpperCase()})</h1>
         <DuoButton size="sm" onClick={handleCreate} disabled={creating}>
