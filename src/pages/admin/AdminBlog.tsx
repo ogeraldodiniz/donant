@@ -165,6 +165,33 @@ export default function AdminBlog() {
         </div>
       </div>
 
+      {/* Section filter */}
+      <div className="flex gap-1.5 flex-wrap">
+        <button
+          onClick={() => setActiveSection("all")}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+            activeSection === "all"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "bg-muted text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Todas ({rows.length})
+        </button>
+        {availableSections.map((sec) => (
+          <button
+            key={sec}
+            onClick={() => { setActiveSection(sec); setNewSection(sec); }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+              activeSection === sec
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {PAGE_LABELS[sec] || sec} {sectionCounts[sec] ? `(${sectionCounts[sec]})` : ""}
+          </button>
+        ))}
+      </div>
+
       {/* Add new content */}
       <DuoCard className="space-y-3 p-4">
         <p className="font-bold text-sm flex items-center gap-2">
