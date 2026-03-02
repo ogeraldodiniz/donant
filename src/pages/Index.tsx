@@ -302,7 +302,7 @@ function PublicHome() {
           </motion.h2>
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map(n => (
-              <FaqItem key={n} question={t(`faq${n}_q`, `FAQ ${n}`)} answer={t(`faq${n}_a`, "")} index={n} />
+              <FaqItem key={n} question={t(`faq_q${n}`, `FAQ ${n}`)} answer={t(`faq_a${n}`, "")} index={n} />
             ))}
           </div>
         </div>
