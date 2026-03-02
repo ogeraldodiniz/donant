@@ -57,8 +57,9 @@ export default function Stores() {
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-sm truncate">{store.name}</p>
-                  <div className="flex items-center gap-2 text-[10px] sm:text-xs text-muted-foreground">
-                    <span>{categoryEmojis[store.category || ''] || '🏷️'} {store.category || 'Geral'}</span>
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                    {(() => { const CatIcon = categoryIcons[store.category || ''] || Tag; return <CatIcon className="w-3 h-3" />; })()}
+                    <span>{store.category || 'Geral'}</span>
                   </div>
                 </div>
                 <div className="text-right shrink-0">
