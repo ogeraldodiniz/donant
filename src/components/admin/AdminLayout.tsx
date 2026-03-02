@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { AdminSidebar } from "./AdminSidebar";
+import { AdminLocaleProvider, useAdminLocale } from "@/hooks/useAdminLocale";
 import {
   SidebarProvider,
   SidebarTrigger,
