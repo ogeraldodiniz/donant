@@ -72,6 +72,7 @@ const PAGES: Record<string, { label: string; sections: string[] }> = {
 };
 
 const GLOBAL: Record<string, { label: string; sections: string[] }> = {
+  global: { label: "Textos Globais", sections: ["global"] },
   nav: { label: "Navegação", sections: ["nav"] },
   footer: { label: "Rodapé", sections: ["footer"] },
 };

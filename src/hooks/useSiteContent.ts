@@ -47,6 +47,7 @@ function inferSection(key: string, defaultSection: string): string {
 export function useSiteContent(section?: string) {
   const { locale } = useLocale();
 
+  // Always fetch global keys alongside the requested section
   const { data: content = {}, isLoading } = useQuery<ContentMap>({
     queryKey: ["site_content", locale, section],
     queryFn: async () => {
@@ -55,9 +56,13 @@ export function useSiteContent(section?: string) {
         .select("content_key, value")
         .eq("locale", locale);
 
-      if (section) {
-        query = query.eq("section", section);
+      if (section && section !== "global") {
+        // Fetch both global and the requested section
+        query = query.in("section", ["global", section]);
+      } else if (section === "global") {
+        query = query.eq("section", "global");
       }
+      // If no section specified, fetch all (no filter)
 
       const { data, error } = await query;
       if (error) throw error;

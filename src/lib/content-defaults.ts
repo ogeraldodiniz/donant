@@ -3,6 +3,23 @@
  * Used by the admin CMS to seed missing content automatically.
  */
 export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
+  // ── Global (always loaded alongside any section) ──
+  global: {
+    back: "Voltar",
+    save_btn: "Salvar",
+    cancel: "Cancelar",
+    loading: "Carregando...",
+    theme_light: "Claro",
+    theme_dark: "Escuro",
+    theme_auto: "Auto",
+    save_error: "Erro ao salvar",
+    save_success: "Salvo com sucesso",
+    confirm: "Confirmar",
+    search_placeholder: "Buscar...",
+    empty: "Nenhum resultado encontrado",
+    error_generic: "Algo deu errado",
+  },
+
   // ── Home public ──
   hero: {
     hero_title: "Compre online. Doe automaticamente.",
@@ -201,29 +218,21 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
     title: "Meu Perfil",
     name_placeholder: "Seu nome",
     city_placeholder: "Sua cidade",
-    save_btn: "Salvar",
-    save_error: "Erro ao salvar perfil",
-    save_success: "Perfil salvo",
     your_ngo: "Sua ONG",
     no_ngo: "Nenhuma ONG selecionada",
     choose_ngo: "Escolher ONG",
     change_ngo: "Trocar ONG",
-    loading: "Carregando...",
     notifications_title: "Notificações",
     push_label: "Push (navegador)",
     push_desc: "Receba alertas no navegador",
     whatsapp_desc: "Receba atualizações no WhatsApp",
     email_desc: "Receba novidades por e-mail",
     appearance_title: "Aparência",
-    theme_light: "Claro",
-    theme_dark: "Escuro",
-    theme_auto: "Auto",
     logout_btn: "Sair da conta",
     logout_msg: "Você saiu da sua conta",
     delete_account_link: "Excluir minha conta",
     delete_title: "Excluir conta",
     delete_warning: "Seus dados pessoais serão anonimizados conforme a LGPD. Registros de doações serão mantidos sem identificação pessoal. Esta ação não pode ser desfeita.",
-    cancel: "Cancelar",
     confirm_delete: "Confirmar exclusão",
     delete_msg: "Conta excluída. Seus dados serão anonimizados conforme LGPD.",
     privacy_link: "Privacidade",
@@ -239,7 +248,6 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Privacidade ──
   privacy: {
-    back: "Voltar",
     title: "Política de Privacidade",
     last_update: "Última atualização: Março de 2026",
     s1_title: "1. Coleta de Dados",
@@ -260,7 +268,6 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Termos ──
   terms: {
-    back: "Voltar",
     title: "Termos de Uso",
     last_update: "Última atualização: Março de 2026",
     s1_title: "1. Aceitação",
