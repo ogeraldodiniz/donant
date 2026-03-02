@@ -121,13 +121,28 @@ export default function AdminBlog() {
     }
   };
 
-  // Group by section
-  const sections = rows.reduce<Record<string, ContentRow[]>>((acc, row) => {
-    (acc[row.section] = acc[row.section] || []).push(row);
-    return acc;
-  }, {});
+  // Available sections from data + known pages
+  const availableSections = useMemo(() => {
+    const fromData = new Set(rows.map((r) => r.section));
+    const all = new Set([...Object.keys(PAGE_LABELS).filter((k) => k !== "all"), ...fromData]);
+    return Array.from(all);
+  }, [rows]);
+
+  // Group by section, filtered
+  const sections = useMemo(() => {
+    const filtered = activeSection === "all" ? rows : rows.filter((r) => r.section === activeSection);
+    return filtered.reduce<Record<string, ContentRow[]>>((acc, row) => {
+      (acc[row.section] = acc[row.section] || []).push(row);
+      return acc;
+    }, {});
+  }, [rows, activeSection]);
 
   const editedCount = Object.keys(editedValues).length;
+  const sectionCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    rows.forEach((r) => { counts[r.section] = (counts[r.section] || 0) + 1; });
+    return counts;
+  }, [rows]);
 
   return (
     <div className="space-y-6 max-w-3xl">
