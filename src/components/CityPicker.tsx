@@ -125,7 +125,7 @@ export function CityPicker({
         <Input
           ref={inputRef}
           placeholder="Digite sua cidade..."
-          value={city}
+          value={state ? `${city} — ${state}` : city}
           onChange={(e) => {
             onCityChange(e.target.value);
             onStateChange("");
