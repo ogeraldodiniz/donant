@@ -10,15 +10,16 @@ interface MycProgram {
   id: number;
   name: string;
   display_name?: string;
+  domain?: string;
   url?: string;
   logo_url?: string;
   status?: string;
   published?: boolean;
+  network?: string;
   network_description?: string;
-  network_program_id?: string;
-  type?: string;
-  ext_visibility?: boolean;
-  fk_network_account_id?: number;
+  network_countries?: string[];
+  network_program_id?: string | number;
+  categories?: Array<{ name?: string; id?: number }> | string[];
   details?: Record<string, unknown>;
 }
 
