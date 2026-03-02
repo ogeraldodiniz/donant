@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Camera, Loader2, Save } from "lucide-react";
 import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
@@ -10,7 +10,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { useNgos } from "@/hooks/useNgos";
-
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,25 +19,98 @@ export default function Settings() {
   const navigate = useNavigate();
   const [showDelete, setShowDelete] = useState(false);
   const { ngos, loading: ngosLoading } = useNgos();
-  
   const { theme, setTheme } = useTheme();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
   const [notifyWeb, setNotifyWeb] = useState(true);
   const [notifyWhatsapp, setNotifyWhatsapp] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState(true);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [savingPrefs, setSavingPrefs] = useState(false);
 
   useEffect(() => {
     if (user) {
+      setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
+      setAvatarUrl(user.avatar_url);
       setNotifyWeb(user.notify_web);
       setNotifyWhatsapp(user.notify_whatsapp);
       setNotifyEmail(user.notify_email);
     }
   }, [user]);
 
-  const savePrefs = async (updates: Record<string, unknown>) => {
+  const hasProfileChanges = user && (
+    displayName !== (user.display_name ?? "") ||
+    phone !== (user.phone ?? "")
+  );
+
+  const handleSaveProfile = async () => {
+    if (!user || !hasProfileChanges) return;
+    setSavingProfile(true);
+    const rawPhone = phone.replace(/\D/g, "");
+    const { error } = await supabase
+      .from("profiles")
+      .update({ display_name: displayName, phone: rawPhone || null })
+      .eq("id", user.id);
+    setSavingProfile(false);
+    if (error) {
+      toast.error("Erro ao salvar perfil");
+    } else {
+      toast.success("Perfil salvo");
+      await refreshProfile();
+    }
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Selecione uma imagem");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Imagem deve ter no máximo 2MB");
+      return;
+    }
+
+    setUploadingAvatar(true);
+    const ext = file.name.split(".").pop();
+    const path = `${user.id}/avatar.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(path, file, { upsert: true });
+
+    if (uploadError) {
+      toast.error("Erro ao enviar foto");
+      setUploadingAvatar(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+    const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: newUrl })
+      .eq("id", user.id);
+
+    setUploadingAvatar(false);
+    if (updateError) {
+      toast.error("Erro ao atualizar foto");
+    } else {
+      setAvatarUrl(newUrl);
+      toast.success("Foto atualizada");
+      await refreshProfile();
+    }
+  };
+
+  const saveNotifPref = async (updates: Record<string, unknown>) => {
     if (!user) return;
     setSavingPrefs(true);
     const { error } = await supabase
@@ -49,14 +121,7 @@ export default function Settings() {
     if (error) {
       toast.error("Erro ao salvar preferências");
     } else {
-      toast.success("Preferências salvas");
       await refreshProfile();
-    }
-  };
-
-  const handlePhoneBlur = () => {
-    if (phone !== (user?.phone ?? "")) {
-      savePrefs({ phone: phone || null });
     }
   };
 
@@ -64,7 +129,7 @@ export default function Settings() {
     if (key === "notify_web") setNotifyWeb(value);
     if (key === "notify_whatsapp") setNotifyWhatsapp(value);
     if (key === "notify_email") setNotifyEmail(value);
-    savePrefs({ [key]: value });
+    saveNotifPref({ [key]: value });
   };
 
   const handleLogout = async () => {
@@ -96,33 +161,76 @@ export default function Settings() {
       <div className="space-y-4 sm:space-y-5">
         {/* Profile */}
         <DuoCard className="p-3.5 sm:p-5">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-lg sm:text-xl font-bold">
-              {user?.display_name?.charAt(0) || 'U'}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="font-bold text-sm sm:text-base truncate">{user?.display_name}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground truncate">{user?.email}</p>
+          <div className="flex items-start gap-3 sm:gap-4">
+            {/* Avatar */}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 group"
+              disabled={uploadingAvatar}
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="w-full h-full rounded-full object-cover" />
+              ) : (
+                <div className="w-full h-full rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold">
+                  {displayName?.charAt(0) || 'U'}
+                </div>
+              )}
+              <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                {uploadingAvatar ? (
+                  <Loader2 className="w-5 h-5 text-white animate-spin" />
+                ) : (
+                  <Camera className="w-5 h-5 text-white" />
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarUpload}
+              />
+            </button>
+
+            <div className="min-w-0 flex-1 space-y-2">
+              <Input
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="Seu nome"
+                className="rounded-xl h-9 text-sm font-semibold"
+              />
+              <p className="text-xs sm:text-sm text-muted-foreground truncate px-1">{user?.email}</p>
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                <Input
+                  type="tel"
+                  placeholder="(11) 99999-9999"
+                  value={phone}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
+                    let formatted = digits;
+                    if (digits.length > 2) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+                    else if (digits.length > 0) formatted = `(${digits}`;
+                    if (digits.length > 7) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+                    setPhone(formatted);
+                  }}
+                  className="rounded-xl h-9 text-xs sm:text-sm"
+                />
+              </div>
             </div>
           </div>
-          <div className="mt-3 flex items-center gap-2">
-            <Phone className="w-4 h-4 text-muted-foreground" />
-            <Input
-              type="tel"
-              placeholder="(11) 99999-9999"
-              value={phone}
-              onChange={(e) => {
-                const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
-                let formatted = digits;
-                if (digits.length > 2) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-                else if (digits.length > 0) formatted = `(${digits}`;
-                if (digits.length > 7) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
-                setPhone(formatted);
-              }}
-              onBlur={handlePhoneBlur}
-              className="rounded-xl h-9 text-xs sm:text-sm"
-            />
-          </div>
+
+          {hasProfileChanges && (
+            <DuoButton
+              className="w-full mt-3"
+              size="sm"
+              onClick={handleSaveProfile}
+              disabled={savingProfile}
+            >
+              {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Salvar
+            </DuoButton>
+          )}
         </DuoCard>
 
         {/* Selected NGO */}
@@ -158,6 +266,7 @@ export default function Settings() {
           </Link>
         </DuoCard>
 
+        {/* Notifications */}
         <DuoCard className="p-3.5 sm:p-5">
           <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Bell className="w-4 h-4 text-primary" /> Notificações</h3>
           <div className="space-y-3">
