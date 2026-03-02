@@ -143,7 +143,7 @@ export default function AdminStores() {
               <div className="flex-1 min-w-0">
                 <p className="font-bold truncate">{store.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {store.category || "Sem categoria"} · {Number(store.cashback_rate)}% cashback · {store.locale === "es" ? "🇪🇸 ES" : "🇧🇷 PT"}
+                  {store.category || "Sem categoria"} · {Number(store.cashback_rate)}% cashback
                 </p>
               </div>
               <div className="flex items-center gap-2">
