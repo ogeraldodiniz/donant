@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { CityPicker } from "@/components/CityPicker";
 
 export default function Settings() {
   const { user, logout, refreshProfile } = useAuth();
