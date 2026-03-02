@@ -4,7 +4,7 @@ import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { mockStores, mockTransactions } from "@/lib/mock-data";
+import { mockTransactions } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
@@ -12,6 +12,7 @@ import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { PushPermissionBanner } from "@/components/PushPermissionBanner";
 import { LevelBadge } from "@/components/LevelBadge";
 import { useNgos } from "@/hooks/useNgos";
+import { useStores } from "@/hooks/useStores";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
