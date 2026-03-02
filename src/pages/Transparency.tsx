@@ -1,32 +1,33 @@
 import { DuoCard } from "@/components/ui/duo-card";
 import { mockNgos, mockDonations, ngoEmojis } from "@/lib/mock-data";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const chartColors = ['hsl(262,80%,58%)', 'hsl(348,80%,65%)', 'hsl(145,65%,48%)', 'hsl(25,95%,55%)', 'hsl(45,100%,49%)', 'hsl(262,60%,75%)'];
 
 export default function Transparency() {
+  const { t } = useSiteContent("transparency");
   const totalDonated = mockNgos.reduce((s, n) => s + n.total_received, 0);
   const chartData = mockNgos.map(n => ({ name: n.name.split(' ').slice(0, 2).join(' '), value: n.total_received }));
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-3xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">Transparência 📊</h1>
-        <p className="text-muted-foreground text-xs sm:text-sm">Dados abertos sobre todas as doações</p>
+        <h1 className="text-xl sm:text-2xl font-black">{t("title", "Transparência 📊")}</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Dados abertos sobre todas as doações")}</p>
       </div>
 
       <DuoCard className="text-center bg-primary/5 border-primary/20">
-        <p className="text-xs sm:text-sm font-bold text-muted-foreground">Total doado pela plataforma</p>
+        <p className="text-xs sm:text-sm font-bold text-muted-foreground">{t("total_label", "Total doado pela plataforma")}</p>
         <p className="text-2xl sm:text-3xl md:text-4xl font-black text-primary">R$ {totalDonated.toLocaleString('pt-BR')}</p>
         <div className="flex justify-center gap-4 sm:gap-6 mt-2 sm:mt-3 text-xs sm:text-sm">
-          <span className="font-bold">{mockNgos.length} ONGs</span>
-          <span className="font-bold">{mockDonations.length} doações</span>
+          <span className="font-bold">{mockNgos.length} {t("ngos_label", "ONGs")}</span>
+          <span className="font-bold">{mockDonations.length} {t("donations_label", "doações")}</span>
         </div>
       </DuoCard>
 
-      {/* Chart */}
       <DuoCard className="p-3.5 sm:p-5">
-        <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">Distribuição por ONG</h3>
+        <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">{t("chart_title", "Distribuição por ONG")}</h3>
         <div className="h-52 sm:h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ left: 0, right: 10 }}>
@@ -41,9 +42,8 @@ export default function Transparency() {
         </div>
       </DuoCard>
 
-      {/* NGO Breakdown */}
       <DuoCard className="p-3.5 sm:p-5">
-        <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">Detalhamento por ONG</h3>
+        <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">{t("breakdown_title", "Detalhamento por ONG")}</h3>
         <div className="space-y-3">
           {mockNgos.map((ngo, i) => (
             <div key={ngo.id} className="flex items-center gap-2.5 sm:gap-3">
@@ -60,9 +60,8 @@ export default function Transparency() {
         </div>
       </DuoCard>
 
-      {/* Recent donations */}
       <DuoCard className="p-3.5 sm:p-5">
-        <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">Últimas doações</h3>
+        <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">{t("recent_title", "Últimas doações")}</h3>
         <div className="space-y-2">
           {mockDonations.slice(0, 7).map(d => (
             <div key={d.id} className="flex items-center justify-between py-2 border-b last:border-0 border-border">

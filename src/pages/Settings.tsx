@@ -13,6 +13,7 @@ import { useNgos } from "@/hooks/useNgos";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 export default function Settings() {
   const { user, logout, refreshProfile } = useAuth();
@@ -21,6 +22,7 @@ export default function Settings() {
   const { ngos, loading: ngosLoading } = useNgos();
   const { theme, setTheme } = useTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useSiteContent("settings");
 
   const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
@@ -58,9 +60,9 @@ export default function Settings() {
       .eq("id", user.id);
     setSavingProfile(false);
     if (error) {
-      toast.error("Erro ao salvar perfil");
+      toast.error(t("save_error", "Erro ao salvar perfil"));
     } else {
-      toast.success("Perfil salvo");
+      toast.success(t("save_success", "Perfil salvo"));
       await refreshProfile();
     }
   };
@@ -68,61 +70,30 @@ export default function Settings() {
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
-
-    if (!file.type.startsWith("image/")) {
-      toast.error("Selecione uma imagem");
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Imagem deve ter no máximo 2MB");
-      return;
-    }
+    if (!file.type.startsWith("image/")) { toast.error(t("avatar_type_error", "Selecione uma imagem")); return; }
+    if (file.size > 2 * 1024 * 1024) { toast.error(t("avatar_size_error", "Imagem deve ter no máximo 2MB")); return; }
 
     setUploadingAvatar(true);
     const ext = file.name.split(".").pop();
     const path = `${user.id}/avatar.${ext}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(path, file, { upsert: true });
-
-    if (uploadError) {
-      toast.error("Erro ao enviar foto");
-      setUploadingAvatar(false);
-      return;
-    }
+    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+    if (uploadError) { toast.error(t("avatar_upload_error", "Erro ao enviar foto")); setUploadingAvatar(false); return; }
 
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
     const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
-
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ avatar_url: newUrl })
-      .eq("id", user.id);
-
+    const { error: updateError } = await supabase.from("profiles").update({ avatar_url: newUrl }).eq("id", user.id);
     setUploadingAvatar(false);
-    if (updateError) {
-      toast.error("Erro ao atualizar foto");
-    } else {
-      setAvatarUrl(newUrl);
-      toast.success("Foto atualizada");
-      await refreshProfile();
-    }
+    if (updateError) { toast.error(t("avatar_update_error", "Erro ao atualizar foto")); }
+    else { setAvatarUrl(newUrl); toast.success(t("avatar_success", "Foto atualizada")); await refreshProfile(); }
   };
 
   const saveNotifPref = async (updates: Record<string, unknown>) => {
     if (!user) return;
     setSavingPrefs(true);
-    const { error } = await supabase
-      .from("profiles")
-      .update(updates)
-      .eq("id", user.id);
+    const { error } = await supabase.from("profiles").update(updates).eq("id", user.id);
     setSavingPrefs(false);
-    if (error) {
-      toast.error("Erro ao salvar preferências");
-    } else {
-      await refreshProfile();
-    }
+    if (error) toast.error(t("pref_error", "Erro ao salvar preferências"));
+    else await refreshProfile();
   };
 
   const toggleNotification = (key: "notify_web" | "notify_whatsapp" | "notify_email", value: boolean) => {
@@ -133,42 +104,29 @@ export default function Settings() {
   };
 
   const handleLogout = async () => {
-    try {
-      await logout();
-      toast.info("Você saiu da sua conta");
-      navigate("/");
-    } catch (e) {
-      navigate("/");
-      window.location.reload();
-    }
+    try { await logout(); toast.info(t("logout_msg", "Você saiu da sua conta")); navigate("/"); }
+    catch { navigate("/"); window.location.reload(); }
   };
 
   const handleDelete = async () => {
     await logout();
-    toast.success("Conta excluída. Seus dados serão anonimizados conforme LGPD.");
+    toast.success(t("delete_msg", "Conta excluída. Seus dados serão anonimizados conforme LGPD."));
     navigate("/");
   };
 
   return (
     <div className="container py-5 sm:py-6 max-w-5xl">
       <div className="mb-4 sm:mb-5">
-        <h1 className="text-xl sm:text-2xl font-black">Meu Perfil</h1>
+        <h1 className="text-xl sm:text-2xl font-black">{t("title", "Meu Perfil")}</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
 
       {/* Left column */}
       <div className="space-y-4 sm:space-y-5">
-        {/* Profile */}
         <DuoCard className="p-3.5 sm:p-5">
           <div className="flex items-start gap-3 sm:gap-4">
-            {/* Avatar */}
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 group"
-              disabled={uploadingAvatar}
-            >
+            <button type="button" onClick={() => fileInputRef.current?.click()} className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 group" disabled={uploadingAvatar}>
               {avatarUrl ? (
                 <img src={avatarUrl} alt="Avatar" className="w-full h-full rounded-full object-cover" />
               ) : (
@@ -177,35 +135,17 @@ export default function Settings() {
                 </div>
               )}
               <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                {uploadingAvatar ? (
-                  <Loader2 className="w-5 h-5 text-white animate-spin" />
-                ) : (
-                  <Camera className="w-5 h-5 text-white" />
-                )}
+                {uploadingAvatar ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-5 h-5 text-white" />}
               </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleAvatarUpload}
-              />
+              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
             </button>
-
             <div className="min-w-0 flex-1 space-y-2">
-              <Input
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Seu nome"
-                className="rounded-xl h-9 text-sm font-semibold"
-              />
+              <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("name_placeholder", "Seu nome")} className="rounded-xl h-9 text-sm font-semibold" />
               <p className="text-xs sm:text-sm text-muted-foreground truncate px-1">{user?.email}</p>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
                 <Input
-                  type="tel"
-                  placeholder="(11) 99999-9999"
-                  value={phone}
+                  type="tel" placeholder="(11) 99999-9999" value={phone}
                   onChange={(e) => {
                     const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
                     let formatted = digits;
@@ -219,32 +159,23 @@ export default function Settings() {
               </div>
             </div>
           </div>
-
           {hasProfileChanges && (
-            <DuoButton
-              className="w-full mt-3"
-              size="sm"
-              onClick={handleSaveProfile}
-              disabled={savingProfile}
-            >
+            <DuoButton className="w-full mt-3" size="sm" onClick={handleSaveProfile} disabled={savingProfile}>
               {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              Salvar
+              {t("save_btn", "Salvar")}
             </DuoButton>
           )}
         </DuoCard>
 
-        {/* Selected NGO */}
         <DuoCard className="p-3.5 sm:p-5">
-          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Sua ONG</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> {t("your_ngo", "Sua ONG")}</h3>
           {(() => {
             const selectedNgo = ngos.find(n => n.id === user?.selected_ngo_id);
-            if (ngosLoading) return <p className="text-xs text-muted-foreground">Carregando...</p>;
+            if (ngosLoading) return <p className="text-xs text-muted-foreground">{t("loading", "Carregando...")}</p>;
             if (!selectedNgo) return (
               <div className="text-center py-2">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-2">Nenhuma ONG selecionada</p>
-                <Link to="/ongs" className="text-xs sm:text-sm font-bold text-primary hover:underline inline-flex items-center gap-1">
-                  Escolher ONG
-                </Link>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-2">{t("no_ngo", "Nenhuma ONG selecionada")}</p>
+                <Link to="/ongs" className="text-xs sm:text-sm font-bold text-primary hover:underline inline-flex items-center gap-1">{t("choose_ngo", "Escolher ONG")}</Link>
               </div>
             );
             return (
@@ -252,42 +183,37 @@ export default function Settings() {
                 {selectedNgo.logo_url ? (
                   <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-8 h-8 rounded-xl object-cover" />
                 ) : (
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Heart className="w-4 h-4 text-primary" />
-                  </div>
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center"><Heart className="w-4 h-4 text-primary" /></div>
                 )}
                 <span className="font-semibold text-xs sm:text-sm flex-1 truncate">{selectedNgo.name}</span>
                 <Check className="w-4 h-4 text-primary" />
               </div>
             );
           })()}
-          <Link to="/ongs" className="mt-2 block text-center text-xs sm:text-sm font-bold text-primary hover:underline">
-            Trocar ONG
-          </Link>
+          <Link to="/ongs" className="mt-2 block text-center text-xs sm:text-sm font-bold text-primary hover:underline">{t("change_ngo", "Trocar ONG")}</Link>
         </DuoCard>
 
-        {/* Notifications */}
         <DuoCard className="p-3.5 sm:p-5">
-          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Bell className="w-4 h-4 text-primary" /> Notificações</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Bell className="w-4 h-4 text-primary" /> {t("notifications_title", "Notificações")}</h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs sm:text-sm font-semibold">Push (navegador)</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba alertas no navegador</p>
+                <p className="text-xs sm:text-sm font-semibold">{t("push_label", "Push (navegador)")}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{t("push_desc", "Receba alertas no navegador")}</p>
               </div>
               <Switch checked={notifyWeb} onCheckedChange={(v) => toggleNotification("notify_web", v)} disabled={savingPrefs} />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs sm:text-sm font-semibold">WhatsApp</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba atualizações no WhatsApp</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{t("whatsapp_desc", "Receba atualizações no WhatsApp")}</p>
               </div>
               <Switch checked={notifyWhatsapp} onCheckedChange={(v) => toggleNotification("notify_whatsapp", v)} disabled={savingPrefs || !phone} />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs sm:text-sm font-semibold">E-mail</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Receba novidades por e-mail</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{t("email_desc", "Receba novidades por e-mail")}</p>
               </div>
               <Switch checked={notifyEmail} onCheckedChange={(v) => toggleNotification("notify_email", v)} disabled={savingPrefs} />
             </div>
@@ -297,17 +223,15 @@ export default function Settings() {
 
       {/* Right column */}
       <div className="space-y-4 sm:space-y-5">
-        {/* Level */}
         <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
 
-        {/* Theme */}
         <DuoCard className="p-3.5 sm:p-5">
-          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Sun className="w-4 h-4 text-primary" /> Aparência</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Sun className="w-4 h-4 text-primary" /> {t("appearance_title", "Aparência")}</h3>
           <div className="grid grid-cols-3 gap-2">
             {([
-              { value: "light", label: "Claro", Icon: Sun },
-              { value: "dark", label: "Escuro", Icon: Moon },
-              { value: "system", label: "Auto", Icon: Monitor },
+              { value: "light", label: t("theme_light", "Claro"), Icon: Sun },
+              { value: "dark", label: t("theme_dark", "Escuro"), Icon: Moon },
+              { value: "system", label: t("theme_auto", "Auto"), Icon: Monitor },
             ] as const).map(({ value, label, Icon }) => (
               <button
                 key={value}
@@ -325,27 +249,25 @@ export default function Settings() {
           </div>
         </DuoCard>
 
-        {/* Install App */}
         <InstallAppBanner forceShow />
 
-        {/* Actions */}
         <DuoButton variant="outline" className="w-full" onClick={handleLogout}>
-          <LogOut className="w-4 h-4" /> Sair da conta
+          <LogOut className="w-4 h-4" /> {t("logout_btn", "Sair da conta")}
         </DuoButton>
 
         {!showDelete ? (
           <button onClick={() => setShowDelete(true)} className="w-full text-center text-xs sm:text-sm text-destructive font-bold hover:underline">
-            Excluir minha conta
+            {t("delete_account_link", "Excluir minha conta")}
           </button>
         ) : (
           <DuoCard className="border-destructive/30 bg-destructive/5 p-3.5 sm:p-5">
-            <h3 className="font-bold text-destructive text-sm mb-2 flex items-center gap-2"><Trash2 className="w-4 h-4" /> Excluir conta</h3>
+            <h3 className="font-bold text-destructive text-sm mb-2 flex items-center gap-2"><Trash2 className="w-4 h-4" /> {t("delete_title", "Excluir conta")}</h3>
             <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-              Seus dados pessoais serão anonimizados conforme a LGPD. Registros de doações serão mantidos sem identificação pessoal. Esta ação não pode ser desfeita.
+              {t("delete_warning", "Seus dados pessoais serão anonimizados conforme a LGPD. Registros de doações serão mantidos sem identificação pessoal. Esta ação não pode ser desfeita.")}
             </p>
             <div className="flex gap-2 sm:gap-3">
-              <DuoButton variant="outline" size="sm" onClick={() => setShowDelete(false)} className="flex-1">Cancelar</DuoButton>
-              <DuoButton variant="danger" size="sm" onClick={handleDelete} className="flex-1">Confirmar exclusão</DuoButton>
+              <DuoButton variant="outline" size="sm" onClick={() => setShowDelete(false)} className="flex-1">{t("cancel", "Cancelar")}</DuoButton>
+              <DuoButton variant="danger" size="sm" onClick={handleDelete} className="flex-1">{t("confirm_delete", "Confirmar exclusão")}</DuoButton>
             </div>
           </DuoCard>
         )}
@@ -353,8 +275,8 @@ export default function Settings() {
       </div>
 
       <div className="flex gap-4 justify-center text-[10px] sm:text-xs text-muted-foreground mt-5">
-        <Link to="/privacidade" className="hover:text-primary font-semibold">Privacidade</Link>
-        <Link to="/termos" className="hover:text-primary font-semibold">Termos de Uso</Link>
+        <Link to="/privacidade" className="hover:text-primary font-semibold">{t("privacy_link", "Privacidade")}</Link>
+        <Link to="/termos" className="hover:text-primary font-semibold">{t("terms_link", "Termos de Uso")}</Link>
       </div>
     </div>
   );

@@ -7,12 +7,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNgos } from "@/hooks/useNgos";
 import { useSelectNgo } from "@/hooks/useSelectNgo";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 export default function Ngos() {
   const [search, setSearch] = useState("");
   const { isLoggedIn, user } = useAuth();
   const { ngos, loading } = useNgos();
   const { selectNgo, saving } = useSelectNgo();
+  const { t } = useSiteContent("ngos_page");
 
   const filtered = ngos.filter(n => n.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -25,14 +27,14 @@ export default function Ngos() {
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">ONGs Parceiras</h1>
-        <p className="text-muted-foreground text-xs sm:text-sm">Escolha a ONG que vai receber suas doações</p>
+        <h1 className="text-xl sm:text-2xl font-black">{t("title", "ONGs Parceiras")}</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Escolha a ONG que vai receber suas doações")}</p>
       </div>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
         <Input
-          placeholder="Buscar ONGs..."
+          placeholder={t("search_placeholder", "Buscar ONGs...")}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="pl-10 h-11 sm:h-12 rounded-2xl border-2 font-semibold text-sm"
@@ -64,7 +66,7 @@ export default function Ngos() {
                   <div className="p-3 sm:p-4 space-y-1.5">
                     <p className="font-bold text-sm truncate">{ngo.name}</p>
                     <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{ngo.description}</p>
-                    <p className="text-[10px] sm:text-xs text-primary font-bold">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
+                    <p className="text-[10px] sm:text-xs text-primary font-bold">R$ {ngo.total_received.toLocaleString('pt-BR')} {t("received_label", "recebidos")}</p>
                     {isLoggedIn && !isSelected && (
                       <button
                         onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
@@ -76,14 +78,14 @@ export default function Ngos() {
                         ) : (
                           <>
                             <Heart className="w-3 h-3" />
-                            Selecionar
+                            {t("select_btn", "Selecionar")}
                           </>
                         )}
                       </button>
                     )}
                     {isSelected && (
                       <div className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary/10 border border-primary/30 text-primary text-xs font-bold flex items-center justify-center gap-1.5">
-                        <Check className="w-3 h-3" /> Sua escolha
+                        <Check className="w-3 h-3" /> {t("selected_label", "Sua escolha")}
                       </div>
                     )}
                   </div>
@@ -97,7 +99,7 @@ export default function Ngos() {
       {!loading && filtered.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           <p className="text-4xl mb-2">🔍</p>
-          <p className="font-semibold text-sm">Nenhuma ONG encontrada</p>
+          <p className="font-semibold text-sm">{t("empty", "Nenhuma ONG encontrada")}</p>
         </div>
       )}
     </div>

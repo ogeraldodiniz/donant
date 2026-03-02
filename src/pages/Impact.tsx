@@ -2,14 +2,8 @@ import { mockTransactions } from "@/lib/mock-data";
 import { DuoCard } from "@/components/ui/duo-card";
 import { CashbackStatus } from "@/types";
 import { LevelBadge } from "@/components/LevelBadge";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
-const statusLabels: Record<CashbackStatus, string> = {
-  tracked: 'Rastreado',
-  pending: 'Pendente',
-  confirmed: 'Confirmado',
-  donated: 'Doado',
-  reverted: 'Revertido',
-};
 const statusColors: Record<CashbackStatus, string> = {
   tracked: 'bg-muted text-muted-foreground',
   pending: 'bg-destructive/20 text-destructive',
@@ -19,36 +13,45 @@ const statusColors: Record<CashbackStatus, string> = {
 };
 
 export default function Impact() {
+  const { t } = useSiteContent("impact");
   const txns = mockTransactions;
   const totals = (statuses: CashbackStatus[]) =>
     txns.filter(t => statuses.includes(t.status)).reduce((s, t) => s + t.amount, 0);
 
+  const statusLabels: Record<CashbackStatus, string> = {
+    tracked: t("status_tracked", "Rastreado"),
+    pending: t("status_pending", "Pendente"),
+    confirmed: t("status_confirmed", "Confirmado"),
+    donated: t("status_donated", "Doado"),
+    reverted: t("status_reverted", "Revertido"),
+  };
+
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-3xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">Seu Impacto 💜</h1>
-        <p className="text-muted-foreground text-xs sm:text-sm">Acompanhe suas doações</p>
+        <h1 className="text-xl sm:text-2xl font-black">{t("title", "Seu Impacto 💜")}</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Acompanhe suas doações")}</p>
       </div>
 
       <LevelBadge totalDonated={totals(['donated'])} showAllLevels />
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <DuoCard className="text-center p-3 sm:p-5 bg-destructive/10 border-destructive/30">
-          <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">Pendente</p>
+          <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">{t("label_pending", "Pendente")}</p>
           <p className="text-sm sm:text-lg font-black text-destructive">R$ {totals(['tracked', 'pending']).toFixed(2)}</p>
         </DuoCard>
         <DuoCard className="text-center p-3 sm:p-5 bg-accent/10 border-accent/30">
-          <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">Confirmado</p>
+          <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">{t("label_confirmed", "Confirmado")}</p>
           <p className="text-sm sm:text-lg font-black text-accent">R$ {totals(['confirmed']).toFixed(2)}</p>
         </DuoCard>
         <DuoCard className="text-center p-3 sm:p-5 bg-primary/10 border-primary/30">
-          <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">Doado</p>
+          <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">{t("label_donated", "Doado")}</p>
           <p className="text-sm sm:text-lg font-black text-primary">R$ {totals(['donated']).toFixed(2)}</p>
         </DuoCard>
       </div>
 
       <DuoCard className="p-3.5 sm:p-5">
-        <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">Transações</h3>
+        <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">{t("transactions_title", "Transações")}</h3>
         <div className="space-y-2 sm:space-y-3">
           {txns.map(t => (
             <div key={t.id} className="flex items-center gap-2.5 sm:gap-3 py-2 border-b last:border-0 border-border">
