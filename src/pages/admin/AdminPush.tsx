@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Bell, Send, Loader2, MapPin } from "lucide-react";
+import { Bell, Send, Loader2, MapPin, Globe, MessageSquare, Mail, CheckCircle, XCircle, BarChart3 } from "lucide-react";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
