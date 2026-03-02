@@ -6,6 +6,7 @@ import { DuoButton } from "@/components/ui/duo-button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -17,10 +18,11 @@ interface ContentRow {
   locale: string;
 }
 
+/** Sections ordered to match the site's visual layout */
 const PAGES: Record<string, { label: string; sections: string[] }> = {
   home_public: {
     label: "Home (sem login)",
-    sections: ["hero", "how_it_works", "features", "stats", "testimonials", "cta", "faq"],
+    sections: ["hero", "how_it_works", "features", "stores", "ngos", "stats", "testimonials", "faq", "cta"],
   },
   home_logged: {
     label: "Home (logado)",
@@ -65,7 +67,7 @@ export default function AdminBlog() {
   const [saving, setSaving] = useState(false);
   const [editedValues, setEditedValues] = useState<Record<string, string>>({});
   const [viewMode, setViewMode] = useState<ViewMode>("pages");
-  const [activePage, setActivePage] = useState<string | null>(null);
+  const [activePage, setActivePage] = useState<string>("home_public");
 
   const fetchContent = async () => {
     setLoading(true);
@@ -104,32 +106,46 @@ export default function AdminBlog() {
     fetchContent();
   };
 
-  const sectionCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    rows.forEach((r) => { counts[r.section] = (counts[r.section] || 0) + 1; });
-    return counts;
-  }, [rows]);
-
-  const groupCount = (group: { sections: string[] }) =>
-    group.sections.reduce((sum, sec) => sum + (sectionCounts[sec] || 0), 0);
-
   const currentGroups = viewMode === "pages" ? PAGES : GLOBAL;
-  const activeGroup = activePage ? currentGroups[activePage] : null;
+  const activeGroup = currentGroups[activePage];
 
-  const activeRows = useMemo(() => {
+  /** Rows filtered and sorted by the section order defined in the group */
+  const sortedRows = useMemo(() => {
     if (!activeGroup) return [];
-    return rows.filter((r) => activeGroup.sections.includes(r.section));
+    const sectionOrder = activeGroup.sections;
+    return rows
+      .filter((r) => sectionOrder.includes(r.section))
+      .sort((a, b) => {
+        const idxA = sectionOrder.indexOf(a.section);
+        const idxB = sectionOrder.indexOf(b.section);
+        if (idxA !== idxB) return idxA - idxB;
+        return a.content_key.localeCompare(b.content_key);
+      });
   }, [rows, activeGroup]);
 
-  const orphanSections = useMemo(() => {
-    const mapped = new Set([
-      ...Object.values(PAGES).flatMap((p) => p.sections),
-      ...Object.values(GLOBAL).flatMap((g) => g.sections),
-    ]);
-    return [...new Set(rows.map((r) => r.section))].filter((s) => !mapped.has(s));
-  }, [rows]);
+  /** Group sorted rows by section, preserving order */
+  const groupedSections = useMemo(() => {
+    if (!activeGroup) return [];
+    const map = new Map<string, ContentRow[]>();
+    // Initialize in order
+    for (const sec of activeGroup.sections) {
+      map.set(sec, []);
+    }
+    for (const row of sortedRows) {
+      map.get(row.section)?.push(row);
+    }
+    // Return only non-empty
+    return Array.from(map.entries()).filter(([, items]) => items.length > 0);
+  }, [sortedRows, activeGroup]);
 
   const editedCount = Object.keys(editedValues).length;
+
+  // When switching view mode, select first item
+  const handleViewMode = (mode: ViewMode) => {
+    setViewMode(mode);
+    const groups = mode === "pages" ? PAGES : GLOBAL;
+    setActivePage(Object.keys(groups)[0]);
+  };
 
   return (
     <div className="space-y-6">
@@ -150,115 +166,77 @@ export default function AdminBlog() {
         )}
       </div>
 
-      <div className="flex gap-2">
-        <button
-          onClick={() => { setViewMode("pages"); setActivePage(null); }}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${
-            viewMode === "pages"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <Layout className="w-4 h-4" /> Páginas
-        </button>
-        <button
-          onClick={() => { setViewMode("global"); setActivePage(null); }}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${
-            viewMode === "global"
-              ? "bg-primary text-primary-foreground shadow-sm"
-              : "bg-muted text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <Globe className="w-4 h-4" /> Conteúdos Globais
-        </button>
+      {/* View mode toggle + page selector */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleViewMode("pages")}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${
+              viewMode === "pages"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Layout className="w-4 h-4" /> Páginas
+          </button>
+          <button
+            onClick={() => handleViewMode("global")}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-colors ${
+              viewMode === "global"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Globe className="w-4 h-4" /> Conteúdos Globais
+          </button>
+        </div>
+
+        <Select value={activePage} onValueChange={setActivePage}>
+          <SelectTrigger className="w-full sm:w-56">
+            <SelectValue placeholder="Selecione..." />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(currentGroups).map(([key, group]) => (
+              <SelectItem key={key} value={key}>{group.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
-      {!activePage ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {Object.entries(currentGroups).map(([key, group]) => {
-            const count = groupCount(group);
-            return (
-              <button key={key} onClick={() => setActivePage(key)} className="text-left">
-                <DuoCard className="hover:border-primary/30 transition-colors cursor-pointer p-4">
-                  <p className="font-bold">{group.label}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {group.sections.map((s) => SECTION_LABELS[s] || s).join(", ")}
-                  </p>
-                  <Badge variant="secondary" className="mt-2 text-xs">
-                    {count} {count === 1 ? "conteúdo" : "conteúdos"}
-                  </Badge>
-                </DuoCard>
-              </button>
-            );
-          })}
-
-          {viewMode === "pages" && orphanSections.length > 0 && (
-            <button onClick={() => setActivePage("__orphan")} className="text-left">
-              <DuoCard className="hover:border-primary/30 transition-colors cursor-pointer p-4 border-dashed">
-                <p className="font-bold text-muted-foreground">Outros</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{orphanSections.join(", ")}</p>
-                <Badge variant="outline" className="mt-2 text-xs">
-                  {orphanSections.reduce((sum, s) => sum + (sectionCounts[s] || 0), 0)} conteúdos
-                </Badge>
-              </DuoCard>
-            </button>
-          )}
+      {/* Content editor */}
+      {loading ? (
+        <div className="flex justify-center py-8">
+          <Loader2 className="w-6 h-6 animate-spin text-primary" />
         </div>
+      ) : groupedSections.length === 0 ? (
+        <DuoCard className="p-8 text-center">
+          <p className="text-muted-foreground">Nenhum conteúdo nesta página para <strong>{locale.toUpperCase()}</strong>.</p>
+          <p className="text-xs text-muted-foreground mt-1">Os conteúdos são criados automaticamente quando usados no site.</p>
+        </DuoCard>
       ) : (
-        <>
-          <button onClick={() => setActivePage(null)} className="text-sm text-primary font-semibold hover:underline">
-            ← Voltar
-          </button>
-
-          <h2 className="text-lg font-bold">
-            {activePage === "__orphan" ? "Outros conteúdos" : currentGroups[activePage]?.label}
-          </h2>
-
-          {loading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        groupedSections.map(([section, items]) => (
+          <DuoCard key={section} className="p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="text-xs">
+                {SECTION_LABELS[section] || section}
+              </Badge>
+              <span className="text-xs text-muted-foreground">{items.length} itens</span>
             </div>
-          ) : (() => {
-            const displayRows = activePage === "__orphan"
-              ? rows.filter((r) => orphanSections.includes(r.section))
-              : activeRows;
-            const grouped = displayRows.reduce<Record<string, ContentRow[]>>((acc, row) => {
-              (acc[row.section] = acc[row.section] || []).push(row);
-              return acc;
-            }, {});
-
-            return Object.keys(grouped).length === 0 ? (
-              <DuoCard className="p-8 text-center">
-                <p className="text-muted-foreground">Nenhum conteúdo nesta página para <strong>{locale.toUpperCase()}</strong>.</p>
-                <p className="text-xs text-muted-foreground mt-1">Os conteúdos são criados automaticamente quando usados no site.</p>
-              </DuoCard>
-            ) : (
-              Object.entries(grouped).map(([section, items]) => (
-                <DuoCard key={section} className="p-4 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {SECTION_LABELS[section] || section}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground">{items.length} itens</span>
-                  </div>
-                  <div className="space-y-2">
-                    {items.map((row) => (
-                      <div key={row.id} className="space-y-1">
-                        <Label className="text-xs font-mono text-muted-foreground">{row.content_key}</Label>
-                        <Textarea
-                          value={editedValues[row.id] ?? row.value}
-                          onChange={(e) => handleChange(row.id, e.target.value)}
-                          rows={1}
-                          className={`resize-none text-sm ${editedValues[row.id] !== undefined && editedValues[row.id] !== row.value ? "border-primary" : ""}`}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </DuoCard>
-              ))
-            );
-          })()}
-        </>
+            <div className="space-y-2">
+              {items.map((row) => (
+                <div key={row.id} className="space-y-1">
+                  <Label className="text-xs font-mono text-muted-foreground">{row.content_key}</Label>
+                  <Textarea
+                    value={editedValues[row.id] ?? row.value}
+                    onChange={(e) => handleChange(row.id, e.target.value)}
+                    rows={1}
+                    className={`resize-none text-sm ${editedValues[row.id] !== undefined && editedValues[row.id] !== row.value ? "border-primary" : ""}`}
+                  />
+                </div>
+              ))}
+            </div>
+          </DuoCard>
+        ))
       )}
     </div>
   );
