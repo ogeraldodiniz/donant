@@ -33,6 +33,8 @@ export function usePushNotifications() {
   const subscribe = useCallback(async () => {
     if (!session?.user?.id) return false;
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nav = navigator as any;
 
     setSubscribing(true);
     try {
