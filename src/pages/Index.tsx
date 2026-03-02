@@ -480,14 +480,18 @@ function LoggedInHome() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          {mockStores.slice(0, 4).map(store => (
+          {dbStores.slice(0, 4).map(store => (
             <Link key={store.id} to={`/lojas/${store.slug}`}>
               <DuoCard hover className="p-3 sm:p-5">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center mb-2">
-                  <Store className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-                </div>
+                {store.logo_url ? (
+                  <img src={store.logo_url} alt={store.name} className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover bg-muted mb-2" />
+                ) : (
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center mb-2">
+                    <Store className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                  </div>
+                )}
                 <p className="font-bold text-xs sm:text-sm truncate">{store.name}</p>
-                <p className="text-[10px] sm:text-xs text-primary font-bold">{store.cashback_rate}% cashback</p>
+                <p className="text-[10px] sm:text-xs text-primary font-bold">{Number(store.cashback_rate)}% cashback</p>
               </DuoCard>
             </Link>
           ))}
