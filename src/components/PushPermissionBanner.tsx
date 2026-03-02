@@ -32,8 +32,11 @@ export function PushPermissionBanner() {
     const ok = await subscribe();
     if (ok) {
       toast.success("Notificações ativadas! 🔔");
-    } else if (permission === "denied") {
-      toast.error("Permissão negada. Altere nas configurações do navegador.");
+    } else {
+      const currentPerm = Notification?.permission;
+      if (currentPerm === "denied") {
+        toast.error("Permissão negada. Altere nas configurações do navegador.");
+      }
     }
   };
 

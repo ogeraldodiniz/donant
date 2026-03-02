@@ -46,7 +46,7 @@ export function usePushNotifications() {
         return false;
       }
 
-      const registration = await navigator.serviceWorker.ready;
+      const registration = await nav.serviceWorker.ready;
 
       let subscription = await registration.pushManager.getSubscription();
 
