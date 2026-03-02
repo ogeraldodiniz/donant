@@ -125,7 +125,7 @@ export function Header() {
             </Link>
           ) : (
             <div className="flex items-center gap-2">
-              <Link to="/auth" className="inline-flex items-center justify-center gap-2 h-10 w-[130px] rounded-2xl bg-primary text-primary-foreground font-bold text-sm duo-shadow hover:brightness-105 active:translate-y-1 active:shadow-none transition-all">
+              <Link to="/auth" className="inline-flex items-center justify-center gap-2 h-10 w-[130px] rounded-2xl bg-primary text-primary-foreground font-bold text-sm hover:brightness-105 transition-all">
                 <LogIn className="w-4 h-4" /> {t("nav_login", "Entrar")}
               </Link>
               <Link to="/auth?tab=signup" className="inline-flex items-center justify-center h-10 w-[130px] rounded-2xl border-2 border-border font-bold text-sm hover:bg-muted transition-colors">
