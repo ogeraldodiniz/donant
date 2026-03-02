@@ -97,6 +97,7 @@ export default function AdminNgos() {
       logo_url: form.logo_url || null,
       website_url: form.website_url || null,
       is_active: form.is_active,
+      locale: form.locale,
     };
 
     if (creating) {
