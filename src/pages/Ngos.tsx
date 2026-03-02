@@ -46,43 +46,41 @@ export default function Ngos() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {filtered.map((ngo) => {
             const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
             return (
               <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
-                <DuoCard hover className={`p-3.5 sm:p-5 h-full ${isSelected ? "border-primary bg-primary/5" : ""}`}>
-                  <div className="flex items-start gap-3">
-                    {ngo.logo_url ? (
-                      <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover shrink-0" />
-                    ) : (
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                        <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-sm truncate">{ngo.name}</p>
-                        {isSelected && <Check className="w-4 h-4 text-primary shrink-0" />}
-                      </div>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-1">{ngo.description}</p>
-                      <div className="flex items-center justify-between mt-1.5 sm:mt-2">
-                        <p className="text-[10px] sm:text-xs text-primary font-bold">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
-                        {isLoggedIn && !isSelected && (
-                          <button
-                            onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
-                            disabled={saving !== null}
-                            className="text-[10px] sm:text-xs font-bold text-primary hover:underline"
-                          >
-                            {saving === ngo.id ? (
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : (
-                              "Selecionar"
-                            )}
-                          </button>
-                        )}
-                      </div>
+                <DuoCard hover className={`p-0 h-full overflow-hidden ${isSelected ? "border-primary bg-primary/5" : ""}`}>
+                  {ngo.logo_url ? (
+                    <div className="aspect-[4/3] w-full overflow-hidden">
+                      <img src={ngo.logo_url} alt={ngo.name} className="w-full h-full object-cover" />
                     </div>
+                  ) : (
+                    <div className="aspect-[4/3] w-full bg-primary/10 flex items-center justify-center">
+                      <Heart className="w-10 h-10 text-primary" />
+                    </div>
+                  )}
+                  <div className="p-3 sm:p-4 space-y-1.5">
+                    <div className="flex items-center gap-1.5">
+                      <p className="font-bold text-sm truncate flex-1">{ngo.name}</p>
+                      {isSelected && <Check className="w-4 h-4 text-primary shrink-0" />}
+                    </div>
+                    <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{ngo.description}</p>
+                    <p className="text-[10px] sm:text-xs text-primary font-bold">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
+                    {isLoggedIn && !isSelected && (
+                      <button
+                        onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
+                        disabled={saving !== null}
+                        className="text-xs font-bold text-primary hover:underline mt-1"
+                      >
+                        {saving === ngo.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          "Selecionar"
+                        )}
+                      </button>
+                    )}
                   </div>
                 </DuoCard>
               </Link>
