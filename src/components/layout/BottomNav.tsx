@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Store, Heart, Bell, BarChart3, Eye, AlertTriangle } from "lucide-react";
+import { Home, Store, Heart, Bell, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,12 +29,11 @@ export function BottomNav() {
   }, [session?.user?.id]);
 
   const items = [
+    { to: "/", icon: Home, label: "Início" },
     { to: "/lojas", icon: Store, label: "Lojas" },
     { to: "/ongs", icon: Heart, label: "ONGs" },
     { to: "/notificacoes", icon: Bell, label: "Notificações", badge: unreadCount },
-    { to: "/transparencia", icon: Eye, label: "Transparência" },
-    { to: "/impacto", icon: BarChart3, label: "Impacto" },
-    { to: "/reclamar-cashback", icon: AlertTriangle, label: "Problemas" },
+    { to: "/perfil", icon: User, label: "Perfil" },
   ];
 
   return (
