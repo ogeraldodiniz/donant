@@ -38,6 +38,18 @@ export default function Notifications() {
       .then(({ data }) => {
         setNotifications(data || []);
         setLoading(false);
+
+        // Mark all unread as read when the page is viewed
+        const unreadIds = (data || []).filter(n => !n.is_read).map(n => n.id);
+        if (unreadIds.length > 0) {
+          supabase
+            .from("notifications")
+            .update({ is_read: true })
+            .in("id", unreadIds)
+            .then(() => {
+              setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+            });
+        }
       });
   }, [session?.user?.id]);
 
