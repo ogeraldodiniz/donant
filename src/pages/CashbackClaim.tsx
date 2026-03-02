@@ -72,83 +72,85 @@ export default function CashbackClaim() {
       </div>
 
       <DuoCard className="p-4 sm:p-6 space-y-4">
-        {/* Store */}
-        <div>
-          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-            {t("claim_store", locale === "es" ? "Tienda" : "Loja")} *
-          </label>
-          <Select value={storeId} onValueChange={setStoreId}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t("claim_store_placeholder", locale === "es" ? "Selecciona la tienda" : "Selecione a loja")} />
-            </SelectTrigger>
-            <SelectContent>
-              {stores.map(s => (
-                <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Store */}
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+              {t("claim_store", locale === "es" ? "Tienda" : "Loja")} *
+            </label>
+            <Select value={storeId} onValueChange={setStoreId}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder={t("claim_store_placeholder", locale === "es" ? "Selecciona la tienda" : "Selecione a loja")} />
+              </SelectTrigger>
+              <SelectContent>
+                {stores.map(s => (
+                  <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* NGO */}
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+              {t("claim_ngo", locale === "es" ? "ONG para donar" : "ONG para doar")} *
+            </label>
+            <Select value={ngoId} onValueChange={setNgoId}>
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder={t("claim_ngo_placeholder", locale === "es" ? "Selecciona la ONG" : "Selecione a ONG")} />
+              </SelectTrigger>
+              <SelectContent>
+                {ngos.map(n => (
+                  <SelectItem key={n.id} value={n.id}>{n.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Date */}
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+              {t("claim_date", locale === "es" ? "Fecha de compra" : "Data da compra")} *
+            </label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn("w-full justify-start text-left font-normal rounded-xl", !purchaseDate && "text-muted-foreground")}
+                >
+                  <CalendarIcon className="w-4 h-4 mr-2" />
+                  {purchaseDate ? format(purchaseDate, "PPP", { locale: ptBR }) : (locale === "es" ? "Selecciona una fecha" : "Selecione uma data")}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={purchaseDate}
+                  onSelect={setPurchaseDate}
+                  disabled={(date) => date > new Date()}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          {/* Order number */}
+          <div>
+            <label className="text-xs font-semibold text-muted-foreground mb-1 block">
+              {t("claim_order", locale === "es" ? "Número del pedido" : "Número do pedido")} *
+            </label>
+            <Input
+              value={orderNumber}
+              onChange={(e) => setOrderNumber(e.target.value)}
+              placeholder={t("claim_order_placeholder", locale === "es" ? "Ej: #123456" : "Ex: #123456")}
+              className="rounded-xl"
+              maxLength={100}
+            />
+          </div>
         </div>
 
-        {/* NGO */}
-        <div>
-          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-            {t("claim_ngo", locale === "es" ? "ONG para donar" : "ONG para doar")} *
-          </label>
-          <Select value={ngoId} onValueChange={setNgoId}>
-            <SelectTrigger className="rounded-xl">
-              <SelectValue placeholder={t("claim_ngo_placeholder", locale === "es" ? "Selecciona la ONG" : "Selecione a ONG")} />
-            </SelectTrigger>
-            <SelectContent>
-              {ngos.map(n => (
-                <SelectItem key={n.id} value={n.id}>{n.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Date */}
-        <div>
-          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-            {t("claim_date", locale === "es" ? "Fecha de compra" : "Data da compra")} *
-          </label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className={cn("w-full justify-start text-left font-normal rounded-xl", !purchaseDate && "text-muted-foreground")}
-              >
-                <CalendarIcon className="w-4 h-4 mr-2" />
-                {purchaseDate ? format(purchaseDate, "PPP", { locale: ptBR }) : (locale === "es" ? "Selecciona una fecha" : "Selecione uma data")}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={purchaseDate}
-                onSelect={setPurchaseDate}
-                disabled={(date) => date > new Date()}
-                initialFocus
-                className={cn("p-3 pointer-events-auto")}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
-
-        {/* Order number */}
-        <div>
-          <label className="text-xs font-semibold text-muted-foreground mb-1 block">
-            {t("claim_order", locale === "es" ? "Número del pedido" : "Número do pedido")} *
-          </label>
-          <Input
-            value={orderNumber}
-            onChange={(e) => setOrderNumber(e.target.value)}
-            placeholder={t("claim_order_placeholder", locale === "es" ? "Ej: #123456" : "Ex: #123456")}
-            className="rounded-xl"
-            maxLength={100}
-          />
-        </div>
-
-        {/* Details */}
+        {/* Details - full width */}
         <div>
           <label className="text-xs font-semibold text-muted-foreground mb-1 block">
             {t("claim_details", locale === "es" ? "Detalles (opcional)" : "Detalhes (opcional)")}
@@ -157,7 +159,7 @@ export default function CashbackClaim() {
             value={details}
             onChange={(e) => setDetails(e.target.value)}
             placeholder={t("claim_details_placeholder", locale === "es" ? "Describe tu compra..." : "Descreva sua compra...")}
-            className="rounded-xl min-h-[80px]"
+            className="rounded-xl min-h-[100px]"
             maxLength={1000}
           />
         </div>
