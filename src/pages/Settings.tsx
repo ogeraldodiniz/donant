@@ -163,7 +163,6 @@ export default function Settings() {
               <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder={t("city_placeholder", "Sua cidade")} className="rounded-xl h-9 text-xs sm:text-sm" />
             </div>
           </div>
-          </div>
           {hasProfileChanges && (
             <DuoButton className="w-full mt-3" size="sm" onClick={handleSaveProfile} disabled={savingProfile}>
               {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
