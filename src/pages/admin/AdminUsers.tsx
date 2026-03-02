@@ -352,12 +352,18 @@ export default function AdminUsers() {
                       </div>
                     )}
 
-                    <div className="pt-2 border-t border-border">
+                    <div className="pt-2 border-t border-border flex items-center gap-4">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openEdit(u); }}
+                        className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+                      >
+                        <Pencil className="w-3 h-3" /> Editar
+                      </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); setDeleteTarget(u); }}
                         className="text-xs text-destructive font-bold hover:underline flex items-center gap-1"
                       >
-                        <Trash2 className="w-3 h-3" /> Excluir usuário
+                        <Trash2 className="w-3 h-3" /> Excluir
                       </button>
                     </div>
                   </div>
