@@ -2,32 +2,33 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLocale } from "@/hooks/useLocale";
 
-export interface Ngo {
+export interface StoreDB {
   id: string;
   name: string;
   slug: string;
-  description: string | null;
-  mission: string | null;
   logo_url: string | null;
   website_url: string | null;
-  total_received: number;
+  cashback_rate: number;
+  category: string | null;
+  terms: string | null;
   is_active: boolean;
+  locale: string;
 }
 
-export function useNgos() {
+export function useStores() {
   const { locale } = useLocale();
-  const [ngos, setNgos] = useState<Ngo[]>([]);
+  const [stores, setStores] = useState<StoreDB[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
-    const fetchNgos = async () => {
+    const fetchStores = async () => {
       setLoading(true);
       try {
         const { data, error } = await supabase
-          .from("ngos")
-          .select("*")
+          .from("stores")
+          .select("id, name, slug, logo_url, website_url, cashback_rate, category, terms, is_active, locale")
           .eq("is_active", true)
           .eq("locale", locale)
           .order("name");
@@ -35,27 +36,27 @@ export function useNgos() {
         if (!isMounted) return;
 
         if (error) {
-          console.error("Erro ao carregar ONGs:", error);
-          setNgos([]);
+          console.error("Erro ao carregar lojas:", error);
+          setStores([]);
           return;
         }
 
-        setNgos(data ?? []);
+        setStores(data ?? []);
       } catch (error) {
         if (!isMounted) return;
-        console.error("Falha de rede ao carregar ONGs:", error);
-        setNgos([]);
+        console.error("Falha de rede ao carregar lojas:", error);
+        setStores([]);
       } finally {
         if (isMounted) setLoading(false);
       }
     };
 
-    void fetchNgos();
+    void fetchStores();
 
     return () => {
       isMounted = false;
     };
   }, [locale]);
 
-  return { ngos, loading };
+  return { stores, loading };
 }

@@ -1,13 +1,23 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ArrowRight } from "lucide-react";
+import { Search, Store } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
-import { mockStores, categoryEmojis } from "@/lib/mock-data";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useStores } from "@/hooks/useStores";
+
+const categoryEmojis: Record<string, string> = {
+  Marketplace: '🛒',
+  Varejo: '🏪',
+  Esportes: '⚽',
+  Viagens: '✈️',
+  Moda: '👗',
+};
 
 export default function Stores() {
   const [search, setSearch] = useState("");
-  const filtered = mockStores.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
+  const { stores, loading } = useStores();
+  const filtered = stores.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
@@ -26,29 +36,39 @@ export default function Stores() {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-        {filtered.map(store => (
-          <Link key={store.id} to={`/lojas/${store.slug}`}>
-            <DuoCard hover className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5">
-              <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-muted flex items-center justify-center text-xl sm:text-2xl font-bold shrink-0">
-                {store.name.charAt(0)}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm truncate">{store.name}</p>
-                <div className="flex items-center gap-2 text-[10px] sm:text-xs text-muted-foreground">
-                  <span>{categoryEmojis[store.category] || '🏷️'} {store.category}</span>
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 rounded-2xl" />)}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          {filtered.map(store => (
+            <Link key={store.id} to={`/lojas/${store.slug}`}>
+              <DuoCard hover className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5">
+                {store.logo_url ? (
+                  <img src={store.logo_url} alt={store.name} className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover bg-muted shrink-0" />
+                ) : (
+                  <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-muted flex items-center justify-center text-xl sm:text-2xl font-bold shrink-0">
+                    {store.name.charAt(0)}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-sm truncate">{store.name}</p>
+                  <div className="flex items-center gap-2 text-[10px] sm:text-xs text-muted-foreground">
+                    <span>{categoryEmojis[store.category || ''] || '🏷️'} {store.category || 'Geral'}</span>
+                  </div>
                 </div>
-              </div>
-              <div className="text-right shrink-0">
-                <p className="text-base sm:text-lg font-black text-primary">{store.cashback_rate}%</p>
-                <p className="text-[10px] text-muted-foreground font-bold">cashback</p>
-              </div>
-            </DuoCard>
-          </Link>
-        ))}
-      </div>
+                <div className="text-right shrink-0">
+                  <p className="text-base sm:text-lg font-black text-primary">{Number(store.cashback_rate)}%</p>
+                  <p className="text-[10px] text-muted-foreground font-bold">cashback</p>
+                </div>
+              </DuoCard>
+            </Link>
+          ))}
+        </div>
+      )}
 
-      {filtered.length === 0 && (
+      {!loading && filtered.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           <p className="text-4xl mb-2">🔍</p>
           <p className="font-semibold text-sm">Nenhuma loja encontrada</p>

@@ -4,7 +4,7 @@ import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { mockStores, mockTransactions } from "@/lib/mock-data";
+import { mockTransactions } from "@/lib/mock-data";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
@@ -12,6 +12,7 @@ import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { PushPermissionBanner } from "@/components/PushPermissionBanner";
 import { LevelBadge } from "@/components/LevelBadge";
 import { useNgos } from "@/hooks/useNgos";
+import { useStores } from "@/hooks/useStores";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
@@ -33,6 +34,7 @@ function usePublicNgos() {
 
 function PublicHome() {
   const { t } = useSiteContent();
+  const { stores: dbStores } = useStores();
 
   return (
     <div className="min-h-screen">
@@ -180,15 +182,19 @@ function PublicHome() {
             <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">{t("stores_subtitle", "Suas marcas favoritas gerando impacto social.")}</p>
           </motion.div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
-            {mockStores.slice(0, 10).map((store, i) => (
+            {dbStores.slice(0, 10).map((store, i) => (
               <motion.div key={store.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
                 <Link to={`/lojas/${store.slug}`}>
                   <DuoCard hover className="text-center py-3 px-2 sm:py-4 sm:px-3">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-2">
-                      <Store className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
-                    </div>
+                    {store.logo_url ? (
+                      <img src={store.logo_url} alt={store.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover mx-auto mb-2 bg-muted" />
+                    ) : (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-2">
+                        <Store className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+                      </div>
+                    )}
                     <p className="font-bold text-[11px] sm:text-xs truncate">{store.name}</p>
-                    <p className="text-primary font-black text-xs sm:text-sm">{store.cashback_rate}%</p>
+                    <p className="text-primary font-black text-xs sm:text-sm">{Number(store.cashback_rate)}%</p>
                   </DuoCard>
                 </Link>
               </motion.div>
@@ -391,6 +397,7 @@ function LoggedInHome() {
   const { user } = useAuth();
   const { t } = useSiteContent("home_logged");
   const { ngos } = useNgos();
+  const { stores: dbStores } = useStores();
   const selectedNgo = ngos.find(n => n.id === user?.selected_ngo_id) || ngos[0];
   const pending = mockTransactions.filter(tx => tx.status === 'pending' || tx.status === 'tracked').reduce((s, tx) => s + tx.amount, 0);
   const confirmed = mockTransactions.filter(tx => tx.status === 'confirmed').reduce((s, tx) => s + tx.amount, 0);
@@ -473,14 +480,18 @@ function LoggedInHome() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          {mockStores.slice(0, 4).map(store => (
+          {dbStores.slice(0, 4).map(store => (
             <Link key={store.id} to={`/lojas/${store.slug}`}>
               <DuoCard hover className="p-3 sm:p-5">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center mb-2">
-                  <Store className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-                </div>
+                {store.logo_url ? (
+                  <img src={store.logo_url} alt={store.name} className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover bg-muted mb-2" />
+                ) : (
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center mb-2">
+                    <Store className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                  </div>
+                )}
                 <p className="font-bold text-xs sm:text-sm truncate">{store.name}</p>
-                <p className="text-[10px] sm:text-xs text-primary font-bold">{store.cashback_rate}% cashback</p>
+                <p className="text-[10px] sm:text-xs text-primary font-bold">{Number(store.cashback_rate)}% cashback</p>
               </DuoCard>
             </Link>
           ))}
