@@ -76,7 +76,7 @@ export default function Auth() {
   const handleGoogle = async () => {
     const lovableProjectId = "2544be83-c1f4-492f-968d-56e5e90691ab";
     const { error } = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/`,
+      redirect_uri: window.location.origin,
       extraParams: { project_id: lovableProjectId },
     });
     if (error) {
