@@ -17,7 +17,7 @@ const items = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "ONGs", url: "/admin/ongs", icon: Heart },
   { title: "Lojas", url: "/admin/lojas", icon: Store },
-  { title: "Blog", url: "/admin/blog", icon: FileText },
+  { title: "Conteúdos", url: "/admin/conteudos", icon: Languages },
   { title: "Push", url: "/admin/push", icon: Bell },
   { title: "Usuários", url: "/admin/usuarios", icon: Users },
 ];
