@@ -22,6 +22,11 @@ export default function Auth() {
   const { login, signup, resetPassword } = useAuth();
   const navigate = useNavigate();
 
+  const checkOnboardingNeeded = async (userId: string): Promise<boolean> => {
+    const { data } = await supabase.from("profiles").select("phone, selected_ngo_id").eq("id", userId).single();
+    return !data?.phone || !data?.selected_ngo_id;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -31,7 +36,14 @@ export default function Auth() {
       toast.error(error.message);
     } else {
       toast.success("Bem-vindo de volta!");
-      navigate("/");
+      // Check if onboarding needed
+      const { data: { session: s } } = await supabase.auth.getSession();
+      if (s?.user) {
+        const needsOnboarding = await checkOnboardingNeeded(s.user.id);
+        navigate(needsOnboarding ? "/onboarding" : "/");
+      } else {
+        navigate("/");
+      }
     }
   };
 
