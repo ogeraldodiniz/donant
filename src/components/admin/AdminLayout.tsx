@@ -45,7 +45,7 @@ export function AdminLayout() {
           throw error;
         }
 
-        if (data && data.length > 0) {
+        if (data) {
           setIsAdmin(true);
         } else {
           setIsAdmin(false);
