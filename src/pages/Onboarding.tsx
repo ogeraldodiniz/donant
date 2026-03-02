@@ -103,7 +103,7 @@ export default function Onboarding() {
     if (showInstallStep) {
       setStep("install");
     } else {
-      toast.success("Tudo pronto! 🎉");
+      toast.success("Tudo pronto!");
       navigate("/");
     }
   };
@@ -112,7 +112,7 @@ export default function Onboarding() {
     if (canInstall) {
       await install();
     }
-    toast.success("Tudo pronto! 🎉");
+    toast.success("Tudo pronto!");
     navigate("/");
   };
 
