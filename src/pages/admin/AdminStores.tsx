@@ -30,7 +30,7 @@ export default function AdminStores() {
     setLoading(true);
     const { data, error } = await supabase
       .from("stores")
-      .select("id, name, slug, logo_url, category, cashback_rate, is_active, website_url")
+      .select("id, name, slug, logo_url, category, cashback_rate, is_active, website_url, locale")
       .order("name");
     if (error) {
       toast.error("Erro ao carregar lojas");
