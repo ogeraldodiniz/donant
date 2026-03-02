@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Camera, Loader2, Save } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Camera, Loader2, Save, Pencil, MapPin, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
@@ -36,6 +36,7 @@ export default function Settings() {
   const [savingProfile, setSavingProfile] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [savingPrefs, setSavingPrefs] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -58,7 +59,7 @@ export default function Settings() {
   );
 
   const handleSaveProfile = async () => {
-    if (!user || !hasProfileChanges) return;
+    if (!user) return;
     setSavingProfile(true);
     const rawPhone = phone.replace(/\D/g, "");
     const { error } = await supabase
@@ -70,8 +71,19 @@ export default function Settings() {
       toast.error(t("save_error", "Erro ao salvar perfil"));
     } else {
       toast.success(t("save_success", "Perfil salvo"));
+      setEditing(false);
       await refreshProfile();
     }
+  };
+
+  const handleCancelEdit = () => {
+    if (user) {
+      setDisplayName(user.display_name ?? "");
+      setPhone(user.phone ?? "");
+      setCity(user.city ?? "");
+      setUserState(user.state ?? "");
+    }
+    setEditing(false);
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,7 +145,7 @@ export default function Settings() {
       <div className="space-y-4 sm:space-y-5">
         <DuoCard className="p-3.5 sm:p-5">
           <div className="flex items-start gap-3 sm:gap-4">
-            <button type="button" onClick={() => fileInputRef.current?.click()} className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 group" disabled={uploadingAvatar}>
+            <button type="button" onClick={() => editing ? fileInputRef.current?.click() : undefined} className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 group ${editing ? 'cursor-pointer' : 'cursor-default'}`} disabled={uploadingAvatar || !editing}>
               {avatarUrl ? (
                 <img src={avatarUrl} alt="Avatar" className="w-full h-full rounded-full object-cover" />
               ) : (
@@ -141,37 +153,68 @@ export default function Settings() {
                   {displayName?.charAt(0) || 'U'}
                 </div>
               )}
-              <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                {uploadingAvatar ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-5 h-5 text-white" />}
-              </div>
+              {editing && (
+                <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  {uploadingAvatar ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-5 h-5 text-white" />}
+                </div>
+              )}
               <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
             </button>
             <div className="min-w-0 flex-1 space-y-2">
-              <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("name_placeholder", "Seu nome")} className="rounded-xl h-9 text-sm font-semibold" />
-              <p className="text-xs sm:text-sm text-muted-foreground truncate px-1">{user?.email}</p>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
-                <Input
-                  type="tel" placeholder="(11) 99999-9999" value={phone}
-                  onChange={(e) => {
-                    const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
-                    let formatted = digits;
-                    if (digits.length > 2) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-                    else if (digits.length > 0) formatted = `(${digits}`;
-                    if (digits.length > 7) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
-                    setPhone(formatted);
-                  }}
-                  className="rounded-xl h-9 text-xs sm:text-sm"
-                />
-              </div>
-              <CityPicker city={city} state={userState} onCityChange={setCity} onStateChange={setUserState} compact showDetect />
+              {editing ? (
+                <>
+                  <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("name_placeholder", "Seu nome")} className="rounded-xl h-9 text-sm font-semibold" />
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate px-1">{user?.email}</p>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <Input
+                      type="tel" placeholder="(11) 99999-9999" value={phone}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
+                        let formatted = digits;
+                        if (digits.length > 2) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+                        else if (digits.length > 0) formatted = `(${digits}`;
+                        if (digits.length > 7) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+                        setPhone(formatted);
+                      }}
+                      className="rounded-xl h-9 text-xs sm:text-sm"
+                    />
+                  </div>
+                  <CityPicker city={city} state={userState} onCityChange={setCity} onStateChange={setUserState} compact showDetect />
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-bold truncate">{displayName || t("name_placeholder", "Seu nome")}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground truncate">{user?.email}</p>
+                  {phone && (
+                    <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5" /> {phone}
+                    </p>
+                  )}
+                  {city && (
+                    <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5" /> {city}{userState ? ` — ${userState}` : ""}
+                    </p>
+                  )}
+                </>
+              )}
             </div>
+            {!editing && (
+              <button onClick={() => setEditing(true)} className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground shrink-0">
+                <Pencil className="w-4 h-4" />
+              </button>
+            )}
           </div>
-          {hasProfileChanges && (
-            <DuoButton className="w-full mt-3" size="sm" onClick={handleSaveProfile} disabled={savingProfile}>
-              {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {t("save_btn", "Salvar")}
-            </DuoButton>
+          {editing && (
+            <div className="flex gap-2 mt-3">
+              <DuoButton variant="outline" size="sm" className="flex-1" onClick={handleCancelEdit}>
+                <X className="w-4 h-4" /> {t("cancel", "Cancelar")}
+              </DuoButton>
+              <DuoButton className="flex-1" size="sm" onClick={handleSaveProfile} disabled={savingProfile}>
+                {savingProfile ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {t("save_btn", "Salvar")}
+              </DuoButton>
+            </div>
           )}
         </DuoCard>
 
