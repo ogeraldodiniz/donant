@@ -21,7 +21,6 @@ interface ContentRow {
 export default function AdminBlog() {
   const { adminLocale: locale } = useAdminLocale();
   const [rows, setRows] = useState<ContentRow[]>([]);
-  const [rows, setRows] = useState<ContentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editedValues, setEditedValues] = useState<Record<string, string>>({});
