@@ -3,7 +3,9 @@ import { DuoCard } from "@/components/ui/duo-card";
 import { CashbackStatus } from "@/types";
 import { LevelBadge } from "@/components/LevelBadge";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { useLocale } from "@/hooks/useLocale";
 import { Heart } from "lucide-react";
+import { formatCurrency } from "@/lib/gamification";
 
 const statusColors: Record<CashbackStatus, string> = {
   tracked: 'bg-muted text-muted-foreground',
@@ -15,6 +17,7 @@ const statusColors: Record<CashbackStatus, string> = {
 
 export default function Impact() {
   const { t } = useSiteContent("impact");
+  const { locale } = useLocale();
   const txns = mockTransactions;
   const totals = (statuses: CashbackStatus[]) =>
     txns.filter(t => statuses.includes(t.status)).reduce((s, t) => s + t.amount, 0);
@@ -39,15 +42,15 @@ export default function Impact() {
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <DuoCard className="text-center p-3 sm:p-5 bg-destructive/10 border-destructive/30">
           <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">{t("label_pending", "Pendente")}</p>
-          <p className="text-sm sm:text-lg font-black text-destructive">R$ {totals(['tracked', 'pending']).toFixed(2)}</p>
+          <p className="text-sm sm:text-lg font-black text-destructive">{formatCurrency(totals(['tracked', 'pending']), locale)}</p>
         </DuoCard>
         <DuoCard className="text-center p-3 sm:p-5 bg-accent/10 border-accent/30">
           <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">{t("label_confirmed", "Confirmado")}</p>
-          <p className="text-sm sm:text-lg font-black text-accent">R$ {totals(['confirmed']).toFixed(2)}</p>
+          <p className="text-sm sm:text-lg font-black text-accent">{formatCurrency(totals(['confirmed']), locale)}</p>
         </DuoCard>
         <DuoCard className="text-center p-3 sm:p-5 bg-primary/10 border-primary/30">
           <p className="text-[10px] sm:text-xs font-bold text-muted-foreground uppercase">{t("label_donated", "Doado")}</p>
-          <p className="text-sm sm:text-lg font-black text-primary">R$ {totals(['donated']).toFixed(2)}</p>
+          <p className="text-sm sm:text-lg font-black text-primary">{formatCurrency(totals(['donated']), locale)}</p>
         </DuoCard>
       </div>
 
@@ -61,10 +64,10 @@ export default function Impact() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-xs sm:text-sm truncate">{t.store?.name}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">{new Date(t.tracked_at).toLocaleDateString('pt-BR')}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{new Date(t.tracked_at).toLocaleDateString(locale === "es" ? "es-ES" : "pt-BR")}</p>
               </div>
               <div className="text-right shrink-0">
-                <p className="font-bold text-xs sm:text-sm">R$ {t.amount.toFixed(2)}</p>
+                <p className="font-bold text-xs sm:text-sm">{formatCurrency(t.amount, locale)}</p>
                 <span className={`inline-block text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full ${statusColors[t.status]}`}>
                   {statusLabels[t.status]}
                 </span>
