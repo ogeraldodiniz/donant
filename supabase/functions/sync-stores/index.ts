@@ -46,13 +46,18 @@ async function getMycToken(): Promise<string> {
 }
 
 async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
-  const apiUrl = Deno.env.get("MYCASHBACKS_API_URL")!.replace(/\/+$/, "");
+  const rawUrl = Deno.env.get("MYCASHBACKS_API_URL")!.replace(/\/+$/, "");
+  // Extract base domain (strip any path like /api, /extension, etc.)
+  const parsed = new URL(rawUrl);
+  const baseUrl = `${parsed.protocol}//${parsed.host}`;
   const allPrograms: MycProgram[] = [];
   let offset = 0;
   const limit = 1000;
 
   while (true) {
-    const res = await fetch(`${apiUrl}/v1/publisher/programs/search`, {
+    const fullUrl = `${baseUrl}/v1/publisher/programs/search`;
+    console.log(`Fetching programs from: ${fullUrl} (offset=${offset})`);
+    const res = await fetch(fullUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
