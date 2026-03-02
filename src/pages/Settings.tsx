@@ -52,7 +52,8 @@ export default function Settings() {
   const hasProfileChanges = user && (
     displayName !== (user.display_name ?? "") ||
     phone !== (user.phone ?? "") ||
-    city !== (user.city ?? "")
+    city !== (user.city ?? "") ||
+    userState !== (user.state ?? "")
   );
 
   const handleSaveProfile = async () => {
