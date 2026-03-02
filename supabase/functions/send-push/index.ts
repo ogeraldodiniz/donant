@@ -93,80 +93,35 @@ async function createVapidJwt(
 }
 
 async function sendWebPush(
-  endpoint: string, p256dh: string, authKeyB64: string, payloadObj: object,
-  vapidPubB64: string, vapidPrivB64: string, vapidSubject: string
+  endpoint: string, p256dh: string, authKey: string, payload: object,
+  vapidPublicKey: string, vapidPrivateKey: string, vapidSubject: string
 ) {
-  const vapidPubRaw = b64urlDecode(vapidPubB64);
+  webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
 
-  // Build JWK for VAPID signing
-  const x = b64url(vapidPubRaw.slice(1, 33));
-  const y = b64url(vapidPubRaw.slice(33, 65));
-  const vapidJwk: JsonWebKey = { kty: "EC", crv: "P-256", x, y, d: vapidPrivB64, ext: true };
+  try {
+    const result = await webpush.sendNotification(
+      {
+        endpoint,
+        keys: {
+          p256dh,
+          auth: authKey,
+        },
+      },
+      JSON.stringify(payload),
+      {
+        TTL: 86400,
+        urgency: "normal",
+        contentEncoding: "aes128gcm",
+      }
+    );
 
-  // VAPID Authorization header
-  const url = new URL(endpoint);
-  const audience = `${url.protocol}//${url.host}`;
-  const jwt = await createVapidJwt(audience, vapidSubject, vapidJwk, vapidPubRaw);
-  const authHeader = `vapid t=${jwt}, k=${b64url(vapidPubRaw)}`;
-
-  // --- RFC 8291 aes128gcm encryption ---
-  const uaPublic = b64urlDecode(p256dh);      // subscriber's public key (65 bytes)
-  const authSecret = b64urlDecode(authKeyB64); // subscriber's auth secret (16 bytes)
-
-  // Generate ephemeral ECDH key pair
-  const localKP = await crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveBits"]);
-  const localPubRaw = new Uint8Array(await crypto.subtle.exportKey("raw", localKP.publicKey));
-
-  // Import subscriber's public key for ECDH
-  const uaKey = await crypto.subtle.importKey("raw", uaPublic, { name: "ECDH", namedCurve: "P-256" }, false, []);
-
-  // Shared secret via ECDH
-  const ecdhSecret = new Uint8Array(
-    await crypto.subtle.deriveBits({ name: "ECDH", public: uaKey }, localKP.privateKey, 256)
-  );
-
-  // Key derivation per RFC 8291 Section 3.4
-  // IKM = HKDF-Extract(auth_secret, ecdh_secret)
-  // Then HKDF-Expand with info = "WebPush: info\0" || ua_public || as_public
-  const keyInfoInput = concat(te.encode("WebPush: info\0"), uaPublic, localPubRaw);
-  const prk = await hkdfExtract(authSecret, ecdhSecret);
-  const ikm = await hkdfExpand(prk, keyInfoInput, 32);
-
-  // Salt (random 16 bytes)
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-
-  // Content key and nonce per RFC 8188
-  const contentPrk = await hkdfExtract(salt, ikm);
-  const contentKey = await hkdfExpand(contentPrk, buildInfo("aes128gcm", new Uint8Array(0)), 16);
-  const nonce = await hkdfExpand(contentPrk, buildInfo("nonce", new Uint8Array(0)), 12);
-
-  // Encrypt payload: add padding delimiter (single byte 0x02 for final record)
-  const plaintext = te.encode(JSON.stringify(payloadObj));
-  const padded = concat(plaintext, new Uint8Array([2])); // delimiter byte
-
-  const aesKey = await crypto.subtle.importKey("raw", contentKey, { name: "AES-GCM" }, false, ["encrypt"]);
-  const ciphertext = new Uint8Array(
-    await crypto.subtle.encrypt({ name: "AES-GCM", iv: nonce }, aesKey, padded)
-  );
-
-  // Build aes128gcm body: salt(16) || rs(4) || idlen(1) || keyid(65) || ciphertext
-  const rs = new Uint8Array(4);
-  new DataView(rs.buffer).setUint32(0, 4096, false);
-  const idlen = new Uint8Array([65]);
-  const body = concat(salt, rs, idlen, localPubRaw, ciphertext);
-
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      Authorization: authHeader,
-      "Content-Type": "application/octet-stream",
-      "Content-Encoding": "aes128gcm",
-      TTL: "86400",
-      Urgency: "normal",
-    },
-    body,
-  });
-  return response;
+    return new Response(result.body || "", { status: result.statusCode || 201 });
+  } catch (err: any) {
+    if (typeof err?.statusCode === "number") {
+      return new Response(err?.body || err?.message || "push error", { status: err.statusCode });
+    }
+    throw err;
+  }
 }
 
 // ---------------------------------------------------------------------------
