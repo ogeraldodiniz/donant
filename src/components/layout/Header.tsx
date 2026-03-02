@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe, Shield } from "lucide-react";
+import { Home, Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe, Shield, Sun, Moon, Monitor } from "lucide-react";
+import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
@@ -13,7 +14,16 @@ export function Header() {
   const { t } = useSiteContent("nav");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { theme, setTheme } = useTheme();
   const unreadCount = 2; // mock
+
+  const cycleTheme = () => {
+    if (theme === "light") setTheme("dark");
+    else if (theme === "dark") setTheme("system");
+    else setTheme("light");
+  };
+
+  const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
 
   useEffect(() => {
     if (!session?.user?.id) { setIsAdmin(false); return; }
@@ -65,6 +75,15 @@ export function Header() {
             {locale === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
           </button>
 
+          {/* Theme toggle */}
+          <button
+            onClick={cycleTheme}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-muted transition-colors text-sm font-bold text-muted-foreground"
+            title={theme === "dark" ? "Modo escuro" : theme === "light" ? "Modo claro" : "Automático"}
+          >
+            <ThemeIcon className="w-4 h-4" />
+          </button>
+
           {isLoggedIn ? (
             <Link to="/configuracoes" className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
@@ -81,6 +100,13 @@ export function Header() {
 
         {/* Mobile hamburger */}
         <div className="flex md:hidden items-center gap-1">
+          <button
+            onClick={cycleTheme}
+            className="p-2 rounded-xl hover:bg-muted"
+            title={theme === "dark" ? "Modo escuro" : theme === "light" ? "Modo claro" : "Automático"}
+          >
+            <ThemeIcon className="w-5 h-5" />
+          </button>
           <button
             onClick={() => setLocale(locale === "pt" ? "es" : "pt")}
             className="p-2 rounded-xl hover:bg-muted text-sm font-bold"

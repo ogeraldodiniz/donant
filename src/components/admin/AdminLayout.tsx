@@ -34,11 +34,10 @@ export function AdminLayout() {
       }, 10000);
 
       try {
-        const { data, error } = await supabase
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", session.user.id)
-          .eq("role", "admin");
+        const { data, error } = await supabase.rpc("has_role", {
+          _user_id: session.user.id,
+          _role: "admin",
+        });
 
         if (!isMounted) return;
 
@@ -46,7 +45,7 @@ export function AdminLayout() {
           throw error;
         }
 
-        if (data && data.length > 0) {
+        if (data) {
           setIsAdmin(true);
         } else {
           setIsAdmin(false);
