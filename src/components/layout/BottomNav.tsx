@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Store, Heart, Bell, BarChart3, Eye, AlertTriangle } from "lucide-react";
+import { Home, Store, Heart, Bell, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,19 +29,18 @@ export function BottomNav() {
   }, [session?.user?.id]);
 
   const items = [
+    { to: "/", icon: Home, label: "Início" },
     { to: "/lojas", icon: Store, label: "Lojas" },
     { to: "/ongs", icon: Heart, label: "ONGs" },
     { to: "/notificacoes", icon: Bell, label: "Notificações", badge: unreadCount },
-    { to: "/transparencia", icon: Eye, label: "Transparência" },
-    { to: "/impacto", icon: BarChart3, label: "Impacto" },
-    { to: "/reclamar-cashback", icon: AlertTriangle, label: "Problemas" },
+    { to: "/perfil", icon: User, label: "Perfil" },
   ];
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t-2 border-border">
       <div className="flex items-center justify-around h-14 safe-area-pb">
         {items.map(({ to, icon: Icon, label, badge }) => {
-          const active = location.pathname === to || (to !== "/" && location.pathname.startsWith(to));
+          const active = to === "/" ? location.pathname === "/" : location.pathname === to || location.pathname.startsWith(to);
           return (
             <Link
               key={to}
