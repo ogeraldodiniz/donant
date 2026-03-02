@@ -255,6 +255,10 @@ export default function AdminUsers() {
                         <p className="font-medium">{u.selected_ngo_id ? ngos[u.selected_ngo_id] ?? u.selected_ngo_id : "—"}</p>
                       </div>
                       <div>
+                        <p className="text-muted-foreground mb-0.5">Cidade / Estado</p>
+                        <p className="font-medium">{[u.city, u.state].filter(Boolean).join(", ") || "—"}</p>
+                      </div>
+                      <div>
                         <p className="text-muted-foreground mb-0.5">Cadastro</p>
                         <p className="font-medium">{formatDate(u.created_at)}</p>
                       </div>
