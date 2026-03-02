@@ -16,6 +16,7 @@ import NgoDetail from "./pages/NgoDetail";
 import Impact from "./pages/Impact";
 import Redirect from "./pages/Redirect";
 import Auth from "./pages/Auth";
+import Onboarding from "./pages/Onboarding";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
 import Transparency from "./pages/Transparency";
@@ -52,6 +53,7 @@ const App = () => (
               <Route path="/redirect/:slug" element={<Redirect />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/perfil" element={<Settings />} />
+              <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/notificacoes" element={<Notifications />} />
               <Route path="/transparencia" element={<Transparency />} />
               <Route path="/privacidade" element={<Privacy />} />

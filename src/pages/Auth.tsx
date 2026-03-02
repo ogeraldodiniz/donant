@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { toast } from "sonner";
 
@@ -21,6 +22,11 @@ export default function Auth() {
   const { login, signup, resetPassword } = useAuth();
   const navigate = useNavigate();
 
+  const checkOnboardingNeeded = async (userId: string): Promise<boolean> => {
+    const { data } = await supabase.from("profiles").select("phone, selected_ngo_id").eq("id", userId).single();
+    return !data?.phone || !data?.selected_ngo_id;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -30,7 +36,14 @@ export default function Auth() {
       toast.error(error.message);
     } else {
       toast.success("Bem-vindo de volta!");
-      navigate("/");
+      // Check if onboarding needed
+      const { data: { session: s } } = await supabase.auth.getSession();
+      if (s?.user) {
+        const needsOnboarding = await checkOnboardingNeeded(s.user.id);
+        navigate(needsOnboarding ? "/onboarding" : "/");
+      } else {
+        navigate("/");
+      }
     }
   };
 
