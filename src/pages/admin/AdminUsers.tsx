@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CityPicker } from "@/components/CityPicker";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
@@ -419,14 +420,10 @@ export default function AdminUsers() {
               <label className="text-xs font-semibold text-muted-foreground">Telefone</label>
               <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="(11) 99999-9999" className="rounded-xl mt-1" />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Cidade</label>
-                <Input value={editCity} onChange={(e) => setEditCity(e.target.value)} placeholder="Cidade" className="rounded-xl mt-1" />
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-muted-foreground">Estado</label>
-                <Input value={editState} onChange={(e) => setEditState(e.target.value)} placeholder="UF" className="rounded-xl mt-1" />
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">Cidade / Estado</label>
+              <div className="mt-1">
+                <CityPicker city={editCity} state={editState} onCityChange={setEditCity} onStateChange={setEditState} compact showDetect />
               </div>
             </div>
             <div>

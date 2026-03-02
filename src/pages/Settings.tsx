@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { CityPicker } from "@/components/CityPicker";
 
 export default function Settings() {
   const { user, logout, refreshProfile } = useAuth();
@@ -27,6 +28,7 @@ export default function Settings() {
   const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
+  const [userState, setUserState] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
   const [notifyWeb, setNotifyWeb] = useState(true);
   const [notifyWhatsapp, setNotifyWhatsapp] = useState(false);
@@ -40,6 +42,7 @@ export default function Settings() {
       setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
       setCity(user.city ?? "");
+      setUserState(user.state ?? "");
       setAvatarUrl(user.avatar_url);
       setNotifyWeb(user.notify_web);
       setNotifyWhatsapp(user.notify_whatsapp);
@@ -50,7 +53,8 @@ export default function Settings() {
   const hasProfileChanges = user && (
     displayName !== (user.display_name ?? "") ||
     phone !== (user.phone ?? "") ||
-    city !== (user.city ?? "")
+    city !== (user.city ?? "") ||
+    userState !== (user.state ?? "")
   );
 
   const handleSaveProfile = async () => {
@@ -59,7 +63,7 @@ export default function Settings() {
     const rawPhone = phone.replace(/\D/g, "");
     const { error } = await supabase
       .from("profiles")
-      .update({ display_name: displayName, phone: rawPhone || null, city: city || null })
+      .update({ display_name: displayName, phone: rawPhone || null, city: city || null, state: userState || null })
       .eq("id", user.id);
     setSavingProfile(false);
     if (error) {
@@ -160,7 +164,7 @@ export default function Settings() {
                   className="rounded-xl h-9 text-xs sm:text-sm"
                 />
               </div>
-              <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder={t("city_placeholder", "Sua cidade")} className="rounded-xl h-9 text-xs sm:text-sm" />
+              <CityPicker city={city} state={userState} onCityChange={setCity} onStateChange={setUserState} compact showDetect />
             </div>
           </div>
           {hasProfileChanges && (
