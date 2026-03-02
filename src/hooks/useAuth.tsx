@@ -97,8 +97,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  const saveGeolocation = async (userId: string) => {
+    try {
+      const res = await fetch("https://ip-api.com/json/?fields=city,regionName");
+      if (res.ok) {
+        const geo = await res.json();
+        if (geo.city || geo.regionName) {
+          await supabase.from("profiles").update({
+            city: geo.city || null,
+            state: geo.regionName || null,
+          }).eq("id", userId);
+        }
+      }
+    } catch (e) {
+      console.warn("Geolocalização não disponível:", e);
+    }
+  };
+
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error, data } = await supabase.auth.signInWithPassword({ email, password });
+    if (!error && data.user) {
+      void saveGeolocation(data.user.id);
+    }
     return { error: error ? new Error(error.message) : null };
   };
 
