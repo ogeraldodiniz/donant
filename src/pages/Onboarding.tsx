@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, Heart, ArrowRight, Check, Loader2, MapPin } from "lucide-react";
+import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -8,20 +8,34 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNgos } from "@/hooks/useNgos";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useInstallPWA } from "@/hooks/useInstallPWA";
 
-type Step = "phone" | "ngo";
+type Step = "phone" | "location" | "ngo" | "install";
+
+const BRAZILIAN_STATES = [
+  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA",
+  "PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
+];
 
 export default function Onboarding() {
   const { user, refreshProfile, loading: authLoading } = useAuth();
   const { ngos, loading: ngosLoading } = useNgos();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const { canInstall, isIOS, install, isInstalled } = useInstallPWA();
 
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
   const [selectedNgoId, setSelectedNgoId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  // If user already completed onboarding, redirect
+  const showInstallStep = isMobile && !isInstalled;
+  const totalSteps = showInstallStep ? 4 : 3;
+  const stepIndex = step === "phone" ? 0 : step === "location" ? 1 : step === "ngo" ? 2 : 3;
+
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/auth");
@@ -52,6 +66,24 @@ export default function Onboarding() {
       toast.error("Erro ao salvar telefone");
       return;
     }
+    setStep("location");
+  };
+
+  const handleLocationNext = async () => {
+    if (!city.trim() || !state) {
+      toast.error("Informe cidade e estado");
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ city: city.trim(), state })
+      .eq("id", user!.id);
+    setSaving(false);
+    if (error) {
+      toast.error("Erro ao salvar localização");
+      return;
+    }
     setStep("ngo");
   };
 
@@ -71,22 +103,28 @@ export default function Onboarding() {
       return;
     }
     await refreshProfile();
-    toast.success("Tudo pronto! 🎉");
-    navigate("/");
+    if (showInstallStep) {
+      setStep("install");
+    } else {
+      toast.success("Tudo pronto! 🎉");
+      navigate("/");
+    }
   };
 
-  const handleSkipPhone = () => {
-    setStep("ngo");
+  const handleInstallFinish = async () => {
+    if (canInstall) {
+      await install();
+    }
+    toast.success("Tudo pronto! 🎉");
+    navigate("/");
   };
 
   if (authLoading) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Dark overlay */}
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
-      {/* Spotlight card */}
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -98,12 +136,18 @@ export default function Onboarding() {
         >
           <div className="bg-card border-2 border-primary/30 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-primary/10">
             {/* Progress dots */}
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <div className={`w-2.5 h-2.5 rounded-full transition-colors ${step === "phone" ? "bg-primary scale-125" : "bg-primary"}`} />
-              <div className={`w-8 h-0.5 ${step === "ngo" ? "bg-primary" : "bg-muted"}`} />
-              <div className={`w-2.5 h-2.5 rounded-full transition-colors ${step === "ngo" ? "bg-primary scale-125" : "bg-muted"}`} />
+            <div className="flex items-center justify-center gap-1.5 mb-6">
+              {Array.from({ length: totalSteps }).map((_, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  {i > 0 && <div className={`w-6 h-0.5 ${i <= stepIndex ? "bg-primary" : "bg-muted"}`} />}
+                  <div className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    i === stepIndex ? "bg-primary scale-125" : i < stepIndex ? "bg-primary" : "bg-muted"
+                  }`} />
+                </div>
+              ))}
             </div>
 
+            {/* STEP: Phone */}
             {step === "phone" && (
               <div className="space-y-5">
                 <div className="text-center">
@@ -111,11 +155,8 @@ export default function Onboarding() {
                     <Phone className="w-7 h-7 text-primary" />
                   </div>
                   <h2 className="text-xl font-black">Seu telefone</h2>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Para enviarmos atualizações sobre suas doações
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Para enviarmos atualizações sobre suas doações</p>
                 </div>
-
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -127,31 +168,57 @@ export default function Onboarding() {
                     autoFocus
                   />
                 </div>
-
-                <DuoButton
-                  size="lg"
-                  className="w-full"
-                  onClick={handlePhoneNext}
-                  disabled={saving}
-                >
-                  {saving ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <>
-                      Continuar <ArrowRight className="w-4 h-4" />
-                    </>
-                  )}
+                <DuoButton size="lg" className="w-full" onClick={handlePhoneNext} disabled={saving}>
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
                 </DuoButton>
-
-                <button
-                  onClick={handleSkipPhone}
-                  className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <button onClick={() => setStep("location")} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
                   Pular por agora
                 </button>
               </div>
             )}
 
+            {/* STEP: Location */}
+            {step === "location" && (
+              <div className="space-y-5">
+                <div className="text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <MapPin className="w-7 h-7 text-primary" />
+                  </div>
+                  <h2 className="text-xl font-black">Onde você mora?</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Para conectar você com ONGs da sua região</p>
+                </div>
+                <div className="space-y-3">
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Sua cidade"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      className="pl-10 h-12 rounded-2xl border-2 text-base"
+                      autoFocus
+                    />
+                  </div>
+                  <select
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    className="w-full h-12 rounded-2xl border-2 border-input bg-background px-4 text-base text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option value="">Selecione o estado</option>
+                    {BRAZILIAN_STATES.map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+                <DuoButton size="lg" className="w-full" onClick={handleLocationNext} disabled={saving}>
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
+                </DuoButton>
+                <button onClick={() => setStep("ngo")} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  Pular por agora
+                </button>
+              </div>
+            )}
+
+            {/* STEP: NGO */}
             {step === "ngo" && (
               <div className="space-y-5">
                 <div className="text-center">
@@ -159,11 +226,8 @@ export default function Onboarding() {
                     <Heart className="w-7 h-7 text-primary" />
                   </div>
                   <h2 className="text-xl font-black">Escolha sua ONG</h2>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Seus cashbacks serão doados para esta causa
-                  </p>
+                  <p className="text-sm text-muted-foreground mt-1">Seus cashbacks serão doados para esta causa</p>
                 </div>
-
                 {ngosLoading ? (
                   <div className="flex justify-center py-4">
                     <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
@@ -181,11 +245,7 @@ export default function Onboarding() {
                         }`}
                       >
                         {ngo.logo_url ? (
-                          <img
-                            src={ngo.logo_url}
-                            alt={ngo.name}
-                            className="w-10 h-10 rounded-xl object-cover shrink-0"
-                          />
+                          <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 rounded-xl object-cover shrink-0" />
                         ) : (
                           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                             <Heart className="w-5 h-5 text-primary" />
@@ -193,32 +253,99 @@ export default function Onboarding() {
                         )}
                         <div className="min-w-0 flex-1">
                           <p className="font-semibold text-sm truncate">{ngo.name}</p>
-                          {ngo.mission && (
-                            <p className="text-[11px] text-muted-foreground truncate">{ngo.mission}</p>
-                          )}
+                          {ngo.mission && <p className="text-[11px] text-muted-foreground truncate">{ngo.mission}</p>}
                         </div>
-                        {selectedNgoId === ngo.id && (
-                          <Check className="w-5 h-5 text-primary shrink-0" />
-                        )}
+                        {selectedNgoId === ngo.id && <Check className="w-5 h-5 text-primary shrink-0" />}
                       </button>
                     ))}
                   </div>
                 )}
+                <DuoButton size="lg" className="w-full" onClick={handleNgoFinish} disabled={saving || !selectedNgoId}>
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>
+                    {showInstallStep ? "Continuar" : "Começar a doar"} {showInstallStep ? <ArrowRight className="w-4 h-4" /> : <Heart className="w-4 h-4" />}
+                  </>}
+                </DuoButton>
+              </div>
+            )}
 
-                <DuoButton
-                  size="lg"
-                  className="w-full"
-                  onClick={handleNgoFinish}
-                  disabled={saving || !selectedNgoId}
-                >
-                  {saving ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+            {/* STEP: Install PWA (mobile only) */}
+            {step === "install" && (
+              <div className="space-y-5">
+                <div className="text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <Smartphone className="w-7 h-7 text-primary" />
+                  </div>
+                  <h2 className="text-xl font-black">Adicione à tela inicial</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Acesse mais rápido, como um app de verdade!</p>
+                </div>
+
+                {isIOS ? (
+                  <div className="bg-muted/50 rounded-2xl p-4 space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-sm font-black text-primary">1</div>
+                      <div>
+                        <p className="text-sm font-semibold">Toque no botão de compartilhar</p>
+                        <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                          O ícone <Share className="w-3.5 h-3.5 inline" /> na barra do Safari
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-sm font-black text-primary">2</div>
+                      <div>
+                        <p className="text-sm font-semibold">Selecione "Adicionar à Tela de Início"</p>
+                        <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                          O ícone <Plus className="w-3.5 h-3.5 inline" /> no menu
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-sm font-black text-primary">3</div>
+                      <div>
+                        <p className="text-sm font-semibold">Toque em "Adicionar"</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Pronto! O app aparecerá na sua tela inicial</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : canInstall ? (
+                  <div className="bg-muted/50 rounded-2xl p-4 text-center space-y-3">
+                    <Smartphone className="w-12 h-12 text-primary mx-auto" />
+                    <p className="text-sm text-muted-foreground">
+                      Instale o app para ter acesso rápido na sua tela inicial
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-muted/50 rounded-2xl p-4 space-y-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-sm font-black text-primary">1</div>
+                      <div>
+                        <p className="text-sm font-semibold">Abra o menu do navegador</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Toque nos 3 pontos (⋮) no canto superior</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-sm font-black text-primary">2</div>
+                      <div>
+                        <p className="text-sm font-semibold">Selecione "Adicionar à tela inicial"</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Ou "Instalar aplicativo"</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <DuoButton size="lg" className="w-full" onClick={handleInstallFinish}>
+                  {canInstall ? (
+                    <>Instalar app <Smartphone className="w-4 h-4" /></>
                   ) : (
-                    <>
-                      Começar a doar <Heart className="w-4 h-4" />
-                    </>
+                    <>Entendi, vamos lá! <ArrowRight className="w-4 h-4" /></>
                   )}
                 </DuoButton>
+                <button
+                  onClick={() => { toast.success("Tudo pronto! 🎉"); navigate("/"); }}
+                  className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Pular
+                </button>
               </div>
             )}
           </div>
