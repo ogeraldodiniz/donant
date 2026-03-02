@@ -39,6 +39,7 @@ export default function Settings() {
     if (user) {
       setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
+      setCity(user.city ?? "");
       setAvatarUrl(user.avatar_url);
       setNotifyWeb(user.notify_web);
       setNotifyWhatsapp(user.notify_whatsapp);
