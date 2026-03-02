@@ -31,10 +31,10 @@ export function BottomNav() {
   const items = [
     { to: "/lojas", icon: Store, label: "Lojas" },
     { to: "/ongs", icon: Heart, label: "ONGs" },
-    { to: "/notificacoes", icon: Bell, label: "Alertas", badge: unreadCount },
+    { to: "/notificacoes", icon: Bell, label: "Notificações", badge: unreadCount },
     { to: "/transparencia", icon: Eye, label: "Transparência" },
     { to: "/impacto", icon: BarChart3, label: "Impacto" },
-    { to: "/reclamar-cashback", icon: AlertTriangle, label: "Reclamar" },
+    { to: "/reclamar-cashback", icon: AlertTriangle, label: "Problemas" },
   ];
 
   return (
