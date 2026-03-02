@@ -199,8 +199,16 @@ export default function AdminBlog() {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <div>
-            <Label className="text-xs">Seção</Label>
-            <Input value={newSection} onChange={(e) => setNewSection(e.target.value)} placeholder="general" className="mt-1" />
+            <Label className="text-xs">Página / Seção</Label>
+            <select
+              value={newSection}
+              onChange={(e) => setNewSection(e.target.value)}
+              className="mt-1 w-full h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {availableSections.map((sec) => (
+                <option key={sec} value={sec}>{PAGE_LABELS[sec] || sec}</option>
+              ))}
+            </select>
           </div>
           <div>
             <Label className="text-xs">Chave</Label>
