@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Save, Loader2, Languages, Globe, Layout } from "lucide-react";
 import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { SECTION_DEFAULTS } from "@/lib/content-defaults";
 
 interface ContentRow {
   id: string;
@@ -147,6 +148,40 @@ export default function AdminBlog() {
     else toast.success(`${entries.length} conteúdo(s) salvo(s)!`);
     fetchContent();
   };
+
+  /** Auto-seed missing content keys for the active page sections */
+  const seedMissingSections = useCallback(async (sections: string[]) => {
+    const existingKeys = new Set(rows.map((r) => `${r.section}::${r.content_key}`));
+    const toInsert: { section: string; content_key: string; value: string; locale: string }[] = [];
+
+    for (const section of sections) {
+      const defaults = SECTION_DEFAULTS[section];
+      if (!defaults) continue;
+      for (const [key, value] of Object.entries(defaults)) {
+        if (!existingKeys.has(`${section}::${key}`)) {
+          toInsert.push({ section, content_key: key, value, locale });
+        }
+      }
+    }
+
+    if (toInsert.length > 0) {
+      const { error } = await supabase
+        .from("site_content")
+        .upsert(toInsert, { onConflict: "content_key,locale" });
+      if (!error) {
+        await fetchContent();
+      }
+    }
+  }, [rows, locale]);
+
+  // Auto-seed when active page changes
+  useEffect(() => {
+    const groups = viewMode === "pages" ? PAGES : GLOBAL;
+    const group = groups[activePage];
+    if (group && !loading) {
+      seedMissingSections(group.sections);
+    }
+  }, [activePage, viewMode, loading, seedMissingSections]);
 
   const currentGroups = viewMode === "pages" ? PAGES : GLOBAL;
   const activeGroup = currentGroups[activePage];
