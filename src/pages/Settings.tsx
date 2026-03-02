@@ -43,6 +43,7 @@ export default function Settings() {
       setPhone(user.phone ?? "");
       setCity(user.city ?? "");
       setUserState(user.state ?? "");
+      setAvatarUrl(user.avatar_url);
       setNotifyWeb(user.notify_web);
       setNotifyWhatsapp(user.notify_whatsapp);
       setNotifyEmail(user.notify_email);
