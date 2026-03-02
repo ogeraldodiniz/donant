@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      cashback_claims: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          ngo_id: string
+          order_number: string
+          purchase_date: string
+          status: string
+          store_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          ngo_id: string
+          order_number: string
+          purchase_date: string
+          status?: string
+          store_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          ngo_id?: string
+          order_number?: string
+          purchase_date?: string
+          status?: string
+          store_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cashback_claims_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cashback_claims_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cashback_transactions: {
         Row: {
           amount: number
