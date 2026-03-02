@@ -85,7 +85,7 @@ export function Header() {
           </button>
 
           {isLoggedIn ? (
-            <Link to="/configuracoes" className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
+            <Link to="/perfil" className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
                 {user?.display_name?.charAt(0) || 'U'}
               </div>
@@ -130,7 +130,7 @@ export function Header() {
             <>
               <MobileLink to="/impacto" label={t("nav_impact", "Meu Impacto")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/notificacoes" label={t("nav_notifications", "Notificações")} onClick={() => setMobileOpen(false)} />
-              <MobileLink to="/configuracoes" label={t("nav_settings", "Configurações")} onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/perfil" label={t("nav_settings", "Configurações")} onClick={() => setMobileOpen(false)} />
               {isAdmin && <MobileLink to="/admin" label="Painel Admin" onClick={() => setMobileOpen(false)} />}
             </>
           )}

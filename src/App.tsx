@@ -50,7 +50,7 @@ const App = () => (
               <Route path="/impacto" element={<Impact />} />
               <Route path="/redirect/:slug" element={<Redirect />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/configuracoes" element={<Settings />} />
+              <Route path="/perfil" element={<Settings />} />
               <Route path="/notificacoes" element={<Notifications />} />
               <Route path="/transparencia" element={<Transparency />} />
               <Route path="/privacidade" element={<Privacy />} />
