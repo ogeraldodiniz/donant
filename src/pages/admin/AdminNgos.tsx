@@ -19,6 +19,7 @@ interface Ngo {
   website_url: string | null;
   is_active: boolean;
   total_received: number;
+  locale: string;
 }
 
 const emptyNgo = {
@@ -29,6 +30,7 @@ const emptyNgo = {
   logo_url: "",
   website_url: "",
   is_active: true,
+  locale: "pt",
 };
 
 export default function AdminNgos() {
