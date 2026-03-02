@@ -30,11 +30,43 @@ const PAGES: Record<string, { label: string; sections: string[] }> = {
   },
   ngos_page: {
     label: "ONGs",
-    sections: ["ngos"],
+    sections: ["ngos_page"],
   },
   stores_page: {
     label: "Lojas",
-    sections: ["stores"],
+    sections: ["stores_page"],
+  },
+  impact_page: {
+    label: "Impacto",
+    sections: ["impact"],
+  },
+  transparency_page: {
+    label: "Transparência",
+    sections: ["transparency"],
+  },
+  auth_page: {
+    label: "Login / Cadastro",
+    sections: ["auth"],
+  },
+  settings_page: {
+    label: "Perfil / Configurações",
+    sections: ["settings"],
+  },
+  onboarding_page: {
+    label: "Onboarding",
+    sections: ["onboarding"],
+  },
+  notifications_page: {
+    label: "Notificações",
+    sections: ["notifications_page"],
+  },
+  privacy_page: {
+    label: "Privacidade",
+    sections: ["privacy"],
+  },
+  terms_page: {
+    label: "Termos de Uso",
+    sections: ["terms"],
   },
 };
 
@@ -52,9 +84,20 @@ const SECTION_LABELS: Record<string, string> = {
   cta: "Chamada para ação (CTA)",
   faq: "Perguntas frequentes (FAQ)",
   home_logged: "Home logado",
-  ngos: "ONGs",
-  stores: "Lojas",
+  ngos: "ONGs (home)",
+  stores: "Lojas (home)",
+  ngos_page: "Página de ONGs",
+  stores_page: "Página de Lojas",
+  impact: "Impacto",
+  transparency: "Transparência",
+  auth: "Login / Cadastro",
+  settings: "Perfil",
+  onboarding: "Onboarding",
+  notifications_page: "Notificações",
+  privacy: "Privacidade",
+  terms: "Termos de Uso",
   nav: "Menu de navegação",
+  footer: "Rodapé",
   footer: "Rodapé",
 };
 
