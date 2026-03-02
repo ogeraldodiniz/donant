@@ -37,8 +37,8 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t-2 border-border">
-      <div className="flex items-center justify-around h-14 safe-area-pb">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t-2 border-border pb-[env(safe-area-inset-bottom)]">
+      <div className="flex items-center justify-around h-14">
         {items.map(({ to, icon: Icon, label, badge }) => {
           const active = to === "/" ? location.pathname === "/" : location.pathname === to || location.pathname.startsWith(to);
           return (

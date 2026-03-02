@@ -11,7 +11,7 @@ export function AppLayout() {
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
       <OnboardingGuard />
-      <main className="flex-1 pb-[4.5rem] md:pb-0">
+      <main className="flex-1 pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0">
         <Outlet />
       </main>
       {isLoggedIn && <BottomNav />}
