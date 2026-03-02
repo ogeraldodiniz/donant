@@ -39,10 +39,10 @@ export default function Notifications() {
     await supabase.from("notifications").update({ is_read: true }).eq("id", id);
   };
 
-  const typeEmoji: Record<string, string> = {
-    status_change: '🔄',
-    donation_confirmed: '💚',
-    general: '📢',
+  const typeIcon: Record<string, LucideIcon> = {
+    status_change: RefreshCw,
+    donation_confirmed: Heart,
+    general: Megaphone,
   };
 
   if (loading) {
