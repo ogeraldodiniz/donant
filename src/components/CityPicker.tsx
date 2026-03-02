@@ -119,21 +119,6 @@ export function CityPicker({
 
   return (
     <div className={`space-y-2 ${className}`}>
-      {showDetect && (
-        <button
-          type="button"
-          onClick={detectLocation}
-          disabled={detectingLocation}
-          className="w-full flex items-center justify-center gap-2 h-9 rounded-xl border border-dashed border-primary/30 text-primary text-xs font-semibold hover:bg-primary/5 transition-colors disabled:opacity-50"
-        >
-          {detectingLocation ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <LocateFixed className="w-3.5 h-3.5" />
-          )}
-          Detectar localização
-        </button>
-      )}
 
       <div className="relative">
         <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
