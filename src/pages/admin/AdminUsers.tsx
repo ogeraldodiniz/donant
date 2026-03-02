@@ -3,7 +3,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
 import { Input } from "@/components/ui/input";
-import { Search, Phone, Mail, BellOff, Globe, MessageCircle, ChevronDown, ChevronUp, UserPlus, Trash2, Loader2 } from "lucide-react";
+import { Search, Phone, Mail, BellOff, Globe, MessageCircle, ChevronDown, ChevronUp, UserPlus, Trash2, Loader2, Pencil, Save } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
@@ -69,9 +77,59 @@ export default function AdminUsers() {
   const [newName, setNewName] = useState("");
   const [creating, setCreating] = useState(false);
 
+  // Edit user
+  const [editTarget, setEditTarget] = useState<UserProfile | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editCity, setEditCity] = useState("");
+  const [editState, setEditState] = useState("");
+  const [editNgoId, setEditNgoId] = useState("");
+  const [editNotifyWeb, setEditNotifyWeb] = useState(false);
+  const [editNotifyWhatsapp, setEditNotifyWhatsapp] = useState(false);
+  const [editNotifyEmail, setEditNotifyEmail] = useState(false);
+  const [saving, setSaving] = useState(false);
+
   // Delete user
   const [deleteTarget, setDeleteTarget] = useState<UserProfile | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  const openEdit = (u: UserProfile) => {
+    setEditTarget(u);
+    setEditName(u.display_name ?? "");
+    setEditPhone(u.phone ?? "");
+    setEditCity(u.city ?? "");
+    setEditState(u.state ?? "");
+    setEditNgoId(u.selected_ngo_id ?? "");
+    setEditNotifyWeb(u.notify_web);
+    setEditNotifyWhatsapp(u.notify_whatsapp);
+    setEditNotifyEmail(u.notify_email);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editTarget) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        display_name: editName || null,
+        phone: editPhone || null,
+        city: editCity || null,
+        state: editState || null,
+        selected_ngo_id: editNgoId || null,
+        notify_web: editNotifyWeb,
+        notify_whatsapp: editNotifyWhatsapp,
+        notify_email: editNotifyEmail,
+      })
+      .eq("id", editTarget.id);
+    setSaving(false);
+    if (error) {
+      toast.error("Erro ao salvar: " + error.message);
+    } else {
+      toast.success("Usuário atualizado");
+      setEditTarget(null);
+      fetchData();
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -294,12 +352,18 @@ export default function AdminUsers() {
                       </div>
                     )}
 
-                    <div className="pt-2 border-t border-border">
+                    <div className="pt-2 border-t border-border flex items-center gap-4">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openEdit(u); }}
+                        className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+                      >
+                        <Pencil className="w-3 h-3" /> Editar
+                      </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); setDeleteTarget(u); }}
                         className="text-xs text-destructive font-bold hover:underline flex items-center gap-1"
                       >
-                        <Trash2 className="w-3 h-3" /> Excluir usuário
+                        <Trash2 className="w-3 h-3" /> Excluir
                       </button>
                     </div>
                   </div>
@@ -340,7 +404,70 @@ export default function AdminUsers() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete confirmation */}
+      {/* Edit user dialog */}
+      <Dialog open={!!editTarget} onOpenChange={(open) => !open && setEditTarget(null)}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar usuário</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">Nome</label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Nome" className="rounded-xl mt-1" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">Telefone</label>
+              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="(11) 99999-9999" className="rounded-xl mt-1" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">Cidade</label>
+                <Input value={editCity} onChange={(e) => setEditCity(e.target.value)} placeholder="Cidade" className="rounded-xl mt-1" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">Estado</label>
+                <Input value={editState} onChange={(e) => setEditState(e.target.value)} placeholder="UF" className="rounded-xl mt-1" />
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">ONG selecionada</label>
+              <Select value={editNgoId} onValueChange={setEditNgoId}>
+                <SelectTrigger className="rounded-xl mt-1">
+                  <SelectValue placeholder="Nenhuma" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(ngos).map(([id, name]) => (
+                    <SelectItem key={id} value={id}>{name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2 pt-1">
+              <label className="text-xs font-semibold text-muted-foreground">Notificações</label>
+              <div className="flex items-center justify-between">
+                <span className="text-xs">Push (navegador)</span>
+                <Switch checked={editNotifyWeb} onCheckedChange={setEditNotifyWeb} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs">WhatsApp</span>
+                <Switch checked={editNotifyWhatsapp} onCheckedChange={setEditNotifyWhatsapp} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs">E-mail</span>
+                <Switch checked={editNotifyEmail} onCheckedChange={setEditNotifyEmail} />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <DuoButton variant="outline" onClick={() => setEditTarget(null)}>Cancelar</DuoButton>
+            <DuoButton onClick={handleSaveEdit} disabled={saving}>
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Salvar
+            </DuoButton>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
