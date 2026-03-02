@@ -159,20 +159,24 @@ export function Header() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-card p-4 space-y-2">
-          <MobileLink to="/" label="Home" onClick={() => setMobileOpen(false)} />
-          <MobileLink to="/lojas" label={t("nav_stores", "Lojas")} onClick={() => setMobileOpen(false)} />
-          <MobileLink to="/ongs" label={t("nav_ngos", "ONGs")} onClick={() => setMobileOpen(false)} />
-          <MobileLink to="/transparencia" label={t("nav_transparency", "Transparência")} onClick={() => setMobileOpen(false)} />
-          {isLoggedIn && (
+          {isLoggedIn ? (
             <>
+              <MobileLink to="/" label="Home" onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/lojas" label={t("nav_stores", "Lojas")} onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/ongs" label={t("nav_ngos", "ONGs")} onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/transparencia" label={t("nav_transparency", "Transparência")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/impacto" label={t("nav_impact", "Meu Impacto")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/reclamar-cashback" label={t("nav_claim", "Reclamar Cashback")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/notificacoes" label={t("nav_notifications", "Notificações")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/perfil" label={t("nav_settings", "Configurações")} onClick={() => setMobileOpen(false)} />
               {isAdmin && <MobileLink to="/admin" label="Painel Admin" onClick={() => setMobileOpen(false)} />}
             </>
+          ) : (
+            <>
+              <MobileLink to="/auth" label={t("nav_login", "Entrar")} onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/auth?tab=signup" label={t("nav_signup", "Criar conta")} onClick={() => setMobileOpen(false)} />
+            </>
           )}
-          {!isLoggedIn && <MobileLink to="/auth" label={t("nav_login", "Entrar / Cadastrar")} onClick={() => setMobileOpen(false)} />}
         </div>
       )}
     </header>
