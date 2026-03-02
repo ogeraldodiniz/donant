@@ -268,7 +268,6 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Termos ──
   terms: {
-    back: "Voltar",
     title: "Termos de Uso",
     last_update: "Última atualização: Março de 2026",
     s1_title: "1. Aceitação",
