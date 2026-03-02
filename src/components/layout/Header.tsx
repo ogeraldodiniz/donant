@@ -15,7 +15,25 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const { theme, setTheme } = useTheme();
-  const unreadCount = 2; // mock
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!session?.user?.id) { setUnreadCount(0); return; }
+    const fetchUnread = () => {
+      supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", session.user.id)
+        .eq("is_read", false)
+        .then(({ count }) => setUnreadCount(count ?? 0));
+    };
+    fetchUnread();
+    const channel = supabase
+      .channel("unread-notifications")
+      .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${session.user.id}` }, fetchUnread)
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [session?.user?.id]);
 
   const cycleTheme = () => {
     if (theme === "light") setTheme("dark");
