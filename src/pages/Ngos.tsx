@@ -63,11 +63,6 @@ export default function Ngos() {
                   )}
                   <div className="p-3 sm:p-4 space-y-1.5">
                     <p className="font-bold text-sm truncate">{ngo.name}</p>
-                    {isSelected && (
-                      <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-primary">
-                        <Check className="w-3 h-3" /> Sua escolha
-                      </span>
-                    )}
                     <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{ngo.description}</p>
                     <p className="text-[10px] sm:text-xs text-primary font-bold">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
                     {isLoggedIn && !isSelected && (
@@ -85,6 +80,11 @@ export default function Ngos() {
                           </>
                         )}
                       </button>
+                    )}
+                    {isSelected && (
+                      <div className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary/10 border border-primary/30 text-primary text-xs font-bold flex items-center justify-center gap-1.5">
+                        <Check className="w-3 h-3" /> Sua escolha
+                      </div>
                     )}
                   </div>
                 </DuoCard>
