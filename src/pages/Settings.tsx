@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Loader2, Sun, Moon, Monitor } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Loader2, Sun, Moon, Monitor, Bell, Phone } from "lucide-react";
 import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
@@ -11,14 +11,61 @@ import { toast } from "sonner";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { useNgos } from "@/hooks/useNgos";
 import { useSelectNgo } from "@/hooks/useSelectNgo";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Settings() {
-  const { user, logout } = useAuth();
+  const { user, logout, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [showDelete, setShowDelete] = useState(false);
   const { ngos, loading: ngosLoading } = useNgos();
   const { selectNgo, saving } = useSelectNgo();
   const { theme, setTheme } = useTheme();
+
+  const [phone, setPhone] = useState("");
+  const [notifyWeb, setNotifyWeb] = useState(true);
+  const [notifyWhatsapp, setNotifyWhatsapp] = useState(false);
+  const [notifyEmail, setNotifyEmail] = useState(true);
+  const [savingPrefs, setSavingPrefs] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setPhone(user.phone ?? "");
+      setNotifyWeb(user.notify_web);
+      setNotifyWhatsapp(user.notify_whatsapp);
+      setNotifyEmail(user.notify_email);
+    }
+  }, [user]);
+
+  const savePrefs = async (updates: Record<string, unknown>) => {
+    if (!user) return;
+    setSavingPrefs(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update(updates)
+      .eq("id", user.id);
+    setSavingPrefs(false);
+    if (error) {
+      toast.error("Erro ao salvar preferências");
+    } else {
+      toast.success("Preferências salvas");
+      await refreshProfile();
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    if (phone !== (user?.phone ?? "")) {
+      savePrefs({ phone: phone || null });
+    }
+  };
+
+  const toggleNotification = (key: "notify_web" | "notify_whatsapp" | "notify_email", value: boolean) => {
+    if (key === "notify_web") setNotifyWeb(value);
+    if (key === "notify_whatsapp") setNotifyWhatsapp(value);
+    if (key === "notify_email") setNotifyEmail(value);
+    savePrefs({ [key]: value });
+  };
 
   const handleLogout = async () => {
     try {
@@ -59,6 +106,48 @@ export default function Settings() {
 
       {/* Level */}
       <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
+
+      {/* Phone */}
+      <DuoCard className="p-3.5 sm:p-5">
+        <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> Telefone</h3>
+        <Input
+          type="tel"
+          placeholder="(11) 99999-9999"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          onBlur={handlePhoneBlur}
+          className="rounded-xl"
+        />
+        <p className="text-[10px] sm:text-xs text-muted-foreground mt-1.5">Usado para notificações via WhatsApp</p>
+      </DuoCard>
+
+      {/* Notifications */}
+      <DuoCard className="p-3.5 sm:p-5">
+        <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Bell className="w-4 h-4 text-primary" /> Notificações</h3>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-semibold">Push (navegador)</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Receba alertas no navegador</p>
+            </div>
+            <Switch checked={notifyWeb} onCheckedChange={(v) => toggleNotification("notify_web", v)} disabled={savingPrefs} />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-semibold">WhatsApp</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Receba atualizações no WhatsApp</p>
+            </div>
+            <Switch checked={notifyWhatsapp} onCheckedChange={(v) => toggleNotification("notify_whatsapp", v)} disabled={savingPrefs || !phone} />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm font-semibold">E-mail</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground">Receba novidades por e-mail</p>
+            </div>
+            <Switch checked={notifyEmail} onCheckedChange={(v) => toggleNotification("notify_email", v)} disabled={savingPrefs} />
+          </div>
+        </div>
+      </DuoCard>
 
       {/* Selected NGO */}
       <DuoCard className="p-3.5 sm:p-5">
