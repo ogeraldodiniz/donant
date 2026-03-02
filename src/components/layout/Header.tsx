@@ -62,10 +62,10 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          <NavItem to="/lojas" icon={Store} label={t("nav_stores", "Lojas")} />
-          <NavItem to="/ongs" icon={Heart} label={t("nav_ngos", "ONGs")} />
           {isLoggedIn && (
             <>
+              <NavItem to="/lojas" icon={Store} label={t("nav_stores", "Lojas")} />
+              <NavItem to="/ongs" icon={Heart} label={t("nav_ngos", "ONGs")} />
               <NavItem to="/notificacoes" icon={Bell} label={t("nav_notifications", "Notificações")} badge={unreadCount} />
               {/* Mais dropdown */}
               <div className="relative group">
@@ -124,9 +124,14 @@ export function Header() {
               <span className="text-sm font-semibold">{user?.display_name?.split(' ')[0]}</span>
             </Link>
           ) : (
-            <Link to="/auth" className="inline-flex items-center gap-2 h-10 px-5 rounded-2xl bg-primary text-primary-foreground font-bold text-sm duo-shadow hover:brightness-105 active:translate-y-1 active:shadow-none transition-all">
-              <LogIn className="w-4 h-4" /> {t("nav_login", "Entrar")}
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/auth" className="inline-flex items-center gap-2 h-10 px-5 rounded-2xl bg-primary text-primary-foreground font-bold text-sm duo-shadow hover:brightness-105 active:translate-y-1 active:shadow-none transition-all">
+                <LogIn className="w-4 h-4" /> {t("nav_login", "Entrar")}
+              </Link>
+              <Link to="/auth?tab=signup" className="inline-flex items-center h-10 px-5 rounded-2xl border-2 border-border font-bold text-sm hover:bg-muted transition-colors">
+                {t("nav_signup", "Criar conta")}
+              </Link>
+            </div>
           )}
         </div>
 
@@ -154,20 +159,24 @@ export function Header() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-card p-4 space-y-2">
-          <MobileLink to="/" label="Home" onClick={() => setMobileOpen(false)} />
-          <MobileLink to="/lojas" label={t("nav_stores", "Lojas")} onClick={() => setMobileOpen(false)} />
-          <MobileLink to="/ongs" label={t("nav_ngos", "ONGs")} onClick={() => setMobileOpen(false)} />
-          <MobileLink to="/transparencia" label={t("nav_transparency", "Transparência")} onClick={() => setMobileOpen(false)} />
-          {isLoggedIn && (
+          {isLoggedIn ? (
             <>
+              <MobileLink to="/" label="Home" onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/lojas" label={t("nav_stores", "Lojas")} onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/ongs" label={t("nav_ngos", "ONGs")} onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/transparencia" label={t("nav_transparency", "Transparência")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/impacto" label={t("nav_impact", "Meu Impacto")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/reclamar-cashback" label={t("nav_claim", "Reclamar Cashback")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/notificacoes" label={t("nav_notifications", "Notificações")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/perfil" label={t("nav_settings", "Configurações")} onClick={() => setMobileOpen(false)} />
               {isAdmin && <MobileLink to="/admin" label="Painel Admin" onClick={() => setMobileOpen(false)} />}
             </>
+          ) : (
+            <>
+              <MobileLink to="/auth" label={t("nav_login", "Entrar")} onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/auth?tab=signup" label={t("nav_signup", "Criar conta")} onClick={() => setMobileOpen(false)} />
+            </>
           )}
-          {!isLoggedIn && <MobileLink to="/auth" label={t("nav_login", "Entrar / Cadastrar")} onClick={() => setMobileOpen(false)} />}
         </div>
       )}
     </header>

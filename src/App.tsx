@@ -31,6 +31,7 @@ import AdminBlog from "./pages/admin/AdminBlog";
 import AdminPush from "./pages/admin/AdminPush";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminClaims from "./pages/admin/AdminClaims";
+import OAuthBridge from "./pages/OAuthBridge";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -72,6 +73,8 @@ const App = () => (
               <Route path="/admin/usuarios" element={<AdminUsers />} />
               <Route path="/admin/reclamacoes" element={<AdminClaims />} />
             </Route>
+            <Route path="/~oauth/initiate" element={<OAuthBridge mode="initiate" />} />
+            <Route path="/~oauth/callback" element={<OAuthBridge mode="callback" />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
