@@ -1,4 +1,4 @@
-import { Heart, Store, FileText, Bell } from "lucide-react";
+import { Heart, Store, FileText, Bell, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DuoCard } from "@/components/ui/duo-card";
 
