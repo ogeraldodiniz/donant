@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Save, Loader2, Languages, Plus, Trash2 } from "lucide-react";
+import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
 import { Input } from "@/components/ui/input";
@@ -17,10 +18,8 @@ interface ContentRow {
   locale: string;
 }
 
-type Locale = "pt" | "es";
-
 export default function AdminBlog() {
-  const [locale, setLocale] = useState<Locale>("pt");
+  const { adminLocale: locale } = useAdminLocale();
   const [rows, setRows] = useState<ContentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -118,28 +117,13 @@ export default function AdminBlog() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-black flex items-center gap-2">
-            <Languages className="w-6 h-6" /> CMS / Conteúdos
+            <Languages className="w-6 h-6" /> Conteúdos ({locale.toUpperCase()})
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Edite textos do site em cada idioma
+            Edite textos do site — use o seletor de idioma no topo para alternar
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex gap-1 bg-muted rounded-xl p-1">
-            {(["pt", "es"] as Locale[]).map((loc) => (
-              <button
-                key={loc}
-                onClick={() => setLocale(loc)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-colors ${
-                  locale === loc
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {loc === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
-              </button>
-            ))}
-          </div>
           {editedCount > 0 && (
             <DuoButton size="sm" onClick={handleSaveAll} disabled={saving}>
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}

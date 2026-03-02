@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Save, X, Loader2 } from "lucide-react";
+import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,7 @@ const emptyNgo = {
 };
 
 export default function AdminNgos() {
+  const { adminLocale } = useAdminLocale();
   const [ngos, setNgos] = useState<Ngo[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<string | null>(null);
@@ -43,14 +45,14 @@ export default function AdminNgos() {
 
   const fetchNgos = async () => {
     setLoading(true);
-    const { data } = await supabase.from("ngos").select("*").order("name");
+    const { data } = await supabase.from("ngos").select("*").eq("locale", adminLocale).order("name");
     if (data) setNgos(data);
     setLoading(false);
   };
 
   useEffect(() => {
     fetchNgos();
-  }, []);
+  }, [adminLocale]);
 
   const generateSlug = (name: string) =>
     name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -73,7 +75,7 @@ export default function AdminNgos() {
   const handleCreate = () => {
     setCreating(true);
     setEditing(null);
-    setForm(emptyNgo);
+    setForm({ ...emptyNgo, locale: adminLocale });
   };
 
   const handleCancel = () => {
@@ -127,7 +129,7 @@ export default function AdminNgos() {
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-black">Gerenciar ONGs</h1>
+        <h1 className="text-2xl font-black">ONGs ({adminLocale.toUpperCase()})</h1>
         <DuoButton size="sm" onClick={handleCreate} disabled={creating}>
           <Plus className="w-4 h-4" /> Nova ONG
         </DuoButton>
@@ -164,25 +166,6 @@ export default function AdminNgos() {
             <div className="flex items-center gap-2">
               <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
               <Label>Ativa</Label>
-            </div>
-            <div>
-              <Label>Idioma</Label>
-              <div className="flex gap-2 mt-1">
-                <button
-                  type="button"
-                  onClick={() => setForm({ ...form, locale: "pt" })}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${form.locale === "pt" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
-                >
-                  🇧🇷 PT
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setForm({ ...form, locale: "es" })}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${form.locale === "es" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
-                >
-                  🇪🇸 ES
-                </button>
-              </div>
             </div>
           </div>
           <div className="flex gap-3">

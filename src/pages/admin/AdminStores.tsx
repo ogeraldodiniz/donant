@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, Loader2, RefreshCw } from "lucide-react";
+import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ interface StoreRow {
 }
 
 export default function AdminStores() {
+  const { adminLocale } = useAdminLocale();
   const [stores, setStores] = useState<StoreRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -31,6 +33,7 @@ export default function AdminStores() {
     const { data, error } = await supabase
       .from("stores")
       .select("id, name, slug, logo_url, category, cashback_rate, is_active, website_url, locale")
+      .eq("locale", adminLocale)
       .order("name");
     if (error) {
       toast.error("Erro ao carregar lojas");
@@ -42,7 +45,7 @@ export default function AdminStores() {
 
   useEffect(() => {
     fetchStores();
-  }, []);
+  }, [adminLocale]);
 
   const toggleActive = async (id: string, currentValue: boolean) => {
     setToggling(id);
@@ -87,7 +90,7 @@ export default function AdminStores() {
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-black">Lojas</h1>
+          <h1 className="text-2xl font-black">Lojas ({adminLocale.toUpperCase()})</h1>
           <p className="text-sm text-muted-foreground">
             {activeCount} ativas de {stores.length} total
           </p>
@@ -140,7 +143,7 @@ export default function AdminStores() {
               <div className="flex-1 min-w-0">
                 <p className="font-bold truncate">{store.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {store.category || "Sem categoria"} · {Number(store.cashback_rate)}% cashback · {store.locale === "es" ? "🇪🇸 ES" : "🇧🇷 PT"}
+                  {store.category || "Sem categoria"} · {Number(store.cashback_rate)}% cashback
                 </p>
               </div>
               <div className="flex items-center gap-2">
