@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Bell, Check, Loader2 } from "lucide-react";
+import { Bell, Check, Loader2, RefreshCw, Heart, Megaphone } from "lucide-react";
 import { DuoCard } from "@/components/ui/duo-card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import type { LucideIcon } from "lucide-react";
 
 interface NotificationRow {
   id: string;
