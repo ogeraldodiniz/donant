@@ -5,7 +5,9 @@ import { useInstallPWA } from "@/hooks/useInstallPWA";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
-const DISMISSED_KEY = "mycashbacks_install_dismissed";
+const DISMISSED_KEY = "mycashbacks_install_dismissed_at";
+const INSTALLED_KEY = "mycashbacks_install_clicked";
+const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
 
 interface InstallAppBannerProps {
   /** Force show even if previously dismissed (for Settings page) */
@@ -14,27 +16,33 @@ interface InstallAppBannerProps {
 
 export function InstallAppBanner({ forceShow = false }: InstallAppBannerProps) {
   const { canInstall, isInstalled, isIOS, isInIframe, install } = useInstallPWA();
-  const [dismissed, setDismissed] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (!forceShow) {
-      setDismissed(localStorage.getItem(DISMISSED_KEY) === "true");
-    }
+    if (forceShow) { setVisible(true); return; }
+    // If user clicked install, never show again
+    if (localStorage.getItem(INSTALLED_KEY) === "true") { setVisible(false); return; }
+    const dismissedAt = localStorage.getItem(DISMISSED_KEY);
+    if (!dismissedAt) { setVisible(true); return; }
+    // Show again after 5 days
+    const elapsed = Date.now() - parseInt(dismissedAt, 10);
+    setVisible(elapsed >= FIVE_DAYS_MS);
   }, [forceShow]);
 
   if (isInstalled) return null;
-  if (!forceShow && dismissed) return null;
+  if (!visible) return null;
   if (!isIOS && !canInstall && !isInIframe) return null;
 
   const handleDismiss = () => {
-    localStorage.setItem(DISMISSED_KEY, "true");
-    setDismissed(true);
+    localStorage.setItem(DISMISSED_KEY, String(Date.now()));
+    setVisible(false);
   };
 
   const handleInstall = async () => {
     const accepted = await install();
     if (accepted) {
-      handleDismiss();
+      localStorage.setItem(INSTALLED_KEY, "true");
+      setVisible(false);
     } else {
       if (isInIframe) {
         window.alert("A instalação não funciona dentro do preview. Abra o app publicado no navegador do celular para instalar.");
