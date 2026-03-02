@@ -89,7 +89,7 @@ export function Header() {
                       <BarChart3 className="w-4 h-4" /> {t("nav_impact", "Impacto")}
                     </Link>
                     <Link to="/reclamar-cashback" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-muted transition-colors">
-                      <AlertTriangle className="w-4 h-4" /> {t("nav_claim", "Reclamar Cashback")}
+                      <AlertTriangle className="w-4 h-4" /> {t("nav_claim", "Problemas com Cashback")}
                     </Link>
                   </div>
                 </div>
