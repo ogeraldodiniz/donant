@@ -86,7 +86,7 @@ export default function NgoDetail() {
 
       {ngo.mission && (
         <DuoCard>
-          <h3 className="font-bold text-sm sm:text-base mb-2">🎯 Missão</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> Missão</h3>
           <p className="text-xs sm:text-sm text-muted-foreground">{ngo.mission}</p>
         </DuoCard>
       )}
