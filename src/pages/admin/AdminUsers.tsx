@@ -404,7 +404,70 @@ export default function AdminUsers() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete confirmation */}
+      {/* Edit user dialog */}
+      <Dialog open={!!editTarget} onOpenChange={(open) => !open && setEditTarget(null)}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar usuário</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">Nome</label>
+              <Input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Nome" className="rounded-xl mt-1" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">Telefone</label>
+              <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="(11) 99999-9999" className="rounded-xl mt-1" />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">Cidade</label>
+                <Input value={editCity} onChange={(e) => setEditCity(e.target.value)} placeholder="Cidade" className="rounded-xl mt-1" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-muted-foreground">Estado</label>
+                <Input value={editState} onChange={(e) => setEditState(e.target.value)} placeholder="UF" className="rounded-xl mt-1" />
+              </div>
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground">ONG selecionada</label>
+              <Select value={editNgoId} onValueChange={setEditNgoId}>
+                <SelectTrigger className="rounded-xl mt-1">
+                  <SelectValue placeholder="Nenhuma" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(ngos).map(([id, name]) => (
+                    <SelectItem key={id} value={id}>{name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2 pt-1">
+              <label className="text-xs font-semibold text-muted-foreground">Notificações</label>
+              <div className="flex items-center justify-between">
+                <span className="text-xs">Push (navegador)</span>
+                <Switch checked={editNotifyWeb} onCheckedChange={setEditNotifyWeb} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs">WhatsApp</span>
+                <Switch checked={editNotifyWhatsapp} onCheckedChange={setEditNotifyWhatsapp} />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs">E-mail</span>
+                <Switch checked={editNotifyEmail} onCheckedChange={setEditNotifyEmail} />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <DuoButton variant="outline" onClick={() => setEditTarget(null)}>Cancelar</DuoButton>
+            <DuoButton onClick={handleSaveEdit} disabled={saving}>
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              Salvar
+            </DuoButton>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
