@@ -36,6 +36,7 @@ export default function Settings() {
   const [savingProfile, setSavingProfile] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [savingPrefs, setSavingPrefs] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (user) {
