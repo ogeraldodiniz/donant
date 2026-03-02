@@ -40,7 +40,7 @@ export function BottomNav() {
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t-2 border-border">
       <div className="flex items-center justify-around h-14 safe-area-pb">
         {items.map(({ to, icon: Icon, label, badge }) => {
-          const active = location.pathname === to || (to !== "/" && location.pathname.startsWith(to));
+          const active = to === "/" ? location.pathname === "/" : location.pathname === to || location.pathname.startsWith(to);
           return (
             <Link
               key={to}
