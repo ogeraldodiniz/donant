@@ -165,6 +165,25 @@ export default function AdminNgos() {
               <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
               <Label>Ativa</Label>
             </div>
+            <div>
+              <Label>Idioma</Label>
+              <div className="flex gap-2 mt-1">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, locale: "pt" })}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${form.locale === "pt" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+                >
+                  🇧🇷 PT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, locale: "es" })}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${form.locale === "es" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+                >
+                  🇪🇸 ES
+                </button>
+              </div>
+            </div>
           </div>
           <div className="flex gap-3">
             <DuoButton variant="outline" size="sm" onClick={handleCancel}><X className="w-4 h-4" /> Cancelar</DuoButton>
