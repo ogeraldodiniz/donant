@@ -13,6 +13,7 @@ export default function AdminPush() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("/notificacoes");
+  const [targetLocale, setTargetLocale] = useState<"all" | "pt" | "es">("all");
   const [sending, setSending] = useState(false);
   const [lastResult, setLastResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
   const { permission, subscribing, subscribe, isSupported } = usePushNotifications();
