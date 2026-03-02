@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Loader2 } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Loader2, Sun, Moon, Monitor } from "lucide-react";
+import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
 import { DuoButton } from "@/components/ui/duo-button";
