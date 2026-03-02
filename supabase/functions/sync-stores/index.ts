@@ -19,12 +19,13 @@ interface MycProgram {
 }
 
 async function getMycToken(): Promise<string> {
-  const apiUrl = Deno.env.get("MYCASHBACKS_API_URL")!;
+  const apiUrl = Deno.env.get("MYCASHBACKS_API_URL")!.replace(/\/+$/, "");
   const username = Deno.env.get("MYCASHBACKS_USERNAME")!;
   const password = Deno.env.get("MYCASHBACKS_PASSWORD")!;
   const appId = Deno.env.get("MYCASHBACKS_APP_ID")!;
 
-  const res = await fetch(`${apiUrl}/api/auth`, {
+  const authUrl = `${apiUrl}/api/auth`;
+  console.log("Auth URL:", authUrl);
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
