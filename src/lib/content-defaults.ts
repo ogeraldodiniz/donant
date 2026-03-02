@@ -156,7 +156,7 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Impacto ──
   impact: {
-    title: "Seu Impacto 💜",
+    title: "Seu Impacto",
     subtitle: "Acompanhe suas doações",
     label_pending: "Pendente",
     label_confirmed: "Confirmado",
