@@ -34,6 +34,8 @@ interface UserProfile {
   notify_whatsapp: boolean;
   notify_email: boolean;
   selected_ngo_id: string | null;
+  city: string | null;
+  state: string | null;
   created_at: string;
   updated_at: string;
 }
