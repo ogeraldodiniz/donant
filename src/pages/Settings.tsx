@@ -111,7 +111,14 @@ export default function Settings() {
               type="tel"
               placeholder="(11) 99999-9999"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => {
+                const digits = e.target.value.replace(/\D/g, "").slice(0, 11);
+                let formatted = digits;
+                if (digits.length > 2) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+                else if (digits.length > 0) formatted = `(${digits}`;
+                if (digits.length > 7) formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+                setPhone(formatted);
+              }}
               onBlur={handlePhoneBlur}
               className="rounded-xl h-9 text-xs sm:text-sm"
             />
