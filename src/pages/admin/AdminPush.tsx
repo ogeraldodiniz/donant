@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { toast } from "sonner";
 
 export default function AdminPush() {
@@ -14,6 +15,23 @@ export default function AdminPush() {
   const [url, setUrl] = useState("/notificacoes");
   const [sending, setSending] = useState(false);
   const [lastResult, setLastResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
+  const { permission, subscribing, subscribe, isSupported } = usePushNotifications();
+
+  const handleSubscribeThisBrowser = async () => {
+    const ok = await subscribe();
+
+    if (ok) {
+      toast.success("Navegador inscrito com sucesso para receber push");
+      return;
+    }
+
+    if (Notification?.permission === "denied") {
+      toast.error("Permissão negada. Libere notificações nas configurações do navegador.");
+      return;
+    }
+
+    toast.error("Não foi possível inscrever este navegador em push.");
+  };
 
   const handleSend = async () => {
     if (!title.trim()) {
@@ -43,8 +61,26 @@ export default function AdminPush() {
       <h1 className="text-2xl font-black">Push Notifications</h1>
 
       <DuoCard className="space-y-4 p-5">
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-1">
           <Bell className="w-5 h-5 text-primary" />
+          <p className="font-bold">Inscrever este navegador</p>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Status atual: {isSupported ? permission : "unsupported"}
+        </p>
+        <Button
+          onClick={handleSubscribeThisBrowser}
+          disabled={!isSupported || subscribing || permission === "granted"}
+          className="w-full gap-2"
+        >
+          {subscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}
+          {permission === "granted" ? "Este navegador já está inscrito" : "Inscrever este navegador"}
+        </Button>
+      </DuoCard>
+
+      <DuoCard className="space-y-4 p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <Send className="w-5 h-5 text-primary" />
           <p className="font-bold">Enviar notificação para todos</p>
         </div>
 
@@ -98,3 +134,4 @@ export default function AdminPush() {
     </div>
   );
 }
+
