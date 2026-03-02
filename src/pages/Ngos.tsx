@@ -46,22 +46,22 @@ export default function Ngos() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           {filtered.map((ngo) => {
             const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
             return (
               <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
-                <DuoCard hover className={`p-0 h-full overflow-hidden ${isSelected ? "border-primary bg-primary/5" : ""}`}>
+                <DuoCard hover className={`p-0 h-full overflow-hidden flex flex-row ${isSelected ? "border-primary bg-primary/5" : ""}`}>
                   {ngo.logo_url ? (
-                    <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
+                    <div className="w-28 sm:w-36 shrink-0 overflow-hidden bg-muted self-stretch">
                       <img src={ngo.logo_url} alt={ngo.name} className="w-full h-full object-cover" />
                     </div>
                   ) : (
-                    <div className="aspect-[4/3] w-full bg-primary/10 flex items-center justify-center">
+                    <div className="w-28 sm:w-36 shrink-0 bg-primary/10 flex items-center justify-center self-stretch">
                       <Heart className="w-10 h-10 text-primary" />
                     </div>
                   )}
-                  <div className="p-3 sm:p-4 space-y-1.5">
+                  <div className="p-3 sm:p-4 flex-1 min-w-0 flex flex-col justify-center space-y-1.5">
                     <div className="flex items-center gap-1.5">
                       <p className="font-bold text-sm truncate flex-1">{ngo.name}</p>
                       {isSelected && <Check className="w-4 h-4 text-primary shrink-0" />}
