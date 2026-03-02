@@ -99,14 +99,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const saveGeolocation = async (userId: string) => {
     try {
-      const res = await fetch("https://ip-api.com/json/?fields=city,regionName");
+      const res = await fetch("https://ip-api.com/json/?fields=city,regionName,countryCode");
       if (res.ok) {
         const geo = await res.json();
+        const updates: Record<string, string | null> = {};
         if (geo.city || geo.regionName) {
-          await supabase.from("profiles").update({
-            city: geo.city || null,
-            state: geo.regionName || null,
-          }).eq("id", userId);
+          updates.city = geo.city || null;
+          updates.state = geo.regionName || null;
+        }
+        // If country is Brazil, locale = pt; Spanish-speaking LATAM countries = es
+        const esCountries = ["ES", "MX", "AR", "CO", "CL", "PE", "VE", "EC", "GT", "CU", "BO", "DO", "HN", "PY", "SV", "NI", "CR", "PA", "UY"];
+        if (geo.countryCode === "BR") {
+          updates.locale = "pt";
+        } else if (esCountries.includes(geo.countryCode)) {
+          updates.locale = "es";
+        }
+        if (Object.keys(updates).length > 0) {
+          await supabase.from("profiles").update(updates).eq("id", userId);
         }
       }
     } catch (e) {
