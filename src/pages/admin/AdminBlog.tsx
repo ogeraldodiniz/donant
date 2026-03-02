@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Save, Loader2, Languages, Plus, Trash2 } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Save, Loader2, Languages, Plus, Trash2, LayoutGrid } from "lucide-react";
 import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -18,6 +18,22 @@ interface ContentRow {
   locale: string;
 }
 
+const PAGE_LABELS: Record<string, string> = {
+  all: "Todas",
+  general: "Geral",
+  home: "Home (público)",
+  home_logged: "Home (logado)",
+  ongs: "ONGs",
+  stores: "Lojas",
+  profile: "Perfil",
+  impact: "Impacto",
+  auth: "Login / Cadastro",
+  onboarding: "Onboarding",
+  transparency: "Transparência",
+  footer: "Rodapé",
+  notifications: "Notificações",
+};
+
 export default function AdminBlog() {
   const { adminLocale: locale } = useAdminLocale();
   const [rows, setRows] = useState<ContentRow[]>([]);
@@ -27,6 +43,7 @@ export default function AdminBlog() {
   const [newKey, setNewKey] = useState("");
   const [newSection, setNewSection] = useState("general");
   const [newValue, setNewValue] = useState("");
+  const [activeSection, setActiveSection] = useState("all");
 
   const fetchContent = async () => {
     setLoading(true);
