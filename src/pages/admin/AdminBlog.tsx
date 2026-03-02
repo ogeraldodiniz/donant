@@ -18,10 +18,9 @@ interface ContentRow {
   locale: string;
 }
 
-type Locale = "pt" | "es";
-
 export default function AdminBlog() {
-  const [locale, setLocale] = useState<Locale>("pt");
+  const { adminLocale: locale } = useAdminLocale();
+  const [rows, setRows] = useState<ContentRow[]>([]);
   const [rows, setRows] = useState<ContentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
