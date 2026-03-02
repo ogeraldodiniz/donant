@@ -23,6 +23,7 @@ import Transparency from "./pages/Transparency";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import ResetPassword from "./pages/ResetPassword";
+import CashbackClaim from "./pages/CashbackClaim";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminNgos from "./pages/admin/AdminNgos";
 import AdminStores from "./pages/admin/AdminStores";
