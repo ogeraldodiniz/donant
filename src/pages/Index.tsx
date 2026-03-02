@@ -411,17 +411,17 @@ function LoggedInHome() {
 
         <DuoCard className="bg-primary/5 border-primary/20 h-full p-0 overflow-hidden">
           {selectedNgo ? (
-            <>
+            <div className="flex flex-row h-full">
               {selectedNgo.logo_url ? (
-                <div className="aspect-[3/1] w-full overflow-hidden bg-muted">
+                <div className="w-28 sm:w-36 shrink-0 overflow-hidden bg-muted self-stretch">
                   <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-full h-full object-cover" />
                 </div>
               ) : (
-                <div className="aspect-[3/1] w-full bg-primary/10 flex items-center justify-center">
+                <div className="w-28 sm:w-36 shrink-0 bg-primary/10 flex items-center justify-center self-stretch">
                   <Heart className="w-10 h-10 text-primary" />
                 </div>
               )}
-              <div className="p-3.5 sm:p-4">
+              <div className="p-3.5 sm:p-4 flex-1 min-w-0 flex flex-col justify-center">
                 <p className="text-[10px] sm:text-xs text-primary font-bold uppercase mb-1">{t("home_your_ngo", "Sua ONG")}</p>
                 <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0 flex-1">
@@ -437,7 +437,7 @@ function LoggedInHome() {
                   </Link>
                 </div>
               </div>
-            </>
+            </div>
           ) : (
             <div className="p-3.5 sm:p-5">
               <p className="text-[10px] sm:text-xs text-primary font-bold uppercase mb-2">{t("home_your_ngo", "Sua ONG")}</p>
