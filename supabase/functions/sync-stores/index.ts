@@ -113,45 +113,54 @@ async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
 async function fetchAllCashbackContracts(token: string): Promise<MycCashbackContract[]> {
   const baseUrl = getBaseUrl();
   const allContracts: MycCashbackContract[] = [];
+
+  // Discover working endpoint
+  const endpointCandidates = [
+    `${baseUrl}/v1/publisher/application_cashback_contracts/search`,
+    `${baseUrl}/api/application_cashback_contracts/search`,
+    `${baseUrl}/v1/application_cashback_contracts/search`,
+  ];
+
+  let workingEndpoint: string | null = null;
+
+  for (const ep of endpointCandidates) {
+    console.log(`Trying contracts endpoint: ${ep}`);
+    const probe = await fetch(ep, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-myc-access-token": token,
+      },
+      body: JSON.stringify({ query: {}, limit: 1, offset: 0 }),
+    });
+    if (probe.ok) {
+      workingEndpoint = ep;
+      const probeData = await probe.json();
+      const probeItems = Array.isArray(probeData.data) ? probeData.data : Array.isArray(probeData) ? probeData : [];
+      allContracts.push(...probeItems);
+      console.log(`Contracts endpoint found: ${ep}`);
+      break;
+    }
+    const errBody = await probe.text();
+    console.warn(`Endpoint ${ep} failed [${probe.status}]: ${errBody.substring(0, 200)}`);
+  }
+
+  if (!workingEndpoint) {
+    console.warn("No working contracts endpoint found. Cashback rates won't be synced.");
+    return allContracts;
+  }
+
+  // Now paginate using the working endpoint
   let offset = 0;
   const limit = 1000;
 
+  // If probe returned less than limit, we might already have all (but probe used limit=1)
+  // Reset and fetch properly
+  allContracts.length = 0;
+
   while (true) {
-    // Try multiple endpoint patterns
-    const endpoints = [
-      `${baseUrl}/v1/publisher/application_cashback_contracts/search`,
-      `${baseUrl}/api/application_cashback_contracts/search`,
-      `${baseUrl}/v1/application_cashback_contracts/search`,
-    ];
-    let fullUrl = endpoints[0];
-    let res: Response | null = null;
-
-    for (const ep of endpoints) {
-      console.log(`Trying contracts endpoint: ${ep}`);
-      const attempt = await fetch(ep, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-myc-access-token": token,
-        },
-        body: JSON.stringify({ query: {}, limit, offset }),
-      });
-      if (attempt.ok) {
-        fullUrl = ep;
-        res = attempt;
-        console.log(`Contracts endpoint found: ${ep}`);
-        break;
-      }
-      const errBody = await attempt.text();
-      console.warn(`Endpoint ${ep} failed [${attempt.status}]: ${errBody.substring(0, 200)}`);
-    }
-
-    if (!res) {
-      console.warn("No working contracts endpoint found");
-      return allContracts;
-    }
     console.log(`Fetching cashback contracts (offset=${offset})...`);
-    const res = await fetch(fullUrl, {
+    const res = await fetch(workingEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -162,9 +171,8 @@ async function fetchAllCashbackContracts(token: string): Promise<MycCashbackCont
 
     if (!res.ok) {
       const body = await res.text();
-      // If contracts endpoint is not accessible, log and return empty
-      console.warn(`Cashback contracts fetch failed [${res.status}]: ${body}`);
-      return allContracts;
+      console.warn(`Contracts fetch failed [${res.status}]: ${body.substring(0, 200)}`);
+      break;
     }
 
     const result = await res.json();
