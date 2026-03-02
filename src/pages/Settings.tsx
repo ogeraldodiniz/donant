@@ -85,10 +85,12 @@ export default function Settings() {
   };
 
   return (
-    <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-lg">
-      <div>
-        <h1 className="text-xl sm:text-2xl font-black">Configurações</h1>
+    <div className="container py-5 sm:py-6 max-w-5xl">
+      <div className="mb-4 sm:mb-5">
+        <h1 className="text-xl sm:text-2xl font-black">Meu Perfil</h1>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
 
       {/* Profile */}
       <DuoCard className="p-3.5 sm:p-5">
