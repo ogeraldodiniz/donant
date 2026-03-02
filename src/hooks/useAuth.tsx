@@ -101,15 +101,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const saveGeolocation = async (userId: string) => {
     try {
+      // Only set geolocation if city/state are not already set
+      const { data: existing } = await supabase
+        .from("profiles")
+        .select("city, state, locale")
+        .eq("id", userId)
+        .single();
+
       const res = await fetch("https://ip-api.com/json/?fields=city,regionName,countryCode");
       if (res.ok) {
         const geo = await res.json();
         const updates: Record<string, string | null> = {};
-        if (geo.city || geo.regionName) {
-          updates.city = geo.city || null;
-          updates.state = geo.regionName || null;
+        // Only overwrite city/state if they're empty
+        if (!existing?.city && !existing?.state) {
+          if (geo.city || geo.regionName) {
+            updates.city = geo.city || null;
+            updates.state = geo.regionName || null;
+          }
         }
-        // If country is Brazil, locale = pt; Spanish-speaking LATAM countries = es
+        // Only set locale if not already set or still default
         const esCountries = ["ES", "MX", "AR", "CO", "CL", "PE", "VE", "EC", "GT", "CU", "BO", "DO", "HN", "PY", "SV", "NI", "CR", "PA", "UY"];
         if (geo.countryCode === "BR") {
           updates.locale = "pt";
