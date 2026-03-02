@@ -4,6 +4,10 @@ export interface User {
   display_name: string;
   avatar_url?: string;
   selected_ngo_id?: string;
+  phone?: string;
+  notify_web: boolean;
+  notify_whatsapp: boolean;
+  notify_email: boolean;
   created_at: string;
   updated_at: string;
   deleted_at?: string;

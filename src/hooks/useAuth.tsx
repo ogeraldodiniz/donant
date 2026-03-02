@@ -36,6 +36,10 @@ function mapUser(supaUser: User, profile?: Partial<AppUser>): AppUser {
     display_name: profile?.display_name ?? supaUser.user_metadata?.full_name ?? supaUser.email ?? "",
     avatar_url: profile?.avatar_url ?? supaUser.user_metadata?.avatar_url,
     selected_ngo_id: profile?.selected_ngo_id,
+    phone: profile?.phone,
+    notify_web: profile?.notify_web ?? true,
+    notify_whatsapp: profile?.notify_whatsapp ?? false,
+    notify_email: profile?.notify_email ?? true,
     created_at: supaUser.created_at,
     updated_at: profile?.updated_at ?? supaUser.created_at,
   };

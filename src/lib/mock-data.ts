@@ -6,6 +6,9 @@ export const mockUser: User = {
   display_name: 'João Silva',
   avatar_url: '',
   selected_ngo_id: '1',
+  notify_web: true,
+  notify_whatsapp: false,
+  notify_email: true,
   created_at: '2025-01-15',
   updated_at: '2025-02-01',
 };
