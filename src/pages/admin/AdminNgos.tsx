@@ -129,7 +129,7 @@ export default function AdminNgos() {
   return (
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-black">Gerenciar ONGs</h1>
+        <h1 className="text-2xl font-black">ONGs ({adminLocale.toUpperCase()})</h1>
         <DuoButton size="sm" onClick={handleCreate} disabled={creating}>
           <Plus className="w-4 h-4" /> Nova ONG
         </DuoButton>
