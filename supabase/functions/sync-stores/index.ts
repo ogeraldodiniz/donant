@@ -61,10 +61,9 @@ async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
   }
 
   const result = await res.json();
-  console.log("Programs response keys:", Object.keys(result));
+  console.log("Programs response: count =", result.count, "programs length =", result.programs?.length);
   
-  // Handle different response shapes
-  const programs: MycProgram[] = Array.isArray(result) ? result : (result.data ?? []);
+  const programs: MycProgram[] = result.programs ?? result.data ?? (Array.isArray(result) ? result : []);
   return programs;
 }
 
