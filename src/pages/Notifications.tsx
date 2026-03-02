@@ -1,14 +1,39 @@
-import { useState } from "react";
-import { Bell, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Bell, Check, Loader2 } from "lucide-react";
 import { DuoCard } from "@/components/ui/duo-card";
-import { mockNotifications } from "@/lib/mock-data";
-import { Notification } from "@/types";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+
+interface NotificationRow {
+  id: string;
+  title: string;
+  body: string | null;
+  type: string;
+  is_read: boolean;
+  created_at: string;
+}
 
 export default function Notifications() {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const { session } = useAuth();
+  const [notifications, setNotifications] = useState<NotificationRow[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const markRead = (id: string) => {
+  useEffect(() => {
+    if (!session?.user?.id) { setLoading(false); return; }
+    supabase
+      .from("notifications")
+      .select("*")
+      .eq("user_id", session.user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        setNotifications(data || []);
+        setLoading(false);
+      });
+  }, [session?.user?.id]);
+
+  const markRead = async (id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    await supabase.from("notifications").update({ is_read: true }).eq("id", id);
   };
 
   const typeEmoji: Record<string, string> = {
@@ -16,6 +41,14 @@ export default function Notifications() {
     donation_confirmed: '💚',
     general: '📢',
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[40vh]">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-lg">
@@ -32,7 +65,7 @@ export default function Notifications() {
             onClick={() => markRead(n.id)}
           >
             <div className="flex items-start gap-2.5 sm:gap-3">
-              <span className="text-lg sm:text-xl mt-0.5">{typeEmoji[n.type]}</span>
+              <span className="text-lg sm:text-xl mt-0.5">{typeEmoji[n.type] || '📢'}</span>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="font-bold text-xs sm:text-sm">{n.title}</p>
