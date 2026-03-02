@@ -100,29 +100,22 @@ export default function Settings() {
             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-lg sm:text-xl font-bold">
               {user?.display_name?.charAt(0) || 'U'}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <p className="font-bold text-sm sm:text-base truncate">{user?.display_name}</p>
               <p className="text-xs sm:text-sm text-muted-foreground truncate">{user?.email}</p>
-              <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} compact />
             </div>
           </div>
-        </DuoCard>
-
-        {/* Level */}
-        <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
-
-        {/* Phone */}
-        <DuoCard className="p-3.5 sm:p-5">
-          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Phone className="w-4 h-4 text-primary" /> Telefone</h3>
-          <Input
-            type="tel"
-            placeholder="(11) 99999-9999"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            onBlur={handlePhoneBlur}
-            className="rounded-xl"
-          />
-          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1.5">Usado para notificações via WhatsApp</p>
+          <div className="mt-3 flex items-center gap-2">
+            <Phone className="w-4 h-4 text-muted-foreground" />
+            <Input
+              type="tel"
+              placeholder="(11) 99999-9999"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              onBlur={handlePhoneBlur}
+              className="rounded-xl h-9 text-xs sm:text-sm"
+            />
+          </div>
         </DuoCard>
 
         {/* Notifications */}
@@ -156,6 +149,8 @@ export default function Settings() {
 
       {/* Right column */}
       <div className="space-y-4 sm:space-y-5">
+        {/* Level */}
+        <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
         {/* Selected NGO */}
         <DuoCard className="p-3.5 sm:p-5">
           <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Sua ONG</h3>
