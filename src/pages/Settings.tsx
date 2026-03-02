@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Camera, Loader2, Save } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Camera, Loader2, Save, Pencil, MapPin, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
