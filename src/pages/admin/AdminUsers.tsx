@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CityPicker } from "@/components/CityPicker";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
