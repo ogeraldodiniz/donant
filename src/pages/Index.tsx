@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, ArrowRight, ChevronDown, ShoppingCart, Gift, PartyPopper, Search, Target, Rocket, BadgeCheck, TrendingUp, Store, Users, Quote, HelpCircle, UserPlus, ShoppingBag, HandHeart, Coins, Star, MessageCircle, Download } from "lucide-react";
+import { Heart, ArrowRight, ChevronDown, ShoppingCart, Gift, PartyPopper, Search, Target, Rocket, BadgeCheck, TrendingUp, Store, Users, Quote, HelpCircle, UserPlus, ShoppingBag, HandHeart, Coins, Star, MessageCircle, Download, Pencil } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
@@ -399,33 +399,39 @@ function LoggedInHome() {
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">{t("home_greeting", "Olá,")} {user?.display_name?.split(' ')[0]}! 👋</h1>
+        <h1 className="text-xl sm:text-2xl font-black">Olá, {user?.display_name?.split(' ')[0] || 'você'}! 👋</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">{t("home_subtitle", "Veja o impacto das suas compras.")}</p>
       </div>
 
       <InstallAppBanner />
       <PushPermissionBanner />
 
-      <LevelBadge totalDonated={donated} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-start">
+        <LevelBadge totalDonated={donated} />
 
-      {selectedNgo && (
-        <Link to={`/ongs/${selectedNgo.slug}`}>
-          <DuoCard hover className="flex items-center gap-3 sm:gap-4 bg-primary/5 border-primary/20">
-            {selectedNgo.logo_url ? (
-              <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
-            ) : (
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+        <DuoCard className="bg-primary/5 border-primary/20 h-full">
+          <p className="text-[10px] sm:text-xs text-primary font-bold uppercase mb-2">{t("home_your_ngo", "Sua ONG")}</p>
+          {selectedNgo ? (
+            <div className="flex items-center gap-3">
+              {selectedNgo.logo_url ? (
+                <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
+              ) : (
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                  <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm sm:text-base truncate">{selectedNgo.name}</p>
               </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-[10px] sm:text-xs text-primary font-bold uppercase">{t("home_your_ngo", "Sua ONG")}</p>
-              <p className="font-bold text-sm sm:text-base truncate">{selectedNgo.name}</p>
             </div>
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary shrink-0" />
-          </DuoCard>
-        </Link>
-      )}
+          ) : (
+            <p className="text-muted-foreground text-xs sm:text-sm">Nenhuma ONG selecionada</p>
+          )}
+          <Link to="/ongs" className="inline-flex items-center gap-1 text-primary font-bold text-xs sm:text-sm mt-3 hover:underline">
+            <Pencil className="w-3.5 h-3.5" /> Alterar ONG
+          </Link>
+        </DuoCard>
+      </div>
 
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <DuoCard className="text-center p-3 sm:p-5 bg-destructive/10 border-destructive/30">
