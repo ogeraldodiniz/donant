@@ -41,7 +41,8 @@ export function InstallAppBanner({ forceShow = false }: InstallAppBannerProps) {
   const handleInstall = async () => {
     const accepted = await install();
     if (accepted) {
-      handleDismiss();
+      localStorage.setItem(INSTALLED_KEY, "true");
+      setVisible(false);
     } else {
       if (isInIframe) {
         window.alert("A instalação não funciona dentro do preview. Abra o app publicado no navegador do celular para instalar.");
