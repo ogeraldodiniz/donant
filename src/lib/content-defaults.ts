@@ -3,6 +3,23 @@
  * Used by the admin CMS to seed missing content automatically.
  */
 export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
+  // ── Global (always loaded alongside any section) ──
+  global: {
+    back: "Voltar",
+    save_btn: "Salvar",
+    cancel: "Cancelar",
+    loading: "Carregando...",
+    theme_light: "Claro",
+    theme_dark: "Escuro",
+    theme_auto: "Auto",
+    save_error: "Erro ao salvar",
+    save_success: "Salvo com sucesso",
+    confirm: "Confirmar",
+    search_placeholder: "Buscar...",
+    empty: "Nenhum resultado encontrado",
+    error_generic: "Algo deu errado",
+  },
+
   // ── Home public ──
   hero: {
     hero_title: "Compre online. Doe automaticamente.",
