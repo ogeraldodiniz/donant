@@ -397,6 +397,7 @@ function LoggedInHome() {
   const { user } = useAuth();
   const { t } = useSiteContent("home_logged");
   const { ngos } = useNgos();
+  const { stores: dbStores } = useStores();
   const selectedNgo = ngos.find(n => n.id === user?.selected_ngo_id) || ngos[0];
   const pending = mockTransactions.filter(tx => tx.status === 'pending' || tx.status === 'tracked').reduce((s, tx) => s + tx.amount, 0);
   const confirmed = mockTransactions.filter(tx => tx.status === 'confirmed').reduce((s, tx) => s + tx.amount, 0);
