@@ -216,6 +216,9 @@ export default function AdminUsers() {
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-sm truncate">{u.display_name || "Sem nome"}</p>
                     <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+                    {(u.city || u.state) && (
+                      <p className="text-[10px] text-muted-foreground truncate">{[u.city, u.state].filter(Boolean).join(", ")}</p>
+                    )}
                   </div>
                   <div className="hidden sm:flex items-center gap-1.5">
                     {u.notify_web && <Globe className="w-3.5 h-3.5 text-primary" />}
