@@ -16,6 +16,7 @@ interface StoreRow {
   cashback_rate: number;
   is_active: boolean;
   website_url: string | null;
+  locale: string;
 }
 
 export default function AdminStores() {
