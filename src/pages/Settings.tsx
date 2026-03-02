@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Loader2 } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Loader2, Sun, Moon, Monitor } from "lucide-react";
+import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -17,6 +18,7 @@ export default function Settings() {
   const [showDelete, setShowDelete] = useState(false);
   const { ngos, loading: ngosLoading } = useNgos();
   const { selectNgo, saving } = useSelectNgo();
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = async () => {
     try {
@@ -93,6 +95,31 @@ export default function Settings() {
               </button>
             );
           })}
+        </div>
+      </DuoCard>
+
+      {/* Theme */}
+      <DuoCard className="p-3.5 sm:p-5">
+        <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Sun className="w-4 h-4 text-primary" /> Aparência</h3>
+        <div className="grid grid-cols-3 gap-2">
+          {([
+            { value: "light", label: "Claro", Icon: Sun },
+            { value: "dark", label: "Escuro", Icon: Moon },
+            { value: "system", label: "Auto", Icon: Monitor },
+          ] as const).map(({ value, label, Icon }) => (
+            <button
+              key={value}
+              onClick={() => setTheme(value)}
+              className={`flex flex-col items-center gap-1.5 p-3 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                theme === value
+                  ? 'bg-primary/10 border-2 border-primary text-primary'
+                  : 'border-2 border-transparent hover:bg-muted text-muted-foreground'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              {label}
+            </button>
+          ))}
         </div>
       </DuoCard>
 
