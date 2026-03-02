@@ -70,11 +70,11 @@ export default function AdminPush() {
         </p>
         <Button
           onClick={handleSubscribeThisBrowser}
-          disabled={!isSupported || subscribing || permission === "granted"}
+          disabled={!isSupported || subscribing}
           className="w-full gap-2"
         >
           {subscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}
-          {permission === "granted" ? "Este navegador já está inscrito" : "Inscrever este navegador"}
+          {permission === "granted" ? "Sincronizar inscrição deste navegador" : "Inscrever este navegador"}
         </Button>
       </DuoCard>
 
