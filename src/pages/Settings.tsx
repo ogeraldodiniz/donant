@@ -20,7 +20,7 @@ export default function Settings() {
   const navigate = useNavigate();
   const [showDelete, setShowDelete] = useState(false);
   const { ngos, loading: ngosLoading } = useNgos();
-  const { selectNgo, saving } = useSelectNgo();
+  
   const { theme, setTheme } = useTheme();
 
   const [phone, setPhone] = useState("");
