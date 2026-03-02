@@ -177,7 +177,7 @@ export default function AdminPush() {
                 onClick={() => setTargetLocale(loc)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${targetLocale === loc ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
               >
-                {loc === "all" ? "🌐 Todos" : loc === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
+                <span className="flex items-center gap-1.5">{loc === "all" && <Globe className="w-3.5 h-3.5" />}{loc === "all" ? "Todos" : loc === "pt" ? "PT" : "ES"}</span>
               </button>
             ))}
           </div>
