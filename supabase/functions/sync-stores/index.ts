@@ -43,6 +43,8 @@ async function getMycToken(): Promise<string> {
   }
 
   const data = await res.json();
+  console.log("Auth response keys:", Object.keys(data));
+  console.log("Auth response:", JSON.stringify(data).substring(0, 500));
   return data.token;
 }
 
