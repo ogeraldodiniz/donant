@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Store } from "lucide-react";
+import { Search, Store, ShoppingCart, Building2, Dumbbell, Plane, Shirt, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStores } from "@/hooks/useStores";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import type { LucideIcon } from "lucide-react";
 
-const categoryEmojis: Record<string, string> = {
-  Marketplace: '🛒',
-  Varejo: '🏪',
-  Esportes: '⚽',
-  Viagens: '✈️',
-  Moda: '👗',
+const categoryIcons: Record<string, LucideIcon> = {
+  Marketplace: ShoppingCart,
+  Varejo: Building2,
+  Esportes: Dumbbell,
+  Viagens: Plane,
+  Moda: Shirt,
 };
 
 export default function Stores() {
