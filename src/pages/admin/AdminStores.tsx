@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, Loader2, RefreshCw } from "lucide-react";
+import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
 import { Input } from "@/components/ui/input";
