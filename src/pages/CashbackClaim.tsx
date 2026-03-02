@@ -60,7 +60,7 @@ export default function CashbackClaim() {
   };
 
   return (
-    <div className="container py-5 sm:py-6 max-w-lg space-y-4">
+    <div className="container py-5 sm:py-6 max-w-2xl space-y-4">
       <div>
         <h1 className="text-xl sm:text-2xl font-black flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-destructive" />
