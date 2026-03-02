@@ -110,7 +110,6 @@ export default function Onboarding() {
     }
     setDetectingLocation(false);
   };
-  const [saving, setSaving] = useState(false);
 
   const showInstallStep = isMobile && !isInstalled;
   const totalSteps = showInstallStep ? 4 : 3;
