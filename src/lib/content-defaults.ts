@@ -288,7 +288,7 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Onboarding ──
   onboarding: {
-    title: "Bem-vindo ao MyCashbacks! 🎉",
+    title: "Bem-vindo ao MyCashbacks!",
     subtitle: "Configure seu perfil para começar",
     phone_label: "Seu telefone",
     ngo_label: "Escolha sua ONG",

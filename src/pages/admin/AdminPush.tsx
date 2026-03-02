@@ -224,9 +224,9 @@ export default function AdminPush() {
       {lastResult && (
         <DuoCard className="p-4 text-sm space-y-1">
           <p className="font-bold">Resultado do envio</p>
-          <p>✅ Entregues: {lastResult.sent}</p>
-          <p>❌ Falhas: {lastResult.failed}</p>
-          <p>📊 Total de destinatários: {lastResult.total}</p>
+          <p className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-primary" /> Entregues: {lastResult.sent}</p>
+          <p className="flex items-center gap-1.5"><XCircle className="w-4 h-4 text-destructive" /> Falhas: {lastResult.failed}</p>
+          <p className="flex items-center gap-1.5"><BarChart3 className="w-4 h-4 text-muted-foreground" /> Total de destinatários: {lastResult.total}</p>
         </DuoCard>
       )}
     </div>

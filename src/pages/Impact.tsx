@@ -3,6 +3,7 @@ import { DuoCard } from "@/components/ui/duo-card";
 import { CashbackStatus } from "@/types";
 import { LevelBadge } from "@/components/LevelBadge";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { Heart } from "lucide-react";
 
 const statusColors: Record<CashbackStatus, string> = {
   tracked: 'bg-muted text-muted-foreground',

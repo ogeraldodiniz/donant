@@ -68,7 +68,7 @@ export default function Notifications() {
             onClick={() => markRead(n.id)}
           >
             <div className="flex items-start gap-2.5 sm:gap-3">
-              <span className="text-lg sm:text-xl mt-0.5">{typeEmoji[n.type] || '📢'}</span>
+              {(() => { const NIcon = typeIcon[n.type] || Megaphone; return <NIcon className="w-5 h-5 mt-0.5 text-primary shrink-0" />; })()}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="font-bold text-xs sm:text-sm">{n.title}</p>

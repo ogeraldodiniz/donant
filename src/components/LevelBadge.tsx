@@ -106,7 +106,7 @@ export function LevelBadge({ totalDonated, compact = false, showAllLevels = fals
                     </p>
                   </div>
                   {isUnlocked && (
-                    <span className="text-[10px] sm:text-xs font-bold text-primary">✓</span>
+                    <Check className="w-3.5 h-3.5 text-primary" />
                   )}
                 </div>
               );

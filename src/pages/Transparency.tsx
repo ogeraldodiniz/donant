@@ -51,7 +51,7 @@ export default function Transparency() {
         <div className="space-y-3">
           {mockNgos.map((ngo, i) => (
             <div key={ngo.id} className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-lg sm:text-xl">{ngoEmojis[i]}</span>
+              {(() => { const NgoIcon = ngoIcons[i % ngoIcons.length]; return <NgoIcon className="w-5 h-5 text-primary shrink-0" />; })()}
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-xs sm:text-sm truncate">{ngo.name}</p>
                 <div className="w-full bg-muted rounded-full h-1.5 sm:h-2 mt-1">

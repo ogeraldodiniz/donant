@@ -74,7 +74,7 @@ export default function Stores() {
 
       {!loading && filtered.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          <p className="text-4xl mb-2">🔍</p>
+          <Search className="w-12 h-12 mx-auto mb-2 text-muted-foreground opacity-30" />
           <p className="font-semibold text-sm">{t("empty", "Nenhuma loja encontrada")}</p>
         </div>
       )}

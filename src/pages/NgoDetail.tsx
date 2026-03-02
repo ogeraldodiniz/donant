@@ -100,7 +100,7 @@ export default function NgoDetail() {
 
       {donations.length > 0 && (
         <DuoCard>
-          <h3 className="font-bold text-sm sm:text-base mb-3">💜 Últimas doações</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Últimas doações</h3>
           <div className="space-y-2">
             {donations.map(d => (
               <div key={d.id} className="flex justify-between items-center py-2 border-b last:border-0 border-border">
