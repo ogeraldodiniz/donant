@@ -65,10 +65,11 @@ export function Header() {
           <NavItem to="/" icon={Home} label="Home" />
           <NavItem to="/lojas" icon={Store} label={t("nav_stores", "Lojas")} />
           <NavItem to="/ongs" icon={Heart} label={t("nav_ngos", "ONGs")} />
-          <NavItem to="/transparencia" icon={BarChart3} label={t("nav_transparency", "Transparência")} />
+          <NavItem to="/transparencia" icon={Eye} label={t("nav_transparency", "Transparência")} />
           {isLoggedIn && (
             <>
               <NavItem to="/impacto" icon={BarChart3} label={t("nav_impact", "Impacto")} />
+              <NavItem to="/reclamar-cashback" icon={AlertTriangle} label={t("nav_claim", "Reclamar")} />
               {isAdmin && <NavItem to="/admin" icon={Shield} label="Admin" />}
               <Link to="/notificacoes" className="relative p-2 rounded-xl hover:bg-muted transition-colors">
                 <Bell className="w-5 h-5" />
