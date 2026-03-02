@@ -150,7 +150,7 @@ export default function Redirect() {
         {step >= 3 && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-8 space-y-4">
             <div className="p-4 rounded-2xl bg-primary/10 border-2 border-primary/20">
-              <p className="text-sm font-bold text-primary flex items-center gap-1.5"><CheckCircle className="w-4 h-4" /> Clique registrado com sucesso!</p>
+              <p className="text-sm font-bold text-primary flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" /> Clique registrado com sucesso!</p>
               {countdown > 0 ? (
                 <p className="text-xs text-muted-foreground mt-1">
                   Abrindo {store.name} em <span className="font-black text-foreground">{countdown}s</span>...
