@@ -41,8 +41,6 @@ function inferSection(key: string, defaultSection: string): string {
   if (key.startsWith("home_")) return "home_logged";
   if (key.startsWith("nav_")) return "nav";
   if (key.startsWith("footer_")) return "footer";
-  if (key.startsWith("ngos_")) return "ngos";
-  if (key.startsWith("stores_")) return "stores";
   return defaultSection;
 }
 

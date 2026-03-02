@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStores } from "@/hooks/useStores";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const categoryEmojis: Record<string, string> = {
   Marketplace: '🛒',
@@ -17,19 +18,20 @@ const categoryEmojis: Record<string, string> = {
 export default function Stores() {
   const [search, setSearch] = useState("");
   const { stores, loading } = useStores();
+  const { t } = useSiteContent("stores_page");
   const filtered = stores.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">Lojas Parceiras</h1>
-        <p className="text-muted-foreground text-xs sm:text-sm">Compre e gere cashback solidário</p>
+        <h1 className="text-xl sm:text-2xl font-black">{t("title", "Lojas Parceiras")}</h1>
+        <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Compre e gere cashback solidário")}</p>
       </div>
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
         <Input
-          placeholder="Buscar lojas..."
+          placeholder={t("search_placeholder", "Buscar lojas...")}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="pl-10 h-11 sm:h-12 rounded-2xl border-2 font-semibold text-sm"
@@ -60,7 +62,7 @@ export default function Stores() {
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-base sm:text-lg font-black text-primary">{Number(store.cashback_rate)}%</p>
-                  <p className="text-[10px] text-muted-foreground font-bold">cashback</p>
+                  <p className="text-[10px] text-muted-foreground font-bold">{t("cashback_label", "cashback")}</p>
                 </div>
               </DuoCard>
             </Link>
@@ -71,7 +73,7 @@ export default function Stores() {
       {!loading && filtered.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
           <p className="text-4xl mb-2">🔍</p>
-          <p className="font-semibold text-sm">Nenhuma loja encontrada</p>
+          <p className="font-semibold text-sm">{t("empty", "Nenhuma loja encontrada")}</p>
         </div>
       )}
     </div>
