@@ -168,7 +168,7 @@ export default function AdminUsers() {
     new Date(d).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
 
   return (
-    <div className="space-y-4 max-w-5xl">
+    <div className="space-y-4">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <h1 className="text-2xl font-black">Usuários</h1>
         <div className="flex items-center gap-2">

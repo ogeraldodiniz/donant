@@ -12,7 +12,7 @@ const cards = [
 
 export default function AdminDashboard() {
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
       <h1 className="text-2xl font-black">Dashboard</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {cards.map((card) => (
