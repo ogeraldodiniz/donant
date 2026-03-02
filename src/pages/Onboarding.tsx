@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone, LocateFixed } from "lucide-react";
+import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useInstallPWA } from "@/hooks/useInstallPWA";
+import { CityPicker } from "@/components/CityPicker";
 
 type Step = "phone" | "location" | "ngo" | "install";
 
