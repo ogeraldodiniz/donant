@@ -47,24 +47,43 @@ async function getMycToken(): Promise<string> {
 
 async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
   const apiUrl = Deno.env.get("MYCASHBACKS_API_URL")!.replace(/\/+$/, "");
+  const allPrograms: MycProgram[] = [];
+  let offset = 0;
+  const limit = 1000;
 
-  const res = await fetch(`${apiUrl}/extension/api/programs`, {
-    method: "GET",
-    headers: {
-      "x-myc-access-token": token,
-    },
-  });
+  while (true) {
+    const res = await fetch(`${apiUrl}/v1/publisher/programs/search`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-myc-access-token": token,
+      },
+      body: JSON.stringify({
+        query: {
+          network_countries: { _eq: "BR" },
+        },
+        allowlistOnly: false,
+        limit,
+        offset,
+      }),
+    });
 
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Programs fetch failed [${res.status}]: ${body}`);
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Programs fetch failed [${res.status}]: ${body}`);
+    }
+
+    const result = await res.json();
+    console.log(`Programs response (offset=${offset}):`, JSON.stringify(result).substring(0, 500));
+
+    const programs: MycProgram[] = Array.isArray(result.programs) ? result.programs : Array.isArray(result.data) ? result.data : Array.isArray(result) ? result : [];
+    allPrograms.push(...programs);
+
+    if (programs.length < limit) break;
+    offset += limit;
   }
 
-  const result = await res.json();
-  console.log("Programs full response:", JSON.stringify(result).substring(0, 1000));
-  
-  const programs: MycProgram[] = Array.isArray(result.programs) ? result.programs : Array.isArray(result.data) ? result.data : Array.isArray(result) ? result : [];
-  return programs;
+  return allPrograms;
 }
 
 function slugify(text: string): string {
