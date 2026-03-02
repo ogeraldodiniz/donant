@@ -1,0 +1,221 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { DuoCard } from "@/components/ui/duo-card";
+import { Input } from "@/components/ui/input";
+import { Search, Phone, Mail, Bell, BellOff, Globe, MessageCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+
+interface UserProfile {
+  id: string;
+  display_name: string | null;
+  email: string | null;
+  phone: string | null;
+  avatar_url: string | null;
+  notify_web: boolean;
+  notify_whatsapp: boolean;
+  notify_email: boolean;
+  selected_ngo_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface Clickout {
+  id: string;
+  user_id: string;
+  store_id: string;
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  clicked_at: string;
+}
+
+interface NgoMap {
+  [id: string]: string;
+}
+
+export default function AdminUsers() {
+  const [users, setUsers] = useState<UserProfile[]>([]);
+  const [clickouts, setClickouts] = useState<Clickout[]>([]);
+  const [ngos, setNgos] = useState<NgoMap>({});
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [expandedUser, setExpandedUser] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const [profilesRes, clickoutsRes, ngosRes] = await Promise.all([
+        supabase.from("profiles").select("*").is("deleted_at", null).order("created_at", { ascending: false }),
+        supabase.from("clickouts").select("*").order("clicked_at", { ascending: false }).limit(1000),
+        supabase.from("ngos").select("id, name"),
+      ]);
+
+      if (profilesRes.data) setUsers(profilesRes.data as UserProfile[]);
+      if (clickoutsRes.data) setClickouts(clickoutsRes.data as Clickout[]);
+      if (ngosRes.data) {
+        const map: NgoMap = {};
+        ngosRes.data.forEach((n) => { map[n.id] = n.name; });
+        setNgos(map);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const filtered = users.filter((u) => {
+    const q = search.toLowerCase();
+    return (
+      (u.display_name ?? "").toLowerCase().includes(q) ||
+      (u.email ?? "").toLowerCase().includes(q) ||
+      (u.phone ?? "").includes(q)
+    );
+  });
+
+  const getUserClickouts = (userId: string) =>
+    clickouts.filter((c) => c.user_id === userId);
+
+  const getUniqueUtms = (userId: string) => {
+    const ucs = getUserClickouts(userId);
+    const sources = new Set<string>();
+    ucs.forEach((c) => {
+      if (c.utm_source) sources.add(c.utm_source);
+    });
+    return Array.from(sources);
+  };
+
+  const formatDate = (d: string) =>
+    new Date(d).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
+
+  return (
+    <div className="space-y-4 max-w-5xl">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <h1 className="text-2xl font-black">Usuários</h1>
+        <Badge variant="secondary" className="text-xs">{filtered.length} usuários</Badge>
+      </div>
+
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          placeholder="Buscar por nome, e-mail ou telefone..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-9 rounded-xl"
+        />
+      </div>
+
+      {loading ? (
+        <p className="text-sm text-muted-foreground">Carregando...</p>
+      ) : filtered.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Nenhum usuário encontrado.</p>
+      ) : (
+        <div className="space-y-2">
+          {filtered.map((u) => {
+            const isExpanded = expandedUser === u.id;
+            const userClickouts = getUserClickouts(u.id);
+            const utmSources = getUniqueUtms(u.id);
+
+            return (
+              <DuoCard key={u.id} className="p-0 overflow-hidden">
+                <button
+                  onClick={() => setExpandedUser(isExpanded ? null : u.id)}
+                  className="w-full p-3 sm:p-4 flex items-center gap-3 text-left hover:bg-muted/30 transition-colors"
+                >
+                  {u.avatar_url ? (
+                    <img src={u.avatar_url} alt="" className="w-9 h-9 rounded-full object-cover shrink-0" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">
+                      {(u.display_name ?? "U").charAt(0)}
+                    </div>
+                  )}
+
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-sm truncate">{u.display_name || "Sem nome"}</p>
+                    <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+                  </div>
+
+                  <div className="hidden sm:flex items-center gap-1.5">
+                    {u.notify_web && <Globe className="w-3.5 h-3.5 text-primary" />}
+                    {u.notify_whatsapp && <MessageCircle className="w-3.5 h-3.5 text-green-500" />}
+                    {u.notify_email && <Mail className="w-3.5 h-3.5 text-blue-400" />}
+                    {!u.notify_web && !u.notify_whatsapp && !u.notify_email && <BellOff className="w-3.5 h-3.5 text-muted-foreground" />}
+                  </div>
+
+                  {utmSources.length > 0 && (
+                    <Badge variant="outline" className="hidden sm:inline-flex text-[10px]">
+                      {utmSources[0]}
+                    </Badge>
+                  )}
+
+                  <span className="text-[10px] text-muted-foreground hidden sm:block">{formatDate(u.created_at)}</span>
+
+                  {isExpanded ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                </button>
+
+                {isExpanded && (
+                  <div className="border-t border-border px-3 sm:px-4 py-3 space-y-3 bg-muted/20">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <p className="text-muted-foreground mb-0.5">Nome</p>
+                        <p className="font-medium">{u.display_name || "—"}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground mb-0.5">E-mail</p>
+                        <p className="font-medium">{u.email || "—"}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground mb-0.5">Telefone</p>
+                        <p className="font-medium flex items-center gap-1">
+                          {u.phone ? <><Phone className="w-3 h-3" /> {u.phone}</> : "—"}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground mb-0.5">ONG selecionada</p>
+                        <p className="font-medium">{u.selected_ngo_id ? ngos[u.selected_ngo_id] ?? u.selected_ngo_id : "—"}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground mb-0.5">Cadastro</p>
+                        <p className="font-medium">{formatDate(u.created_at)}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground mb-0.5">Última atualização</p>
+                        <p className="font-medium">{formatDate(u.updated_at)}</p>
+                      </div>
+                    </div>
+
+                    {/* Notification prefs */}
+                    <div>
+                      <p className="text-muted-foreground text-xs mb-1.5">Preferências de notificação</p>
+                      <div className="flex gap-2 flex-wrap">
+                        <Badge variant={u.notify_web ? "default" : "outline"} className="text-[10px] gap-1">
+                          <Globe className="w-3 h-3" /> Push {u.notify_web ? "✓" : "✗"}
+                        </Badge>
+                        <Badge variant={u.notify_whatsapp ? "default" : "outline"} className="text-[10px] gap-1">
+                          <MessageCircle className="w-3 h-3" /> WhatsApp {u.notify_whatsapp ? "✓" : "✗"}
+                        </Badge>
+                        <Badge variant={u.notify_email ? "default" : "outline"} className="text-[10px] gap-1">
+                          <Mail className="w-3 h-3" /> E-mail {u.notify_email ? "✓" : "✗"}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* UTM / Clickouts */}
+                    {userClickouts.length > 0 && (
+                      <div>
+                        <p className="text-muted-foreground text-xs mb-1.5">UTMs ({userClickouts.length} cliques)</p>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {Array.from(new Set(userClickouts.map(c => [c.utm_source, c.utm_medium, c.utm_campaign].filter(Boolean).join(" / ")).filter(Boolean))).map((utm, i) => (
+                            <Badge key={i} variant="outline" className="text-[10px]">{utm}</Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </DuoCard>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
