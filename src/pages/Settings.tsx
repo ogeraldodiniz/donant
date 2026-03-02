@@ -59,7 +59,7 @@ export default function Settings() {
     const rawPhone = phone.replace(/\D/g, "");
     const { error } = await supabase
       .from("profiles")
-      .update({ display_name: displayName, phone: rawPhone || null })
+      .update({ display_name: displayName, phone: rawPhone || null, city: city || null })
       .eq("id", user.id);
     setSavingProfile(false);
     if (error) {
