@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { useNgos } from "@/hooks/useNgos";
-import { useSelectNgo } from "@/hooks/useSelectNgo";
+
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
