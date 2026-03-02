@@ -62,15 +62,10 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          <NavItem to="/" icon={Home} label="Home" />
           <NavItem to="/lojas" icon={Store} label={t("nav_stores", "Lojas")} />
           <NavItem to="/ongs" icon={Heart} label={t("nav_ngos", "ONGs")} />
-          <NavItem to="/transparencia" icon={Eye} label={t("nav_transparency", "Transparência")} />
           {isLoggedIn && (
             <>
-              <NavItem to="/impacto" icon={BarChart3} label={t("nav_impact", "Impacto")} />
-              <NavItem to="/reclamar-cashback" icon={AlertTriangle} label={t("nav_claim", "Reclamar")} />
-              {isAdmin && <NavItem to="/admin" icon={Shield} label="Admin" />}
               <Link to="/notificacoes" className="relative p-2 rounded-xl hover:bg-muted transition-colors">
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
@@ -79,6 +74,27 @@ export function Header() {
                   </span>
                 )}
               </Link>
+              {/* Mais dropdown */}
+              <div className="relative group">
+                <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
+                  <MoreHorizontal className="w-4 h-4" />
+                  {t("nav_more", "Mais")}
+                </button>
+                <div className="absolute top-full left-0 pt-1 hidden group-hover:block">
+                  <div className="bg-popover border border-border rounded-xl shadow-lg p-1 min-w-[200px]">
+                    <Link to="/transparencia" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-muted transition-colors">
+                      <Eye className="w-4 h-4" /> {t("nav_transparency", "Transparência")}
+                    </Link>
+                    <Link to="/impacto" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-muted transition-colors">
+                      <BarChart3 className="w-4 h-4" /> {t("nav_impact", "Impacto")}
+                    </Link>
+                    <Link to="/reclamar-cashback" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-muted transition-colors">
+                      <AlertTriangle className="w-4 h-4" /> {t("nav_claim", "Reclamar Cashback")}
+                    </Link>
+                  </div>
+                </div>
+              </div>
+              {isAdmin && <NavItem to="/admin" icon={Shield} label="Admin" />}
             </>
           )}
         </nav>
