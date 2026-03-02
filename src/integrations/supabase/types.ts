@@ -288,6 +288,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          city: string | null
           created_at: string
           deleted_at: string | null
           display_name: string | null
@@ -298,10 +299,12 @@ export type Database = {
           notify_whatsapp: boolean
           phone: string | null
           selected_ngo_id: string | null
+          state: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
+          city?: string | null
           created_at?: string
           deleted_at?: string | null
           display_name?: string | null
@@ -312,10 +315,12 @@ export type Database = {
           notify_whatsapp?: boolean
           phone?: string | null
           selected_ngo_id?: string | null
+          state?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
+          city?: string | null
           created_at?: string
           deleted_at?: string | null
           display_name?: string | null
@@ -326,6 +331,7 @@ export type Database = {
           notify_whatsapp?: boolean
           phone?: string | null
           selected_ngo_id?: string | null
+          state?: string | null
           updated_at?: string
         }
         Relationships: [

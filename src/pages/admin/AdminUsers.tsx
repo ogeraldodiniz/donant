@@ -34,6 +34,8 @@ interface UserProfile {
   notify_whatsapp: boolean;
   notify_email: boolean;
   selected_ngo_id: string | null;
+  city: string | null;
+  state: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -214,6 +216,9 @@ export default function AdminUsers() {
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold text-sm truncate">{u.display_name || "Sem nome"}</p>
                     <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+                    {(u.city || u.state) && (
+                      <p className="text-[10px] text-muted-foreground truncate">{[u.city, u.state].filter(Boolean).join(", ")}</p>
+                    )}
                   </div>
                   <div className="hidden sm:flex items-center gap-1.5">
                     {u.notify_web && <Globe className="w-3.5 h-3.5 text-primary" />}
@@ -248,6 +253,10 @@ export default function AdminUsers() {
                       <div>
                         <p className="text-muted-foreground mb-0.5">ONG selecionada</p>
                         <p className="font-medium">{u.selected_ngo_id ? ngos[u.selected_ngo_id] ?? u.selected_ngo_id : "—"}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground mb-0.5">Cidade / Estado</p>
+                        <p className="font-medium">{[u.city, u.state].filter(Boolean).join(", ") || "—"}</p>
                       </div>
                       <div>
                         <p className="text-muted-foreground mb-0.5">Cadastro</p>
