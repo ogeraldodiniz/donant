@@ -72,12 +72,15 @@ export default function Ngos() {
                       <button
                         onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
                         disabled={saving !== null}
-                        className="text-xs font-bold text-primary hover:underline mt-1"
+                        className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center gap-1.5 hover:brightness-105 transition-all active:translate-y-0.5"
                       >
                         {saving === ngo.id ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
                         ) : (
-                          "Selecionar"
+                          <>
+                            <Heart className="w-3 h-3" />
+                            Selecionar
+                          </>
                         )}
                       </button>
                     )}
