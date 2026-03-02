@@ -409,27 +409,44 @@ function LoggedInHome() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-start">
         <LevelBadge totalDonated={donated} />
 
-        <DuoCard className="bg-primary/5 border-primary/20 h-full">
-          <p className="text-[10px] sm:text-xs text-primary font-bold uppercase mb-2">{t("home_your_ngo", "Sua ONG")}</p>
+        <DuoCard className="bg-primary/5 border-primary/20 h-full p-0 overflow-hidden">
           {selectedNgo ? (
-            <div className="flex items-center gap-3">
+            <>
               {selectedNgo.logo_url ? (
-                <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
+                <div className="aspect-[3/1] w-full overflow-hidden bg-muted">
+                  <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-full h-full object-cover" />
+                </div>
               ) : (
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                  <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                <div className="aspect-[3/1] w-full bg-primary/10 flex items-center justify-center">
+                  <Heart className="w-10 h-10 text-primary" />
                 </div>
               )}
-              <div className="flex-1 min-w-0">
-                <p className="font-bold text-sm sm:text-base truncate">{selectedNgo.name}</p>
+              <div className="p-3.5 sm:p-4">
+                <p className="text-[10px] sm:text-xs text-primary font-bold uppercase mb-1">{t("home_your_ngo", "Sua ONG")}</p>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-bold text-sm sm:text-base truncate">{selectedNgo.name}</p>
+                    {selectedNgo.mission && (
+                      <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-0.5">{selectedNgo.mission}</p>
+                    )}
+                  </div>
+                  <Link to="/ongs" className="shrink-0">
+                    <DuoButton variant="outline" size="sm" className="text-xs gap-1">
+                      <Pencil className="w-3 h-3" /> Alterar
+                    </DuoButton>
+                  </Link>
+                </div>
               </div>
-            </div>
+            </>
           ) : (
-            <p className="text-muted-foreground text-xs sm:text-sm">Nenhuma ONG selecionada</p>
+            <div className="p-3.5 sm:p-5">
+              <p className="text-[10px] sm:text-xs text-primary font-bold uppercase mb-2">{t("home_your_ngo", "Sua ONG")}</p>
+              <p className="text-muted-foreground text-xs sm:text-sm mb-2">Nenhuma ONG selecionada</p>
+              <Link to="/ongs">
+                <DuoButton size="sm" className="text-xs">Escolher ONG <ArrowRight className="w-3 h-3" /></DuoButton>
+              </Link>
+            </div>
           )}
-          <Link to="/ongs" className="inline-flex items-center gap-1 text-primary font-bold text-xs sm:text-sm mt-3 hover:underline">
-            <Pencil className="w-3.5 h-3.5" /> Alterar ONG
-          </Link>
         </DuoCard>
       </div>
 
