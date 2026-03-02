@@ -151,9 +151,9 @@ export default function AdminPush() {
           <Label>Canais de envio</Label>
           <div className="flex flex-wrap gap-4">
             {([
-              { id: "web_push" as Channel, label: "🔔 Web Push" },
-              { id: "whatsapp" as Channel, label: "💬 WhatsApp" },
-              { id: "email" as Channel, label: "📧 E-mail" },
+              { id: "web_push" as Channel, label: "Web Push", Icon: Bell },
+              { id: "whatsapp" as Channel, label: "WhatsApp", Icon: MessageSquare },
+              { id: "email" as Channel, label: "E-mail", Icon: Mail },
             ]).map((ch) => (
               <label key={ch.id} className="flex items-center gap-2 cursor-pointer">
                 <Checkbox
