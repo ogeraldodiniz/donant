@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Save, Loader2, Languages, Plus, Trash2 } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Save, Loader2, Languages, Plus, Trash2, LayoutGrid } from "lucide-react";
 import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -18,6 +18,22 @@ interface ContentRow {
   locale: string;
 }
 
+const PAGE_LABELS: Record<string, string> = {
+  all: "Todas",
+  general: "Geral",
+  home: "Home (público)",
+  home_logged: "Home (logado)",
+  ongs: "ONGs",
+  stores: "Lojas",
+  profile: "Perfil",
+  impact: "Impacto",
+  auth: "Login / Cadastro",
+  onboarding: "Onboarding",
+  transparency: "Transparência",
+  footer: "Rodapé",
+  notifications: "Notificações",
+};
+
 export default function AdminBlog() {
   const { adminLocale: locale } = useAdminLocale();
   const [rows, setRows] = useState<ContentRow[]>([]);
@@ -27,6 +43,7 @@ export default function AdminBlog() {
   const [newKey, setNewKey] = useState("");
   const [newSection, setNewSection] = useState("general");
   const [newValue, setNewValue] = useState("");
+  const [activeSection, setActiveSection] = useState("all");
 
   const fetchContent = async () => {
     setLoading(true);
@@ -104,13 +121,28 @@ export default function AdminBlog() {
     }
   };
 
-  // Group by section
-  const sections = rows.reduce<Record<string, ContentRow[]>>((acc, row) => {
-    (acc[row.section] = acc[row.section] || []).push(row);
-    return acc;
-  }, {});
+  // Available sections from data + known pages
+  const availableSections = useMemo(() => {
+    const fromData = new Set(rows.map((r) => r.section));
+    const all = new Set([...Object.keys(PAGE_LABELS).filter((k) => k !== "all"), ...fromData]);
+    return Array.from(all);
+  }, [rows]);
+
+  // Group by section, filtered
+  const sections = useMemo(() => {
+    const filtered = activeSection === "all" ? rows : rows.filter((r) => r.section === activeSection);
+    return filtered.reduce<Record<string, ContentRow[]>>((acc, row) => {
+      (acc[row.section] = acc[row.section] || []).push(row);
+      return acc;
+    }, {});
+  }, [rows, activeSection]);
 
   const editedCount = Object.keys(editedValues).length;
+  const sectionCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    rows.forEach((r) => { counts[r.section] = (counts[r.section] || 0) + 1; });
+    return counts;
+  }, [rows]);
 
   return (
     <div className="space-y-6 max-w-3xl">
@@ -133,6 +165,33 @@ export default function AdminBlog() {
         </div>
       </div>
 
+      {/* Section filter */}
+      <div className="flex gap-1.5 flex-wrap">
+        <button
+          onClick={() => setActiveSection("all")}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+            activeSection === "all"
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "bg-muted text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Todas ({rows.length})
+        </button>
+        {availableSections.map((sec) => (
+          <button
+            key={sec}
+            onClick={() => { setActiveSection(sec); setNewSection(sec); }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors ${
+              activeSection === sec
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {PAGE_LABELS[sec] || sec} {sectionCounts[sec] ? `(${sectionCounts[sec]})` : ""}
+          </button>
+        ))}
+      </div>
+
       {/* Add new content */}
       <DuoCard className="space-y-3 p-4">
         <p className="font-bold text-sm flex items-center gap-2">
@@ -140,8 +199,16 @@ export default function AdminBlog() {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           <div>
-            <Label className="text-xs">Seção</Label>
-            <Input value={newSection} onChange={(e) => setNewSection(e.target.value)} placeholder="general" className="mt-1" />
+            <Label className="text-xs">Página / Seção</Label>
+            <select
+              value={newSection}
+              onChange={(e) => setNewSection(e.target.value)}
+              className="mt-1 w-full h-10 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {availableSections.map((sec) => (
+                <option key={sec} value={sec}>{PAGE_LABELS[sec] || sec}</option>
+              ))}
+            </select>
           </div>
           <div>
             <Label className="text-xs">Chave</Label>
