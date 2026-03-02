@@ -75,6 +75,15 @@ export function Header() {
             {locale === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
           </button>
 
+          {/* Theme toggle */}
+          <button
+            onClick={cycleTheme}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl hover:bg-muted transition-colors text-sm font-bold text-muted-foreground"
+            title={theme === "dark" ? "Modo escuro" : theme === "light" ? "Modo claro" : "Automático"}
+          >
+            <ThemeIcon className="w-4 h-4" />
+          </button>
+
           {isLoggedIn ? (
             <Link to="/configuracoes" className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
