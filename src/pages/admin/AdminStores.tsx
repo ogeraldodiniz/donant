@@ -45,7 +45,7 @@ export default function AdminStores() {
 
   useEffect(() => {
     fetchStores();
-  }, []);
+  }, [adminLocale]);
 
   const toggleActive = async (id: string, currentValue: boolean) => {
     setToggling(id);
