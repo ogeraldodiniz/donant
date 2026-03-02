@@ -180,7 +180,7 @@ export default function AdminNgos() {
       {loading ? (
         <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {ngos.map((ngo) => (
             <DuoCard key={ngo.id} className="flex items-center gap-4">
               {ngo.logo_url ? (
