@@ -108,7 +108,7 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Home logado ──
   home_logged: {
-    home_greeting: "Olá, {name}! 👋",
+    home_greeting: "Olá, {name}!",
     home_subtitle: "Continue fazendo a diferença",
     home_your_ngo: "Sua ONG",
     home_change_ngo: "Trocar",
