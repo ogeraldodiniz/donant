@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { Header } from "./Header";
 import { BottomNav } from "./BottomNav";
 import { useAuth } from "@/hooks/useAuth";
+import { OnboardingGuard } from "@/components/OnboardingGuard";
 
 export function AppLayout() {
   const { isLoggedIn } = useAuth();
@@ -9,6 +10,7 @@ export function AppLayout() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
+      <OnboardingGuard />
       <main className="flex-1 pb-[4.5rem] md:pb-0">
         <Outlet />
       </main>
