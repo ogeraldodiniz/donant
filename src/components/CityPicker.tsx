@@ -159,14 +159,6 @@ export function CityPicker({
         )}
       </div>
 
-      {state && (
-        <div className="flex items-center gap-2 px-1">
-          <Check className="w-3.5 h-3.5 text-primary" />
-          <span className="text-xs sm:text-sm text-muted-foreground">
-            {city} — <span className="font-semibold text-foreground">{state}</span>
-          </span>
-        </div>
-      )}
     </div>
   );
 }
