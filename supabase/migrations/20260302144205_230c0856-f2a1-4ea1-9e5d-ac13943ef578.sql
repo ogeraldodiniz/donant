@@ -1,0 +1,1 @@
+ALTER TABLE public.stores ADD CONSTRAINT stores_mycashbacks_store_id_key UNIQUE (mycashbacks_store_id);
