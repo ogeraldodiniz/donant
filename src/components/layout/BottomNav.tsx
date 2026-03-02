@@ -7,7 +7,7 @@ const items = [
   { to: "/lojas", icon: Store, label: "Lojas" },
   { to: "/ongs", icon: Heart, label: "ONGs" },
   { to: "/impacto", icon: BarChart3, label: "Impacto" },
-  { to: "/configuracoes", icon: Settings, label: "Menu" },
+  { to: "/perfil", icon: Settings, label: "Menu" },
 ];
 
 export function BottomNav() {
