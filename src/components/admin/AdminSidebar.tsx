@@ -1,4 +1,4 @@
-import { Heart, Store, FileText, Bell, LayoutDashboard } from "lucide-react";
+import { Heart, Store, FileText, Bell, LayoutDashboard, Users } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -19,6 +19,7 @@ const items = [
   { title: "Lojas", url: "/admin/lojas", icon: Store },
   { title: "Blog", url: "/admin/blog", icon: FileText },
   { title: "Push", url: "/admin/push", icon: Bell },
+  { title: "Usuários", url: "/admin/usuarios", icon: Users },
 ];
 
 export function AdminSidebar() {
