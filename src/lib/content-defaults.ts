@@ -248,7 +248,6 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Privacidade ──
   privacy: {
-    back: "Voltar",
     title: "Política de Privacidade",
     last_update: "Última atualização: Março de 2026",
     s1_title: "1. Coleta de Dados",
