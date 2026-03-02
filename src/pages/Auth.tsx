@@ -74,8 +74,10 @@ export default function Auth() {
   };
 
   const handleGoogle = async () => {
+    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
     const { error } = await lovable.auth.signInWithOAuth("google", {
       redirect_uri: `${window.location.origin}/`,
+      extraParams: projectId ? { project_id: projectId } : undefined,
     });
     if (error) {
       toast.error(t("google_error", "Erro ao entrar com Google"));
