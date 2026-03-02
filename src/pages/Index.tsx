@@ -404,6 +404,7 @@ function LoggedInHome() {
       </div>
 
       <InstallAppBanner />
+      <PushPermissionBanner />
 
       <LevelBadge totalDonated={donated} />
 
