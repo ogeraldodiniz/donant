@@ -182,15 +182,19 @@ function PublicHome() {
             <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">{t("stores_subtitle", "Suas marcas favoritas gerando impacto social.")}</p>
           </motion.div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
-            {mockStores.slice(0, 10).map((store, i) => (
+            {dbStores.slice(0, 10).map((store, i) => (
               <motion.div key={store.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
                 <Link to={`/lojas/${store.slug}`}>
                   <DuoCard hover className="text-center py-3 px-2 sm:py-4 sm:px-3">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-2">
-                      <Store className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
-                    </div>
+                    {store.logo_url ? (
+                      <img src={store.logo_url} alt={store.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover mx-auto mb-2 bg-muted" />
+                    ) : (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-2">
+                        <Store className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+                      </div>
+                    )}
                     <p className="font-bold text-[11px] sm:text-xs truncate">{store.name}</p>
-                    <p className="text-primary font-black text-xs sm:text-sm">{store.cashback_rate}%</p>
+                    <p className="text-primary font-black text-xs sm:text-sm">{Number(store.cashback_rate)}%</p>
                   </DuoCard>
                 </Link>
               </motion.div>
