@@ -93,7 +93,7 @@ export default function NgoDetail() {
 
       {ngo.description && (
         <DuoCard>
-          <h3 className="font-bold text-sm sm:text-base mb-2">📖 Sobre</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><BookOpen className="w-4 h-4 text-primary" /> Sobre</h3>
           <p className="text-xs sm:text-sm text-muted-foreground">{ngo.description}</p>
         </DuoCard>
       )}
