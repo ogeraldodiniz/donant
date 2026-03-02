@@ -58,7 +58,6 @@ async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
       headers: {
         "Content-Type": "application/json",
         "x-myc-access-token": token,
-        "x-myc-ambiente": "10",
       },
       body: JSON.stringify({
         limit,
