@@ -18,6 +18,7 @@ export default function Settings() {
   const [showDelete, setShowDelete] = useState(false);
   const { ngos, loading: ngosLoading } = useNgos();
   const { selectNgo, saving } = useSelectNgo();
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = async () => {
     try {
