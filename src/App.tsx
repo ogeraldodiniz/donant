@@ -33,6 +33,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
     <I18nProvider>
     <AuthProvider>
       <TooltipProvider>
@@ -69,6 +70,7 @@ const App = () => (
       </TooltipProvider>
     </AuthProvider>
     </I18nProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
