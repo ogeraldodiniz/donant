@@ -94,6 +94,11 @@ async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
     }
 
     const result = await res.json();
+    // Log first program raw data to understand structure
+    if (offset === 0) {
+      const sample = Array.isArray(result.programs) ? result.programs[0] : Array.isArray(result.data) ? result.data[0] : null;
+      console.log("SAMPLE PROGRAM RAW:", JSON.stringify(sample));
+    }
     const programs: MycProgram[] = Array.isArray(result.programs)
       ? result.programs
       : Array.isArray(result.data)
