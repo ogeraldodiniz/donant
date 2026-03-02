@@ -19,6 +19,7 @@ const items = [
   { title: "Lojas", url: "/admin/lojas", icon: Store },
   { title: "Blog", url: "/admin/blog", icon: FileText },
   { title: "Push", url: "/admin/push", icon: Bell },
+  { title: "Usuários", url: "/admin/usuarios", icon: Users },
 ];
 
 export function AdminSidebar() {
