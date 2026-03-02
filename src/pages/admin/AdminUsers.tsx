@@ -69,9 +69,59 @@ export default function AdminUsers() {
   const [newName, setNewName] = useState("");
   const [creating, setCreating] = useState(false);
 
+  // Edit user
+  const [editTarget, setEditTarget] = useState<UserProfile | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editPhone, setEditPhone] = useState("");
+  const [editCity, setEditCity] = useState("");
+  const [editState, setEditState] = useState("");
+  const [editNgoId, setEditNgoId] = useState("");
+  const [editNotifyWeb, setEditNotifyWeb] = useState(false);
+  const [editNotifyWhatsapp, setEditNotifyWhatsapp] = useState(false);
+  const [editNotifyEmail, setEditNotifyEmail] = useState(false);
+  const [saving, setSaving] = useState(false);
+
   // Delete user
   const [deleteTarget, setDeleteTarget] = useState<UserProfile | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  const openEdit = (u: UserProfile) => {
+    setEditTarget(u);
+    setEditName(u.display_name ?? "");
+    setEditPhone(u.phone ?? "");
+    setEditCity(u.city ?? "");
+    setEditState(u.state ?? "");
+    setEditNgoId(u.selected_ngo_id ?? "");
+    setEditNotifyWeb(u.notify_web);
+    setEditNotifyWhatsapp(u.notify_whatsapp);
+    setEditNotifyEmail(u.notify_email);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editTarget) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        display_name: editName || null,
+        phone: editPhone || null,
+        city: editCity || null,
+        state: editState || null,
+        selected_ngo_id: editNgoId || null,
+        notify_web: editNotifyWeb,
+        notify_whatsapp: editNotifyWhatsapp,
+        notify_email: editNotifyEmail,
+      })
+      .eq("id", editTarget.id);
+    setSaving(false);
+    if (error) {
+      toast.error("Erro ao salvar: " + error.message);
+    } else {
+      toast.success("Usuário atualizado");
+      setEditTarget(null);
+      fetchData();
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
