@@ -18,15 +18,47 @@ export function useNgos() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase
-      .from("ngos")
-      .select("*")
-      .eq("is_active", true)
-      .order("name")
-      .then(({ data }) => {
-        if (data) setNgos(data);
-        setLoading(false);
-      });
+    let isMounted = true;
+
+    const timeoutId = window.setTimeout(() => {
+      if (!isMounted) return;
+      console.error("Timeout ao carregar ONGs");
+      setLoading(false);
+    }, 10000);
+
+    const fetchNgos = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("ngos")
+          .select("*")
+          .eq("is_active", true)
+          .order("name");
+
+        if (!isMounted) return;
+
+        if (error) {
+          console.error("Erro ao carregar ONGs:", error);
+          setNgos([]);
+          return;
+        }
+
+        setNgos(data ?? []);
+      } catch (error) {
+        if (!isMounted) return;
+        console.error("Falha de rede ao carregar ONGs:", error);
+        setNgos([]);
+      } finally {
+        window.clearTimeout(timeoutId);
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    void fetchNgos();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return { ngos, loading };
