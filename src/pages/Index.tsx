@@ -223,7 +223,7 @@ function PublicHome() {
                   <DuoCard hover className="text-center py-3 sm:py-5 h-full">
                     <div className="flex justify-center mb-2">
                       {ngo.logo_url ? (
-                        <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
+                        <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" />
                       ) : (
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
                           <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
