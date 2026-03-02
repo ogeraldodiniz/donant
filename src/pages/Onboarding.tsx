@@ -14,17 +14,6 @@ import { CityPicker } from "@/components/CityPicker";
 
 type Step = "phone" | "location" | "ngo" | "install";
 
-interface IBGECity {
-  nome: string;
-  microrregiao: {
-    mesorregiao: {
-      UF: {
-        sigla: string;
-      };
-    };
-  };
-}
-
 export default function Onboarding() {
   const { user, refreshProfile, loading: authLoading } = useAuth();
   const { ngos, loading: ngosLoading } = useNgos();
@@ -38,79 +27,6 @@ export default function Onboarding() {
   const [state, setState] = useState("");
   const [selectedNgoId, setSelectedNgoId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [citySuggestions, setCitySuggestions] = useState<IBGECity[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [loadingCities, setLoadingCities] = useState(false);
-  const [detectingLocation, setDetectingLocation] = useState(false);
-  const cityInputRef = useRef<HTMLInputElement>(null);
-  const suggestionsRef = useRef<HTMLDivElement>(null);
-
-  // Debounced city search via IBGE API
-  const searchCities = useCallback(async (query: string) => {
-    if (query.length < 2) {
-      setCitySuggestions([]);
-      return;
-    }
-    setLoadingCities(true);
-    try {
-      const res = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome`);
-      if (res.ok) {
-        const all: IBGECity[] = await res.json();
-        const filtered = all
-          .filter((c) => c.nome.toLowerCase().includes(query.toLowerCase()))
-          .slice(0, 8);
-        setCitySuggestions(filtered);
-        setShowSuggestions(filtered.length > 0);
-      }
-    } catch {
-      setCitySuggestions([]);
-    }
-    setLoadingCities(false);
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (city.length >= 2) searchCities(city);
-      else { setCitySuggestions([]); setShowSuggestions(false); }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [city, searchCities]);
-
-  // Close suggestions on outside click
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (suggestionsRef.current && !suggestionsRef.current.contains(e.target as Node) &&
-          cityInputRef.current && !cityInputRef.current.contains(e.target as Node)) {
-        setShowSuggestions(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const selectCity = (c: IBGECity) => {
-    setCity(c.nome);
-    setState(c.microrregiao.mesorregiao.UF.sigla);
-    setShowSuggestions(false);
-  };
-
-  const detectLocation = async () => {
-    setDetectingLocation(true);
-    try {
-      const res = await fetch("https://ip-api.com/json/?fields=city,regionName,region");
-      if (res.ok) {
-        const geo = await res.json();
-        if (geo.city) setCity(geo.city);
-        if (geo.region) setState(geo.region);
-        toast.success("Localização detectada!");
-      } else {
-        toast.error("Não foi possível detectar");
-      }
-    } catch {
-      toast.error("Não foi possível detectar");
-    }
-    setDetectingLocation(false);
-  };
 
   const showInstallStep = isMobile && !isInstalled;
   const totalSteps = showInstallStep ? 4 : 3;
