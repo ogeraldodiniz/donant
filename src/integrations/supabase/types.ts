@@ -293,6 +293,10 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          notify_email: boolean
+          notify_web: boolean
+          notify_whatsapp: boolean
+          phone: string | null
           selected_ngo_id: string | null
           updated_at: string
         }
@@ -303,6 +307,10 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id: string
+          notify_email?: boolean
+          notify_web?: boolean
+          notify_whatsapp?: boolean
+          phone?: string | null
           selected_ngo_id?: string | null
           updated_at?: string
         }
@@ -313,6 +321,10 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          notify_email?: boolean
+          notify_web?: boolean
+          notify_whatsapp?: boolean
+          phone?: string | null
           selected_ngo_id?: string | null
           updated_at?: string
         }
