@@ -171,7 +171,7 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Transparência ──
   transparency: {
-    title: "Transparência 📊",
+    title: "Transparência",
     subtitle: "Dados abertos sobre todas as doações",
     total_label: "Total doado pela plataforma",
     ngos_label: "ONGs",
