@@ -47,33 +47,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (supaUser: User) => {
-    const { data } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", supaUser.id)
-      .single();
-    setUser(mapUser(supaUser, data ?? undefined));
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", supaUser.id)
+        .single();
+
+      if (error) {
+        console.warn("Erro ao buscar perfil, usando dados básicos do usuário:", error.message);
+      }
+
+      setUser(mapUser(supaUser, data ?? undefined));
+    } catch (error) {
+      console.error("Falha ao buscar perfil, usando fallback:", error);
+      setUser(mapUser(supaUser));
+    }
   };
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
+      (_event, newSession) => {
         setSession(newSession);
+        setLoading(false);
+
         if (newSession?.user) {
-          await fetchProfile(newSession.user);
+          void fetchProfile(newSession.user);
         } else {
           setUser(null);
         }
-        setLoading(false);
       }
     );
 
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       setSession(s);
-      if (s?.user) {
-        fetchProfile(s.user);
-      }
       setLoading(false);
+
+      if (s?.user) {
+        void fetchProfile(s.user);
+      } else {
+        setUser(null);
+      }
     });
 
     return () => subscription.unsubscribe();
