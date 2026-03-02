@@ -25,7 +25,6 @@ async function getMycToken(): Promise<string> {
   const appId = Deno.env.get("MYCASHBACKS_APP_ID")!;
 
   const authUrl = `${apiUrl}/api/auth`;
-  console.log("DEBUG authUrl =", authUrl, "| apiUrl =", apiUrl);
 
   const res = await fetch(authUrl, {
     method: "POST",
@@ -43,47 +42,29 @@ async function getMycToken(): Promise<string> {
   }
 
   const data = await res.json();
-  console.log("Auth response keys:", Object.keys(data));
-  console.log("Auth response:", JSON.stringify(data).substring(0, 500));
   return data.token;
 }
 
 async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
-  const apiUrl = Deno.env.get("MYCASHBACKS_API_URL")!;
-  const allPrograms: MycProgram[] = [];
-  let offset = 0;
-  const limit = 100;
+  const apiUrl = Deno.env.get("MYCASHBACKS_API_URL")!.replace(/\/+$/, "");
 
-  while (true) {
-    const res = await fetch(`${apiUrl}/api/programs/search`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-myc-access-token": token,
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        limit,
-        offset,
-        query: {},
-      }),
-    });
+  const res = await fetch(`${apiUrl}/extension/api/programs`, {
+    method: "GET",
+    headers: {
+      "x-myc-access-token": token,
+    },
+  });
 
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`Programs search failed [${res.status}]: ${body}`);
-    }
-
-    const result = await res.json();
-    const programs: MycProgram[] = result.data ?? [];
-    allPrograms.push(...programs);
-
-    const total = result.meta?.total ?? 0;
-    offset += limit;
-    if (offset >= total || programs.length === 0) break;
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Programs fetch failed [${res.status}]: ${body}`);
   }
 
-  return allPrograms;
+  const result = await res.json();
+  console.log("Programs full response:", JSON.stringify(result).substring(0, 1000));
+  
+  const programs: MycProgram[] = Array.isArray(result.programs) ? result.programs : Array.isArray(result.data) ? result.data : Array.isArray(result) ? result : [];
+  return programs;
 }
 
 function slugify(text: string): string {
