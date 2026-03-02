@@ -45,7 +45,7 @@ export default function AdminNgos() {
 
   const fetchNgos = async () => {
     setLoading(true);
-    const { data } = await supabase.from("ngos").select("*").order("name");
+    const { data } = await supabase.from("ngos").select("*").eq("locale", adminLocale).order("name");
     if (data) setNgos(data);
     setLoading(false);
   };
