@@ -160,7 +160,7 @@ export default function AdminPush() {
                   checked={channels.includes(ch.id)}
                   onCheckedChange={() => toggleChannel(ch.id)}
                 />
-                <span className="text-sm font-medium">{ch.label}</span>
+                <span className="text-sm font-medium flex items-center gap-1.5"><ch.Icon className="w-3.5 h-3.5" /> {ch.label}</span>
               </label>
             ))}
           </div>
