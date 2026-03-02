@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone } from "lucide-react";
+import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone, LocateFixed } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -13,10 +13,16 @@ import { useInstallPWA } from "@/hooks/useInstallPWA";
 
 type Step = "phone" | "location" | "ngo" | "install";
 
-const BRAZILIAN_STATES = [
-  "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA",
-  "PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"
-];
+interface IBGECity {
+  nome: string;
+  microrregiao: {
+    mesorregiao: {
+      UF: {
+        sigla: string;
+      };
+    };
+  };
+}
 
 export default function Onboarding() {
   const { user, refreshProfile, loading: authLoading } = useAuth();
