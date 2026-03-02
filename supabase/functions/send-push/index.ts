@@ -291,25 +291,35 @@ Deno.serve(async (req) => {
       const vapidPrivateKey = Deno.env.get("VAPID_PRIVATE_KEY")!;
       const vapidSubject = Deno.env.get("VAPID_SUBJECT")!;
 
+      console.log(`[send-push] VAPID subject: ${vapidSubject}`);
+      console.log(`[send-push] Processing ${pushSubs.length} push subscriptions`);
+
       for (const sub of pushSubs) {
         try {
+          console.log(`[send-push] Sending to endpoint: ${sub.endpoint.slice(0, 80)}...`);
+          console.log(`[send-push] p256dh length: ${sub.p256dh?.length}, auth_key length: ${sub.auth_key?.length}`);
           const res = await sendWebPush(
             sub.endpoint, sub.p256dh, sub.auth_key,
             { title, body: body || "", url: url || "/notificacoes" },
             vapidPublicKey, vapidPrivateKey, vapidSubject
           );
+          console.log(`[send-push] Response status: ${res.status}`);
           if (res.ok || res.status === 201) {
             sent++;
+            console.log(`[send-push] ✅ Push sent successfully`);
           } else {
             failed++;
             const text = await res.text();
+            console.log(`[send-push] ❌ Push failed: ${res.status} - ${text.slice(0, 200)}`);
             errors.push(`push ${res.status}: ${text.slice(0, 100)}`);
             if (res.status === 404 || res.status === 410) {
+              console.log(`[send-push] Removing stale subscription`);
               await adminClient.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
             }
           }
         } catch (e) {
           failed++;
+          console.log(`[send-push] ❌ Push exception: ${String(e)}`);
           errors.push(`push: ${String(e).slice(0, 100)}`);
         }
       }
