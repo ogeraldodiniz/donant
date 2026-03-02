@@ -20,20 +20,17 @@ export function useNgos() {
   useEffect(() => {
     let isMounted = true;
 
-    const timeoutId = window.setTimeout(() => {
-      if (!isMounted) return;
-      console.error("Timeout ao carregar ONGs");
-      setLoading(false);
-    }, 10000);
-
     const fetchNgos = async () => {
       setLoading(true);
       try {
+        console.log("[useNgos] Starting query...");
         const { data, error } = await supabase
           .from("ngos")
           .select("*")
           .eq("is_active", true)
           .order("name");
+
+        console.log("[useNgos] Query result:", { data: data?.length, error });
 
         if (!isMounted) return;
 
@@ -49,7 +46,6 @@ export function useNgos() {
         console.error("Falha de rede ao carregar ONGs:", error);
         setNgos([]);
       } finally {
-        window.clearTimeout(timeoutId);
         if (isMounted) setLoading(false);
       }
     };
