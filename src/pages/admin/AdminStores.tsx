@@ -16,6 +16,7 @@ interface StoreRow {
   cashback_rate: number;
   is_active: boolean;
   website_url: string | null;
+  locale: string;
 }
 
 export default function AdminStores() {
@@ -29,7 +30,7 @@ export default function AdminStores() {
     setLoading(true);
     const { data, error } = await supabase
       .from("stores")
-      .select("id, name, slug, logo_url, category, cashback_rate, is_active, website_url")
+      .select("id, name, slug, logo_url, category, cashback_rate, is_active, website_url, locale")
       .order("name");
     if (error) {
       toast.error("Erro ao carregar lojas");
@@ -139,7 +140,7 @@ export default function AdminStores() {
               <div className="flex-1 min-w-0">
                 <p className="font-bold truncate">{store.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {store.category || "Sem categoria"} · {Number(store.cashback_rate)}% cashback
+                  {store.category || "Sem categoria"} · {Number(store.cashback_rate)}% cashback · {store.locale === "es" ? "🇪🇸 ES" : "🇧🇷 PT"}
                 </p>
               </div>
               <div className="flex items-center gap-2">

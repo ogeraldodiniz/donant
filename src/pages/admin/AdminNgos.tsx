@@ -19,6 +19,7 @@ interface Ngo {
   website_url: string | null;
   is_active: boolean;
   total_received: number;
+  locale: string;
 }
 
 const emptyNgo = {
@@ -29,6 +30,7 @@ const emptyNgo = {
   logo_url: "",
   website_url: "",
   is_active: true,
+  locale: "pt",
 };
 
 export default function AdminNgos() {
@@ -64,6 +66,7 @@ export default function AdminNgos() {
       logo_url: ngo.logo_url || "",
       website_url: ngo.website_url || "",
       is_active: ngo.is_active,
+      locale: ngo.locale || "pt",
     });
   };
 
@@ -94,6 +97,7 @@ export default function AdminNgos() {
       logo_url: form.logo_url || null,
       website_url: form.website_url || null,
       is_active: form.is_active,
+      locale: form.locale,
     };
 
     if (creating) {
@@ -161,6 +165,25 @@ export default function AdminNgos() {
               <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
               <Label>Ativa</Label>
             </div>
+            <div>
+              <Label>Idioma</Label>
+              <div className="flex gap-2 mt-1">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, locale: "pt" })}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${form.locale === "pt" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+                >
+                  🇧🇷 PT
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, locale: "es" })}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${form.locale === "es" ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+                >
+                  🇪🇸 ES
+                </button>
+              </div>
+            </div>
           </div>
           <div className="flex gap-3">
             <DuoButton variant="outline" size="sm" onClick={handleCancel}><X className="w-4 h-4" /> Cancelar</DuoButton>
@@ -186,7 +209,7 @@ export default function AdminNgos() {
               )}
               <div className="flex-1 min-w-0">
                 <p className="font-bold truncate">{ngo.name}</p>
-                <p className="text-xs text-muted-foreground">/{ngo.slug} · {ngo.is_active ? "Ativa" : "Inativa"} · R$ {Number(ngo.total_received).toFixed(2)}</p>
+                <p className="text-xs text-muted-foreground">/{ngo.slug} · {ngo.is_active ? "Ativa" : "Inativa"} · {ngo.locale === "es" ? "🇪🇸 ES" : "🇧🇷 PT"} · R$ {Number(ngo.total_received).toFixed(2)}</p>
               </div>
               <div className="flex gap-1">
                 <DuoButton variant="outline" size="sm" onClick={() => handleEdit(ngo)}><Pencil className="w-4 h-4" /></DuoButton>

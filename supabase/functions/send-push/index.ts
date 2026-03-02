@@ -291,7 +291,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { title, body, url } = await req.json();
+    const { title, body, url, targetLocale } = await req.json();
     if (!title) {
       return new Response(JSON.stringify({ error: "Título é obrigatório" }), {
         status: 400,
@@ -303,10 +303,27 @@ Deno.serve(async (req) => {
     const vapidPrivateKey = Deno.env.get("VAPID_PRIVATE_KEY")!;
     const vapidSubject = Deno.env.get("VAPID_SUBJECT")!;
 
-    // Get all subscriptions
-    const { data: subs, error: subsErr } = await adminClient
-      .from("push_subscriptions")
-      .select("*");
+    // If targetLocale is set, filter subscriptions by user locale
+    let subQuery = adminClient.from("push_subscriptions").select("*");
+
+    if (targetLocale && (targetLocale === "pt" || targetLocale === "es")) {
+      // Get user IDs with matching locale
+      const { data: matchingProfiles } = await adminClient
+        .from("profiles")
+        .select("id")
+        .eq("locale", targetLocale);
+      const matchingIds = (matchingProfiles || []).map((p: { id: string }) => p.id);
+      if (matchingIds.length > 0) {
+        subQuery = subQuery.in("user_id", matchingIds);
+      } else {
+        return new Response(
+          JSON.stringify({ sent: 0, failed: 0, total: 0, errors: [] }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    const { data: subs, error: subsErr } = await subQuery;
 
     if (subsErr) throw subsErr;
 

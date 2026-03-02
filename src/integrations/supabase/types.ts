@@ -173,6 +173,7 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean
+          locale: string
           logo_url: string | null
           mission: string | null
           name: string
@@ -185,6 +186,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          locale?: string
           logo_url?: string | null
           mission?: string | null
           name: string
@@ -197,6 +199,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          locale?: string
           logo_url?: string | null
           mission?: string | null
           name?: string
@@ -294,6 +297,7 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          locale: string
           notify_email: boolean
           notify_web: boolean
           notify_whatsapp: boolean
@@ -310,6 +314,7 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id: string
+          locale?: string
           notify_email?: boolean
           notify_web?: boolean
           notify_whatsapp?: boolean
@@ -326,6 +331,7 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          locale?: string
           notify_email?: boolean
           notify_web?: boolean
           notify_whatsapp?: boolean
@@ -408,6 +414,7 @@ export type Database = {
           created_at: string
           id: string
           is_active: boolean
+          locale: string
           logo_url: string | null
           mycashbacks_store_id: string | null
           name: string
@@ -421,6 +428,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          locale?: string
           logo_url?: string | null
           mycashbacks_store_id?: string | null
           name: string
@@ -434,6 +442,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean
+          locale?: string
           logo_url?: string | null
           mycashbacks_store_id?: string | null
           name?: string

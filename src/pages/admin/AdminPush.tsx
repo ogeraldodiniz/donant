@@ -13,6 +13,7 @@ export default function AdminPush() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("/notificacoes");
+  const [targetLocale, setTargetLocale] = useState<"all" | "pt" | "es">("all");
   const [sending, setSending] = useState(false);
   const [lastResult, setLastResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
   const { permission, subscribing, subscribe, isSupported } = usePushNotifications();
@@ -42,7 +43,7 @@ export default function AdminPush() {
     setLastResult(null);
     try {
       const { data, error } = await supabase.functions.invoke("send-push", {
-        body: { title: title.trim(), body: body.trim(), url: url.trim() || "/notificacoes" },
+        body: { title: title.trim(), body: body.trim(), url: url.trim() || "/notificacoes", targetLocale: targetLocale === "all" ? undefined : targetLocale },
       });
       if (error) throw error;
       setLastResult(data);
@@ -115,6 +116,22 @@ export default function AdminPush() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
+        </div>
+
+        <div className="space-y-1.5">
+          <Label>Idioma dos destinatários</Label>
+          <div className="flex gap-2">
+            {(["all", "pt", "es"] as const).map((loc) => (
+              <button
+                key={loc}
+                type="button"
+                onClick={() => setTargetLocale(loc)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${targetLocale === loc ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+              >
+                {loc === "all" ? "🌐 Todos" : loc === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
+              </button>
+            ))}
+          </div>
         </div>
 
         <Button onClick={handleSend} disabled={sending || !title.trim()} className="w-full gap-2">
