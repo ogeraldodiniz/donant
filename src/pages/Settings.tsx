@@ -149,6 +149,8 @@ export default function Settings() {
 
       {/* Right column */}
       <div className="space-y-4 sm:space-y-5">
+        {/* Level */}
+        <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
         {/* Selected NGO */}
         <DuoCard className="p-3.5 sm:p-5">
           <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Sua ONG</h3>
