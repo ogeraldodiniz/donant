@@ -59,7 +59,7 @@ export default function Settings() {
   );
 
   const handleSaveProfile = async () => {
-    if (!user || !hasProfileChanges) return;
+    if (!user) return;
     setSavingProfile(true);
     const rawPhone = phone.replace(/\D/g, "");
     const { error } = await supabase
@@ -71,8 +71,19 @@ export default function Settings() {
       toast.error(t("save_error", "Erro ao salvar perfil"));
     } else {
       toast.success(t("save_success", "Perfil salvo"));
+      setEditing(false);
       await refreshProfile();
     }
+  };
+
+  const handleCancelEdit = () => {
+    if (user) {
+      setDisplayName(user.display_name ?? "");
+      setPhone(user.phone ?? "");
+      setCity(user.city ?? "");
+      setUserState(user.state ?? "");
+    }
+    setEditing(false);
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
