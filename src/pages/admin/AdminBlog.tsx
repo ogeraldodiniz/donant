@@ -98,7 +98,6 @@ const SECTION_LABELS: Record<string, string> = {
   terms: "Termos de Uso",
   nav: "Menu de navegação",
   footer: "Rodapé",
-  footer: "Rodapé",
 };
 
 type ViewMode = "pages" | "global";
