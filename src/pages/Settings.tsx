@@ -183,38 +183,6 @@ export default function Settings() {
       <div className="space-y-4 sm:space-y-5">
         {/* Level */}
         <LevelBadge totalDonated={mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0)} />
-        {/* Selected NGO */}
-        <DuoCard className="p-3.5 sm:p-5">
-          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Sua ONG</h3>
-          {(() => {
-            const selectedNgo = ngos.find(n => n.id === user?.selected_ngo_id);
-            if (ngosLoading) return <p className="text-xs text-muted-foreground">Carregando...</p>;
-            if (!selectedNgo) return (
-              <div className="text-center py-2">
-                <p className="text-xs sm:text-sm text-muted-foreground mb-2">Nenhuma ONG selecionada</p>
-                <Link to="/ongs" className="text-xs sm:text-sm font-bold text-primary hover:underline inline-flex items-center gap-1">
-                  Escolher ONG
-                </Link>
-              </div>
-            );
-            return (
-              <div className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-primary/10 border-2 border-primary ring-1 ring-primary/20">
-                {selectedNgo.logo_url ? (
-                  <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-8 h-8 rounded-xl object-cover" />
-                ) : (
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Heart className="w-4 h-4 text-primary" />
-                  </div>
-                )}
-                <span className="font-semibold text-xs sm:text-sm flex-1 truncate">{selectedNgo.name}</span>
-                <Check className="w-4 h-4 text-primary" />
-              </div>
-            );
-          })()}
-          <Link to="/ongs" className="mt-2 block text-center text-xs sm:text-sm font-bold text-primary hover:underline">
-            Trocar ONG
-          </Link>
-        </DuoCard>
 
         {/* Theme */}
         <DuoCard className="p-3.5 sm:p-5">
