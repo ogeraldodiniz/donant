@@ -66,8 +66,8 @@ export function LevelBadge({ totalDonated, compact = false, showAllLevels = fals
         )}
 
         {!next && (
-          <p className="mt-3 text-xs sm:text-sm font-bold text-primary">
-            🏆 Nível máximo alcançado! Você é incrível!
+          <p className="mt-3 text-xs sm:text-sm font-bold text-primary flex items-center gap-1.5">
+            <Trophy className="w-4 h-4" /> Nível máximo alcançado! Você é incrível!
           </p>
         )}
       </DuoCard>
