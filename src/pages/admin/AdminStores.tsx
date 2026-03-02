@@ -21,6 +21,7 @@ interface StoreRow {
 }
 
 export default function AdminStores() {
+  const { adminLocale } = useAdminLocale();
   const [stores, setStores] = useState<StoreRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
