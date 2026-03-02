@@ -98,6 +98,31 @@ export default function Settings() {
         </div>
       </DuoCard>
 
+      {/* Theme */}
+      <DuoCard className="p-3.5 sm:p-5">
+        <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Sun className="w-4 h-4 text-primary" /> Aparência</h3>
+        <div className="grid grid-cols-3 gap-2">
+          {([
+            { value: "light", label: "Claro", Icon: Sun },
+            { value: "dark", label: "Escuro", Icon: Moon },
+            { value: "system", label: "Auto", Icon: Monitor },
+          ] as const).map(({ value, label, Icon }) => (
+            <button
+              key={value}
+              onClick={() => setTheme(value)}
+              className={`flex flex-col items-center gap-1.5 p-3 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                theme === value
+                  ? 'bg-primary/10 border-2 border-primary text-primary'
+                  : 'border-2 border-transparent hover:bg-muted text-muted-foreground'
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              {label}
+            </button>
+          ))}
+        </div>
+      </DuoCard>
+
       {/* Actions */}
       <DuoButton variant="outline" className="w-full" onClick={handleLogout}>
         <LogOut className="w-4 h-4" /> Sair da conta
