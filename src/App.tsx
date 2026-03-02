@@ -31,6 +31,7 @@ import AdminBlog from "./pages/admin/AdminBlog";
 import AdminPush from "./pages/admin/AdminPush";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminClaims from "./pages/admin/AdminClaims";
+import OAuthBridge from "./pages/OAuthBridge";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
