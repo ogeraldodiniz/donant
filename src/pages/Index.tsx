@@ -420,8 +420,8 @@ function LoggedInHome() {
           {selectedNgo ? (
             <div className="flex flex-row h-full">
               {selectedNgo.logo_url ? (
-                <div className="w-28 sm:w-36 shrink-0 overflow-hidden bg-muted self-stretch">
-                  <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-full h-full object-cover" />
+                <div className="w-28 sm:w-36 shrink-0 overflow-hidden rounded-2xl bg-muted self-stretch m-2">
+                  <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-full h-full object-cover rounded-2xl" />
                 </div>
               ) : (
                 <div className="w-28 sm:w-36 shrink-0 bg-primary/10 flex items-center justify-center self-stretch">
