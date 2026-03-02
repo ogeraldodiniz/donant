@@ -17,7 +17,7 @@ export default function Transparency() {
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-3xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black flex items-center gap-2">{t("title", "Transparência")} <BarChart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" /></h1>
+        <h1 className="text-xl sm:text-2xl font-black flex items-center gap-2">{t("title", "Transparência")} <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" /></h1>
         <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Dados abertos sobre todas as doações")}</p>
       </div>
 
