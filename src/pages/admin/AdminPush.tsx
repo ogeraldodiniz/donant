@@ -118,6 +118,22 @@ export default function AdminPush() {
           />
         </div>
 
+        <div className="space-y-1.5">
+          <Label>Idioma dos destinatários</Label>
+          <div className="flex gap-2">
+            {(["all", "pt", "es"] as const).map((loc) => (
+              <button
+                key={loc}
+                type="button"
+                onClick={() => setTargetLocale(loc)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${targetLocale === loc ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+              >
+                {loc === "all" ? "🌐 Todos" : loc === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <Button onClick={handleSend} disabled={sending || !title.trim()} className="w-full gap-2">
           {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           {sending ? "Enviando..." : "Enviar Push"}
