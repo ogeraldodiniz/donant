@@ -2,14 +2,25 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ExternalLink, Clock, Shield } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
-import { mockStores, categoryEmojis } from "@/lib/mock-data";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
+import { useStores } from "@/hooks/useStores";
 
 export default function StoreDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
-  const store = mockStores.find(s => s.slug === slug);
+  const { stores, loading } = useStores();
+  const store = stores.find(s => s.slug === slug);
+
+  if (loading) {
+    return (
+      <div className="container py-5 sm:py-6 space-y-4 max-w-2xl">
+        <Skeleton className="h-8 w-20" />
+        <Skeleton className="h-32 rounded-2xl" />
+      </div>
+    );
+  }
 
   if (!store) return <div className="container py-12 text-center"><p className="text-lg sm:text-xl font-bold">Loja não encontrada</p></div>;
 
@@ -25,18 +36,22 @@ export default function StoreDetail() {
       </Link>
 
       <div className="flex items-center gap-3 sm:gap-4">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-muted flex items-center justify-center text-3xl sm:text-4xl font-bold">
-          {store.name.charAt(0)}
-        </div>
+        {store.logo_url ? (
+          <img src={store.logo_url} alt={store.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover bg-muted" />
+        ) : (
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-muted flex items-center justify-center text-3xl sm:text-4xl font-bold">
+            {store.name.charAt(0)}
+          </div>
+        )}
         <div>
           <h1 className="text-xl sm:text-2xl font-black">{store.name}</h1>
-          <p className="text-muted-foreground text-xs sm:text-sm">{categoryEmojis[store.category]} {store.category}</p>
+          <p className="text-muted-foreground text-xs sm:text-sm">{store.category || 'Geral'}</p>
         </div>
       </div>
 
       <DuoCard className="text-center bg-primary/5 border-primary/20">
         <p className="text-xs sm:text-sm font-bold text-muted-foreground mb-1">Cashback solidário de até</p>
-        <p className="text-3xl sm:text-4xl font-black text-primary">{store.cashback_rate}%</p>
+        <p className="text-3xl sm:text-4xl font-black text-primary">{Number(store.cashback_rate)}%</p>
         <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">100% doado para sua ONG</p>
       </DuoCard>
 
@@ -44,10 +59,12 @@ export default function StoreDetail() {
         <ExternalLink className="w-5 h-5" /> Comprar e gerar cashback
       </DuoButton>
 
-      <DuoCard>
-        <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /> Termos e condições</h3>
-        <p className="text-xs sm:text-sm text-muted-foreground">{store.terms}</p>
-      </DuoCard>
+      {store.terms && (
+        <DuoCard>
+          <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><Shield className="w-4 h-4 text-primary" /> Termos e condições</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">{store.terms}</p>
+        </DuoCard>
+      )}
 
       <DuoCard>
         <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><Clock className="w-4 h-4 text-secondary" /> Como funciona</h3>
