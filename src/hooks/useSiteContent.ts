@@ -6,6 +6,46 @@ interface ContentMap {
   [key: string]: string;
 }
 
+/**
+ * Auto-creates missing content keys in site_content when a fallback is used.
+ * This ensures the admin CMS always has entries for every text used in code.
+ */
+async function ensureContentExists(
+  locale: string,
+  key: string,
+  fallback: string,
+  section: string,
+  existingKeys: Set<string>
+) {
+  if (existingKeys.has(key) || !fallback || fallback === key) return;
+  // Mark as known to avoid duplicate inserts in the same render
+  existingKeys.add(key);
+
+  // Determine section from key prefix
+  const resolvedSection = inferSection(key, section);
+
+  await supabase.from("site_content").upsert(
+    { content_key: key, value: fallback, locale, section: resolvedSection },
+    { onConflict: "content_key,locale" }
+  ).select();
+}
+
+function inferSection(key: string, defaultSection: string): string {
+  if (key.startsWith("hero_")) return "hero";
+  if (key.startsWith("how_")) return "how_it_works";
+  if (key.startsWith("feat")) return "features";
+  if (key.startsWith("stat")) return "stats";
+  if (key.startsWith("testimonial")) return "testimonials";
+  if (key.startsWith("cta_")) return "cta";
+  if (key.startsWith("faq")) return "faq";
+  if (key.startsWith("home_")) return "home_logged";
+  if (key.startsWith("nav_")) return "nav";
+  if (key.startsWith("footer_")) return "footer";
+  if (key.startsWith("ngos_")) return "ngos";
+  if (key.startsWith("stores_")) return "stores";
+  return defaultSection;
+}
+
 export function useSiteContent(section?: string) {
   const { locale } = useLocale();
 
@@ -30,10 +70,23 @@ export function useSiteContent(section?: string) {
       }
       return map;
     },
-    staleTime: 5 * 60 * 1000, // cache 5 min
+    staleTime: 5 * 60 * 1000,
   });
 
-  const t = (key: string, fallback?: string) => content[key] || fallback || key;
+  // Track keys we've already seen to avoid duplicate upserts
+  const knownKeys = new Set(Object.keys(content));
+
+  const t = (key: string, fallback?: string) => {
+    const value = content[key];
+    if (value) return value;
+
+    // Auto-create missing key in background
+    if (fallback && fallback !== key) {
+      ensureContentExists(locale, key, fallback, section || "general", knownKeys);
+    }
+
+    return fallback || key;
+  };
 
   return { t, content, isLoading };
 }
