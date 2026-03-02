@@ -62,10 +62,10 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          <NavItem to="/lojas" icon={Store} label={t("nav_stores", "Lojas")} />
-          <NavItem to="/ongs" icon={Heart} label={t("nav_ngos", "ONGs")} />
           {isLoggedIn && (
             <>
+              <NavItem to="/lojas" icon={Store} label={t("nav_stores", "Lojas")} />
+              <NavItem to="/ongs" icon={Heart} label={t("nav_ngos", "ONGs")} />
               <NavItem to="/notificacoes" icon={Bell} label={t("nav_notifications", "Notificações")} badge={unreadCount} />
               {/* Mais dropdown */}
               <div className="relative group">
