@@ -62,10 +62,12 @@ export default function Ngos() {
                     </div>
                   )}
                   <div className="p-3 sm:p-4 space-y-1.5">
-                    <div className="flex items-center gap-1.5">
-                      <p className="font-bold text-sm truncate flex-1">{ngo.name}</p>
-                      {isSelected && <Check className="w-4 h-4 text-primary shrink-0" />}
-                    </div>
+                    <p className="font-bold text-sm truncate">{ngo.name}</p>
+                    {isSelected && (
+                      <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold text-primary">
+                        <Check className="w-3 h-3" /> Sua escolha
+                      </span>
+                    )}
                     <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{ngo.description}</p>
                     <p className="text-[10px] sm:text-xs text-primary font-bold">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
                     {isLoggedIn && !isSelected && (
