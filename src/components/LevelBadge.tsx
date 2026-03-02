@@ -1,7 +1,7 @@
 import { DuoCard } from "@/components/ui/duo-card";
 import { getLevelForAmount, DONATION_LEVELS } from "@/lib/gamification";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Trophy, Check } from "lucide-react";
 
 interface LevelBadgeProps {
   totalDonated: number;
