@@ -23,14 +23,11 @@ export function useNgos() {
     const fetchNgos = async () => {
       setLoading(true);
       try {
-        console.log("[useNgos] Starting query...");
         const { data, error } = await supabase
           .from("ngos")
           .select("*")
           .eq("is_active", true)
           .order("name");
-
-        console.log("[useNgos] Query result:", { data: data?.length, error });
 
         if (!isMounted) return;
 
