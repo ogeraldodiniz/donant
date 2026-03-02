@@ -2,7 +2,7 @@ import { DuoCard } from "@/components/ui/duo-card";
 import { mockNgos, mockDonations } from "@/lib/mock-data";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { Heart, Target, Users, Star, BadgeCheck, Rocket } from "lucide-react";
+import { Heart, Target, Users, Star, BadgeCheck, Rocket, BarChart } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const ngoIcons: LucideIcon[] = [Heart, Target, Users, Star, BadgeCheck, Rocket];
