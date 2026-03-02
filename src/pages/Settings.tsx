@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Loader2, Sun, Moon, Monitor, Bell, Phone } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone } from "lucide-react";
 import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { useNgos } from "@/hooks/useNgos";
-import { useSelectNgo } from "@/hooks/useSelectNgo";
+
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,7 +20,7 @@ export default function Settings() {
   const navigate = useNavigate();
   const [showDelete, setShowDelete] = useState(false);
   const { ngos, loading: ngosLoading } = useNgos();
-  const { selectNgo, saving } = useSelectNgo();
+  
   const { theme, setTheme } = useTheme();
 
   const [phone, setPhone] = useState("");
@@ -159,39 +159,34 @@ export default function Settings() {
         {/* Selected NGO */}
         <DuoCard className="p-3.5 sm:p-5">
           <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Sua ONG</h3>
-          <div className="space-y-1.5 sm:space-y-2">
-            {ngosLoading ? (
-              <p className="text-xs text-muted-foreground">Carregando...</p>
-            ) : ngos.map((ngo) => {
-              const isSelected = user?.selected_ngo_id === ngo.id;
-              return (
-                <button
-                  key={ngo.id}
-                  onClick={() => selectNgo(ngo.id, ngo.name)}
-                  disabled={saving !== null}
-                  className={`w-full flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl text-left transition-all ${
-                    isSelected
-                      ? 'bg-primary/10 border-2 border-primary ring-1 ring-primary/20'
-                      : 'border-2 border-transparent hover:bg-muted'
-                  }`}
-                >
-                  {ngo.logo_url ? (
-                    <img src={ngo.logo_url} alt={ngo.name} className="w-8 h-8 rounded-xl object-cover" />
-                  ) : (
-                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Heart className="w-4 h-4 text-primary" />
-                    </div>
-                  )}
-                  <span className="font-semibold text-xs sm:text-sm flex-1 truncate">{ngo.name}</span>
-                  {saving === ngo.id ? (
-                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                  ) : isSelected ? (
-                    <Check className="w-4 h-4 text-primary" />
-                  ) : null}
-                </button>
-              );
-            })}
-          </div>
+          {(() => {
+            const selectedNgo = ngos.find(n => n.id === user?.selected_ngo_id);
+            if (ngosLoading) return <p className="text-xs text-muted-foreground">Carregando...</p>;
+            if (!selectedNgo) return (
+              <div className="text-center py-2">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-2">Nenhuma ONG selecionada</p>
+                <Link to="/ongs" className="text-xs sm:text-sm font-bold text-primary hover:underline inline-flex items-center gap-1">
+                  Escolher ONG
+                </Link>
+              </div>
+            );
+            return (
+              <div className="flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-xl bg-primary/10 border-2 border-primary ring-1 ring-primary/20">
+                {selectedNgo.logo_url ? (
+                  <img src={selectedNgo.logo_url} alt={selectedNgo.name} className="w-8 h-8 rounded-xl object-cover" />
+                ) : (
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Heart className="w-4 h-4 text-primary" />
+                  </div>
+                )}
+                <span className="font-semibold text-xs sm:text-sm flex-1 truncate">{selectedNgo.name}</span>
+                <Check className="w-4 h-4 text-primary" />
+              </div>
+            );
+          })()}
+          <Link to="/ongs" className="mt-2 block text-center text-xs sm:text-sm font-bold text-primary hover:underline">
+            Trocar ONG
+          </Link>
         </DuoCard>
 
         {/* Theme */}
