@@ -160,6 +160,8 @@ export default function Settings() {
                   className="rounded-xl h-9 text-xs sm:text-sm"
                 />
               </div>
+              <Input value={city} onChange={(e) => setCity(e.target.value)} placeholder={t("city_placeholder", "Sua cidade")} className="rounded-xl h-9 text-xs sm:text-sm" />
+              </div>
             </div>
           </div>
           {hasProfileChanges && (
