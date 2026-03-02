@@ -1,4 +1,4 @@
-import { Heart, Store, FileText, Bell, Users } from "lucide-react";
+import { Heart, Store, FileText, Bell, Users, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DuoCard } from "@/components/ui/duo-card";
 
@@ -8,6 +8,7 @@ const cards = [
   { title: "Blog", description: "Criar e gerenciar conteúdos", icon: FileText, to: "/admin/blog", color: "text-accent-foreground" },
   { title: "Push", description: "Enviar notificações push", icon: Bell, to: "/admin/push", color: "text-destructive" },
   { title: "Usuários", description: "Ver dados e preferências dos usuários", icon: Users, to: "/admin/usuarios", color: "text-muted-foreground" },
+  { title: "Reclamações", description: "Gerenciar reclamações de cashback", icon: AlertTriangle, to: "/admin/reclamacoes", color: "text-destructive" },
 ];
 
 export default function AdminDashboard() {

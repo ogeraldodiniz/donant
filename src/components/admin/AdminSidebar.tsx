@@ -1,4 +1,4 @@
-import { Heart, Store, FileText, Bell, LayoutDashboard, Users, ArrowLeft, Languages } from "lucide-react";
+import { Heart, Store, FileText, Bell, LayoutDashboard, Users, ArrowLeft, Languages, AlertTriangle } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -20,6 +20,7 @@ const items = [
   { title: "Conteúdos", url: "/admin/conteudos", icon: Languages },
   { title: "Push", url: "/admin/push", icon: Bell },
   { title: "Usuários", url: "/admin/usuarios", icon: Users },
+  { title: "Reclamações", url: "/admin/reclamacoes", icon: AlertTriangle },
 ];
 
 export function AdminSidebar() {
