@@ -25,7 +25,6 @@ async function getMycToken(): Promise<string> {
   const appId = Deno.env.get("MYCASHBACKS_APP_ID")!;
 
   const authUrl = `${apiUrl}/api/auth`;
-  console.log("DEBUG authUrl =", authUrl, "| apiUrl =", apiUrl);
 
   const res = await fetch(authUrl, {
     method: "POST",
