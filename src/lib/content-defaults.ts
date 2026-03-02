@@ -108,7 +108,7 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Home logado ──
   home_logged: {
-    home_greeting: "Olá, {name}! 👋",
+    home_greeting: "Olá, {name}!",
     home_subtitle: "Continue fazendo a diferença",
     home_your_ngo: "Sua ONG",
     home_change_ngo: "Trocar",
@@ -156,7 +156,7 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Impacto ──
   impact: {
-    title: "Seu Impacto 💜",
+    title: "Seu Impacto",
     subtitle: "Acompanhe suas doações",
     label_pending: "Pendente",
     label_confirmed: "Confirmado",
@@ -171,7 +171,7 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Transparência ──
   transparency: {
-    title: "Transparência 📊",
+    title: "Transparência",
     subtitle: "Dados abertos sobre todas as doações",
     total_label: "Total doado pela plataforma",
     ngos_label: "ONGs",
@@ -288,7 +288,7 @@ export const SECTION_DEFAULTS: Record<string, Record<string, string>> = {
 
   // ── Onboarding ──
   onboarding: {
-    title: "Bem-vindo ao MyCashbacks! 🎉",
+    title: "Bem-vindo ao MyCashbacks!",
     subtitle: "Configure seu perfil para começar",
     phone_label: "Seu telefone",
     ngo_label: "Escolha sua ONG",

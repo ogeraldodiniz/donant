@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ExternalLink, Heart, Loader2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, Heart, Loader2, Target, BookOpen } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
@@ -86,21 +86,21 @@ export default function NgoDetail() {
 
       {ngo.mission && (
         <DuoCard>
-          <h3 className="font-bold text-sm sm:text-base mb-2">🎯 Missão</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><Target className="w-4 h-4 text-primary" /> Missão</h3>
           <p className="text-xs sm:text-sm text-muted-foreground">{ngo.mission}</p>
         </DuoCard>
       )}
 
       {ngo.description && (
         <DuoCard>
-          <h3 className="font-bold text-sm sm:text-base mb-2">📖 Sobre</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-2 flex items-center gap-2"><BookOpen className="w-4 h-4 text-primary" /> Sobre</h3>
           <p className="text-xs sm:text-sm text-muted-foreground">{ngo.description}</p>
         </DuoCard>
       )}
 
       {donations.length > 0 && (
         <DuoCard>
-          <h3 className="font-bold text-sm sm:text-base mb-3">💜 Últimas doações</h3>
+          <h3 className="font-bold text-sm sm:text-base mb-3 flex items-center gap-2"><Heart className="w-4 h-4 text-primary" /> Últimas doações</h3>
           <div className="space-y-2">
             {donations.map(d => (
               <div key={d.id} className="flex justify-between items-center py-2 border-b last:border-0 border-border">

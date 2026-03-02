@@ -112,7 +112,7 @@ function AdminHeader() {
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            {loc === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
+            {loc === "pt" ? "PT" : "ES"}
           </button>
         ))}
       </div>

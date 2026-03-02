@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Bell, Send, Loader2, MapPin } from "lucide-react";
+import { Bell, Send, Loader2, MapPin, Globe, MessageSquare, Mail, CheckCircle, XCircle, BarChart3 } from "lucide-react";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -151,16 +151,16 @@ export default function AdminPush() {
           <Label>Canais de envio</Label>
           <div className="flex flex-wrap gap-4">
             {([
-              { id: "web_push" as Channel, label: "🔔 Web Push" },
-              { id: "whatsapp" as Channel, label: "💬 WhatsApp" },
-              { id: "email" as Channel, label: "📧 E-mail" },
+              { id: "web_push" as Channel, label: "Web Push", Icon: Bell },
+              { id: "whatsapp" as Channel, label: "WhatsApp", Icon: MessageSquare },
+              { id: "email" as Channel, label: "E-mail", Icon: Mail },
             ]).map((ch) => (
               <label key={ch.id} className="flex items-center gap-2 cursor-pointer">
                 <Checkbox
                   checked={channels.includes(ch.id)}
                   onCheckedChange={() => toggleChannel(ch.id)}
                 />
-                <span className="text-sm font-medium">{ch.label}</span>
+                <span className="text-sm font-medium flex items-center gap-1.5"><ch.Icon className="w-3.5 h-3.5" /> {ch.label}</span>
               </label>
             ))}
           </div>
@@ -177,7 +177,7 @@ export default function AdminPush() {
                 onClick={() => setTargetLocale(loc)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 transition-colors ${targetLocale === loc ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
               >
-                {loc === "all" ? "🌐 Todos" : loc === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
+                <span className="flex items-center gap-1.5">{loc === "all" && <Globe className="w-3.5 h-3.5" />}{loc === "all" ? "Todos" : loc === "pt" ? "PT" : "ES"}</span>
               </button>
             ))}
           </div>
@@ -224,9 +224,9 @@ export default function AdminPush() {
       {lastResult && (
         <DuoCard className="p-4 text-sm space-y-1">
           <p className="font-bold">Resultado do envio</p>
-          <p>✅ Entregues: {lastResult.sent}</p>
-          <p>❌ Falhas: {lastResult.failed}</p>
-          <p>📊 Total de destinatários: {lastResult.total}</p>
+          <p className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-primary" /> Entregues: {lastResult.sent}</p>
+          <p className="flex items-center gap-1.5"><XCircle className="w-4 h-4 text-destructive" /> Falhas: {lastResult.failed}</p>
+          <p className="flex items-center gap-1.5"><BarChart3 className="w-4 h-4 text-muted-foreground" /> Total de destinatários: {lastResult.total}</p>
         </DuoCard>
       )}
     </div>

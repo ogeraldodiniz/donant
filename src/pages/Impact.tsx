@@ -3,6 +3,7 @@ import { DuoCard } from "@/components/ui/duo-card";
 import { CashbackStatus } from "@/types";
 import { LevelBadge } from "@/components/LevelBadge";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { Heart } from "lucide-react";
 
 const statusColors: Record<CashbackStatus, string> = {
   tracked: 'bg-muted text-muted-foreground',
@@ -29,7 +30,7 @@ export default function Impact() {
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-3xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">{t("title", "Seu Impacto 💜")}</h1>
+        <h1 className="text-xl sm:text-2xl font-black flex items-center gap-2">{t("title", "Seu Impacto")} <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-primary" /></h1>
         <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Acompanhe suas doações")}</p>
       </div>
 

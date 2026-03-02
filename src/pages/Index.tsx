@@ -333,7 +333,7 @@ function PublicHome() {
             <Link to="/privacidade" className="hover:text-foreground transition-colors">Privacidade</Link>
             <Link to="/termos" className="hover:text-foreground transition-colors">Termos</Link>
           </div>
-          <p className="font-semibold">{t("footer_copyright", "© 2025 MyCashbacks. Feito com 💜")}</p>
+          <p className="font-semibold flex items-center gap-1">{t("footer_copyright", "© 2025 MyCashbacks. Feito com")} <Heart className="w-3.5 h-3.5 text-primary" fill="currentColor" /></p>
         </div>
       </footer>
     </div>
@@ -406,7 +406,7 @@ function LoggedInHome() {
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">Olá, {user?.display_name?.split(' ')[0] || 'você'}! 👋</h1>
+        <h1 className="text-xl sm:text-2xl font-black">Olá, {user?.display_name?.split(' ')[0] || 'você'}!</h1>
         <p className="text-muted-foreground text-xs sm:text-sm">{t("home_subtitle", "Veja o impacto das suas compras.")}</p>
       </div>
 

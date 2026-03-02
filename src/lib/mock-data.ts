@@ -70,12 +70,4 @@ export const categoryColors: Record<string, string> = {
   Moda: 'bg-duo-yellow',
 };
 
-export const categoryEmojis: Record<string, string> = {
-  Marketplace: '🛒',
-  Varejo: '🏪',
-  Esportes: '⚽',
-  Viagens: '✈️',
-  Moda: '👗',
-};
-
-export const ngoEmojis = ['🧒', '🌍', '👴', '⚽', '🏥', '💻'];
+// Category and NGO icons now use Lucide components directly in their respective pages

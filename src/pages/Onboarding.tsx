@@ -103,7 +103,7 @@ export default function Onboarding() {
     if (showInstallStep) {
       setStep("install");
     } else {
-      toast.success("Tudo pronto! 🎉");
+      toast.success("Tudo pronto!");
       navigate("/");
     }
   };
@@ -112,7 +112,7 @@ export default function Onboarding() {
     if (canInstall) {
       await install();
     }
-    toast.success("Tudo pronto! 🎉");
+    toast.success("Tudo pronto!");
     navigate("/");
   };
 
@@ -319,7 +319,7 @@ export default function Onboarding() {
                   )}
                 </DuoButton>
                 <button
-                  onClick={() => { toast.success("Tudo pronto! 🎉"); navigate("/"); }}
+                  onClick={() => { toast.success("Tudo pronto!"); navigate("/"); }}
                   className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Pular

@@ -31,7 +31,7 @@ export function PushPermissionBanner() {
   const handleSubscribe = async () => {
     const ok = await subscribe();
     if (ok) {
-      toast.success("Notificações ativadas! 🔔");
+      toast.success("Notificações ativadas!");
     } else {
       const currentPerm = Notification?.permission;
       if (currentPerm === "denied") {

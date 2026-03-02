@@ -1,7 +1,7 @@
 import { DuoCard } from "@/components/ui/duo-card";
 import { getLevelForAmount, DONATION_LEVELS } from "@/lib/gamification";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Trophy, Check } from "lucide-react";
 
 interface LevelBadgeProps {
   totalDonated: number;
@@ -66,8 +66,8 @@ export function LevelBadge({ totalDonated, compact = false, showAllLevels = fals
         )}
 
         {!next && (
-          <p className="mt-3 text-xs sm:text-sm font-bold text-primary">
-            🏆 Nível máximo alcançado! Você é incrível!
+          <p className="mt-3 text-xs sm:text-sm font-bold text-primary flex items-center gap-1.5">
+            <Trophy className="w-4 h-4" /> Nível máximo alcançado! Você é incrível!
           </p>
         )}
       </DuoCard>
@@ -106,7 +106,7 @@ export function LevelBadge({ totalDonated, compact = false, showAllLevels = fals
                     </p>
                   </div>
                   {isUnlocked && (
-                    <span className="text-[10px] sm:text-xs font-bold text-primary">✓</span>
+                    <Check className="w-3.5 h-3.5 text-primary" />
                   )}
                 </div>
               );

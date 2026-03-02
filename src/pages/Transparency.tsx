@@ -1,7 +1,11 @@
 import { DuoCard } from "@/components/ui/duo-card";
-import { mockNgos, mockDonations, ngoEmojis } from "@/lib/mock-data";
+import { mockNgos, mockDonations } from "@/lib/mock-data";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { Heart, Target, Users, Star, BadgeCheck, Rocket, BarChart3 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+const ngoIcons: LucideIcon[] = [Heart, Target, Users, Star, BadgeCheck, Rocket];
 
 const chartColors = ['hsl(262,80%,58%)', 'hsl(348,80%,65%)', 'hsl(145,65%,48%)', 'hsl(25,95%,55%)', 'hsl(45,100%,49%)', 'hsl(262,60%,75%)'];
 
@@ -13,7 +17,7 @@ export default function Transparency() {
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5 max-w-3xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-black">{t("title", "Transparência 📊")}</h1>
+        <h1 className="text-xl sm:text-2xl font-black flex items-center gap-2">{t("title", "Transparência")} <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" /></h1>
         <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Dados abertos sobre todas as doações")}</p>
       </div>
 
@@ -47,7 +51,7 @@ export default function Transparency() {
         <div className="space-y-3">
           {mockNgos.map((ngo, i) => (
             <div key={ngo.id} className="flex items-center gap-2.5 sm:gap-3">
-              <span className="text-lg sm:text-xl">{ngoEmojis[i]}</span>
+              {(() => { const NgoIcon = ngoIcons[i % ngoIcons.length]; return <NgoIcon className="w-5 h-5 text-primary shrink-0" />; })()}
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-xs sm:text-sm truncate">{ngo.name}</p>
                 <div className="w-full bg-muted rounded-full h-1.5 sm:h-2 mt-1">

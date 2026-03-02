@@ -72,7 +72,7 @@ export function Header() {
             title={locale === "pt" ? "Cambiar a español" : "Mudar para português"}
           >
             <Globe className="w-4 h-4" />
-            {locale === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
+            {locale === "pt" ? "PT" : "ES"}
           </button>
 
           {/* Theme toggle */}
@@ -111,7 +111,7 @@ export function Header() {
             onClick={() => setLocale(locale === "pt" ? "es" : "pt")}
             className="p-2 rounded-xl hover:bg-muted text-sm font-bold"
           >
-            {locale === "pt" ? "🇧🇷" : "🇪🇸"}
+            {locale === "pt" ? "PT" : "ES"}
           </button>
           <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 rounded-xl hover:bg-muted">
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Store } from "lucide-react";
+import { Search, Store, ShoppingCart, Building2, Dumbbell, Plane, Shirt, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useStores } from "@/hooks/useStores";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import type { LucideIcon } from "lucide-react";
 
-const categoryEmojis: Record<string, string> = {
-  Marketplace: '🛒',
-  Varejo: '🏪',
-  Esportes: '⚽',
-  Viagens: '✈️',
-  Moda: '👗',
+const categoryIcons: Record<string, LucideIcon> = {
+  Marketplace: ShoppingCart,
+  Varejo: Building2,
+  Esportes: Dumbbell,
+  Viagens: Plane,
+  Moda: Shirt,
 };
 
 export default function Stores() {
@@ -56,8 +57,9 @@ export default function Stores() {
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-sm truncate">{store.name}</p>
-                  <div className="flex items-center gap-2 text-[10px] sm:text-xs text-muted-foreground">
-                    <span>{categoryEmojis[store.category || ''] || '🏷️'} {store.category || 'Geral'}</span>
+                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                    {(() => { const CatIcon = categoryIcons[store.category || ''] || Tag; return <CatIcon className="w-3 h-3" />; })()}
+                    <span>{store.category || 'Geral'}</span>
                   </div>
                 </div>
                 <div className="text-right shrink-0">
@@ -72,7 +74,7 @@ export default function Stores() {
 
       {!loading && filtered.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          <p className="text-4xl mb-2">🔍</p>
+          <Search className="w-12 h-12 mx-auto mb-2 text-muted-foreground opacity-30" />
           <p className="font-semibold text-sm">{t("empty", "Nenhuma loja encontrada")}</p>
         </div>
       )}
