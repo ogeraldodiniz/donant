@@ -3,7 +3,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
 import { Input } from "@/components/ui/input";
-import { Search, Phone, Mail, BellOff, Globe, MessageCircle, ChevronDown, ChevronUp, UserPlus, Trash2, Loader2 } from "lucide-react";
+import { Search, Phone, Mail, BellOff, Globe, MessageCircle, ChevronDown, ChevronUp, UserPlus, Trash2, Loader2, Pencil, Save } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
