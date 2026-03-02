@@ -16,6 +16,7 @@ import NgoDetail from "./pages/NgoDetail";
 import Impact from "./pages/Impact";
 import Redirect from "./pages/Redirect";
 import Auth from "./pages/Auth";
+import Onboarding from "./pages/Onboarding";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
 import Transparency from "./pages/Transparency";
