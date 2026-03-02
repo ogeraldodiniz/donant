@@ -35,6 +35,7 @@ const emptyNgo = {
 };
 
 export default function AdminNgos() {
+  const { adminLocale } = useAdminLocale();
   const [ngos, setNgos] = useState<Ngo[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<string | null>(null);
