@@ -154,9 +154,10 @@ export default function Onboarding() {
       return;
     }
     setSaving(true);
+    // City from IBGE API = Brazilian city, so locale is always 'pt'
     const { error } = await supabase
       .from("profiles")
-      .update({ city: city.trim(), state })
+      .update({ city: city.trim(), state, locale: "pt" })
       .eq("id", user!.id);
     setSaving(false);
     if (error) {
