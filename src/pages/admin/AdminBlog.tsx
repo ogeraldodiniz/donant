@@ -1,9 +1,10 @@
+import { forwardRef } from "react";
 import { FileText } from "lucide-react";
 import { DuoCard } from "@/components/ui/duo-card";
 
-export default function AdminBlog() {
+const AdminBlog = forwardRef<HTMLDivElement>(function AdminBlog(_, ref) {
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div ref={ref} className="space-y-6 max-w-3xl">
       <h1 className="text-2xl font-black">Blog / Conteúdos</h1>
       <DuoCard className="flex flex-col items-center justify-center py-12 text-center">
         <FileText className="w-12 h-12 text-muted-foreground mb-4" />
@@ -14,4 +15,6 @@ export default function AdminBlog() {
       </DuoCard>
     </div>
   );
-}
+});
+
+export default AdminBlog;
