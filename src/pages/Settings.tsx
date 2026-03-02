@@ -42,7 +42,7 @@ export default function Settings() {
       setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
       setCity(user.city ?? "");
-      setAvatarUrl(user.avatar_url);
+      setUserState(user.state ?? "");
       setNotifyWeb(user.notify_web);
       setNotifyWhatsapp(user.notify_whatsapp);
       setNotifyEmail(user.notify_email);
