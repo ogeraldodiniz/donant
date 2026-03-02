@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS stores_mycashbacks_store_id_unique ON public.stores (mycashbacks_store_id) WHERE mycashbacks_store_id IS NOT NULL;
