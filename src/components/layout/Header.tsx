@@ -72,7 +72,7 @@ export function Header() {
             title={locale === "pt" ? "Cambiar a español" : "Mudar para português"}
           >
             <Globe className="w-4 h-4" />
-            {locale === "pt" ? "🇧🇷 PT" : "🇪🇸 ES"}
+            {locale === "pt" ? "PT" : "ES"}
           </button>
 
           {/* Theme toggle */}
