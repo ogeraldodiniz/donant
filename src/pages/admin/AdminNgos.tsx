@@ -75,7 +75,7 @@ export default function AdminNgos() {
   const handleCreate = () => {
     setCreating(true);
     setEditing(null);
-    setForm(emptyNgo);
+    setForm({ ...emptyNgo, locale: adminLocale });
   };
 
   const handleCancel = () => {
