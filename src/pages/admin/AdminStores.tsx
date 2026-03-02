@@ -90,7 +90,7 @@ export default function AdminStores() {
     <div className="space-y-6 max-w-3xl">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-black">Lojas</h1>
+          <h1 className="text-2xl font-black">Lojas ({adminLocale.toUpperCase()})</h1>
           <p className="text-sm text-muted-foreground">
             {activeCount} ativas de {stores.length} total
           </p>
