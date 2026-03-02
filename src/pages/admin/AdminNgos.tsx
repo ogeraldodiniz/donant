@@ -66,6 +66,7 @@ export default function AdminNgos() {
       logo_url: ngo.logo_url || "",
       website_url: ngo.website_url || "",
       is_active: ngo.is_active,
+      locale: ngo.locale || "pt",
     });
   };
 
