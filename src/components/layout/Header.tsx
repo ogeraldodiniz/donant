@@ -14,7 +14,16 @@ export function Header() {
   const { t } = useSiteContent("nav");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const { theme, setTheme } = useTheme();
   const unreadCount = 2; // mock
+
+  const cycleTheme = () => {
+    if (theme === "light") setTheme("dark");
+    else if (theme === "dark") setTheme("system");
+    else setTheme("light");
+  };
+
+  const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
 
   useEffect(() => {
     if (!session?.user?.id) { setIsAdmin(false); return; }
