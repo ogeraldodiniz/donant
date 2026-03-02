@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Save, X, Loader2 } from "lucide-react";
+import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Input } from "@/components/ui/input";
