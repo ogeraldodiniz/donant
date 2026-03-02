@@ -124,9 +124,14 @@ export function Header() {
               <span className="text-sm font-semibold">{user?.display_name?.split(' ')[0]}</span>
             </Link>
           ) : (
-            <Link to="/auth" className="inline-flex items-center gap-2 h-10 px-5 rounded-2xl bg-primary text-primary-foreground font-bold text-sm duo-shadow hover:brightness-105 active:translate-y-1 active:shadow-none transition-all">
-              <LogIn className="w-4 h-4" /> {t("nav_login", "Entrar")}
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link to="/auth" className="inline-flex items-center gap-2 h-10 px-5 rounded-2xl bg-primary text-primary-foreground font-bold text-sm duo-shadow hover:brightness-105 active:translate-y-1 active:shadow-none transition-all">
+                <LogIn className="w-4 h-4" /> {t("nav_login", "Entrar")}
+              </Link>
+              <Link to="/auth?tab=signup" className="inline-flex items-center h-10 px-5 rounded-2xl border-2 border-border font-bold text-sm hover:bg-muted transition-colors">
+                {t("nav_signup", "Criar conta")}
+              </Link>
+            </div>
           )}
         </div>
 
