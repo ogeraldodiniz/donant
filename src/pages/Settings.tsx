@@ -86,25 +86,6 @@ export default function Settings() {
     setEditing(false);
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-    if (!file.type.startsWith("image/")) { toast.error(t("avatar_type_error", "Selecione uma imagem")); return; }
-    if (file.size > 2 * 1024 * 1024) { toast.error(t("avatar_size_error", "Imagem deve ter no máximo 2MB")); return; }
-
-    setUploadingAvatar(true);
-    const ext = file.name.split(".").pop();
-    const path = `${user.id}/avatar.${ext}`;
-    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
-    if (uploadError) { toast.error(t("avatar_upload_error", "Erro ao enviar foto")); setUploadingAvatar(false); return; }
-
-    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-    const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
-    const { error: updateError } = await supabase.from("profiles").update({ avatar_url: newUrl }).eq("id", user.id);
-    setUploadingAvatar(false);
-    if (updateError) { toast.error(t("avatar_update_error", "Erro ao atualizar foto")); }
-    else { setAvatarUrl(newUrl); toast.success(t("avatar_success", "Foto atualizada")); await refreshProfile(); }
-  };
 
   const saveNotifPref = async (updates: Record<string, unknown>) => {
     if (!user) return;
