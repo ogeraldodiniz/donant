@@ -22,7 +22,7 @@ export default function Settings() {
   const [showDelete, setShowDelete] = useState(false);
   const { ngos, loading: ngosLoading } = useNgos();
   const { theme, setTheme } = useTheme();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const { t } = useSiteContent("settings");
 
   const [displayName, setDisplayName] = useState("");
