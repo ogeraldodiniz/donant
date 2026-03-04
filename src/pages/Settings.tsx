@@ -126,9 +126,6 @@ export default function Settings() {
       <div className="space-y-4 sm:space-y-5">
         <DuoCard className="p-3.5 sm:p-5">
           <div className="flex items-start gap-3 sm:gap-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold">
-              {displayName?.charAt(0) || 'U'}
-            </div>
             <div className="min-w-0 flex-1 space-y-2">
               {editing ? (
                 <>
