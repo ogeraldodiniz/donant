@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { mockTransactions } from "@/lib/mock-data";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { LucideIcon } from "lucide-react";
 import { InstallAppBanner } from "@/components/InstallAppBanner";
 import { PushPermissionBanner } from "@/components/PushPermissionBanner";
