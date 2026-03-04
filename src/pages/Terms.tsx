@@ -16,7 +16,7 @@ export default function Terms() {
         <h2 className="text-lg font-bold text-foreground">{t("s1_title", "1. Aceitação")}</h2>
         <p>{t("s1_text", "Ao utilizar a plataforma DonActivo, você concorda com estes termos de uso.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s2_title", "2. Funcionamento")}</h2>
-        <p>{t("s2_text", "O MyCashbacks intermedia a doação de cashback gerado por compras em lojas parceiras para ONGs cadastradas na plataforma. O cashback é 100% doado.")}</p>
+        <p>{t("s2_text", "O DonActivo intermedia a doação de cashback gerado por compras em lojas parceiras para ONGs cadastradas na plataforma. O cashback é 100% doado.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s3_title", "3. Cashback")}</h2>
         <p>{t("s3_text", "As taxas de cashback são definidas pelas lojas parceiras e podem variar. O valor é confirmado após a loja validar a compra, o que pode levar até 90 dias.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s4_title", "4. Doações")}</h2>
