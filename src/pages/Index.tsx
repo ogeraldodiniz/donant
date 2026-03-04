@@ -505,33 +505,18 @@ function LoggedInHome() {
               {t("home_see_all_news", "Ver todas")} <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-            {featuredNews.map(news => (
-              <Link key={news.id} to={`/noticias/${news.slug}`}>
-                <DuoCard hover className="p-0 overflow-hidden">
-                  <div className="flex flex-row h-full">
-                    {news.cover_url ? (
-                      <img src={news.cover_url} alt="" className="w-24 sm:w-28 h-full object-cover flex-shrink-0" />
-                    ) : (
-                      <div className="w-24 sm:w-28 flex-shrink-0 bg-primary/10 flex items-center justify-center">
-                        <Newspaper className="w-6 h-6 text-primary" />
-                      </div>
-                    )}
-                    <div className="p-3 flex-1 min-w-0 flex flex-col justify-center">
-                      <h3 className="font-bold text-xs sm:text-sm line-clamp-2">{news.title}</h3>
-                      {news.summary && (
-                        <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-1">{news.summary}</p>
-                      )}
-                      {news.published_at && (
-                        <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1">
-                          <Calendar className="w-3 h-3" />
-                          {new Date(news.published_at).toLocaleDateString("pt-BR")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </DuoCard>
-              </Link>
+          {/* Desktop: 3 columns */}
+          <div className="hidden md:grid md:grid-cols-3 gap-3">
+            {featuredNews.slice(0, 6).map(news => (
+              <FeaturedNewsCard key={news.id} news={news} />
+            ))}
+          </div>
+          {/* Mobile: horizontal carousel */}
+          <div className="md:hidden flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+            {featuredNews.slice(0, 6).map(news => (
+              <div key={news.id} className="min-w-[75vw] snap-start">
+                <FeaturedNewsCard news={news} />
+              </div>
             ))}
           </div>
         </div>
