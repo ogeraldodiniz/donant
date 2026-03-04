@@ -400,10 +400,29 @@ function LoggedInHome() {
   const { t } = useSiteContent("home_logged");
   const { ngos } = useNgos();
   const { stores: dbStores } = useStores();
+  const { locale } = useLocale();
   const selectedNgo = ngos.find(n => n.id === user?.selected_ngo_id) || ngos[0];
   const pending = mockTransactions.filter(tx => tx.status === 'pending' || tx.status === 'tracked').reduce((s, tx) => s + tx.amount, 0);
   const confirmed = mockTransactions.filter(tx => tx.status === 'confirmed').reduce((s, tx) => s + tx.amount, 0);
   const donated = mockTransactions.filter(tx => tx.status === 'donated').reduce((s, tx) => s + tx.amount, 0);
+
+  // Featured news
+  const [featuredNews, setFeaturedNews] = useState<{ id: string; title: string; slug: string; summary: string | null; cover_url: string | null; published_at: string | null }[]>([]);
+  useEffect(() => {
+    supabase
+      .from("news")
+      .select("id, title, slug, summary, cover_url, published_at")
+      .eq("locale", locale)
+      .eq("is_published", true)
+      .eq("is_featured", true)
+      .order("published_at", { ascending: false })
+      .limit(4)
+      .then(({ data }) => setFeaturedNews((data as any[]) || []));
+  }, [locale]);
+
+  // Featured stores (prefer featured, fallback to first active)
+  const featuredStores = dbStores.filter((s: any) => s.is_featured);
+  const displayStores = featuredStores.length > 0 ? featuredStores.slice(0, 4) : dbStores.slice(0, 4);
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
@@ -474,6 +493,51 @@ function LoggedInHome() {
         </DuoCard>
       </div>
 
+      {/* Featured News */}
+      {featuredNews.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h2 className="text-base sm:text-lg font-black flex items-center gap-2">
+              <Newspaper className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+              {t("home_featured_news", "Notícias em destaque")}
+            </h2>
+            <Link to="/noticias" className="text-primary font-bold text-xs sm:text-sm flex items-center gap-1">
+              {t("home_see_all_news", "Ver todas")} <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+            {featuredNews.map(news => (
+              <Link key={news.id} to={`/noticias/${news.slug}`}>
+                <DuoCard hover className="p-0 overflow-hidden">
+                  <div className="flex flex-row h-full">
+                    {news.cover_url ? (
+                      <img src={news.cover_url} alt="" className="w-24 sm:w-28 h-full object-cover flex-shrink-0" />
+                    ) : (
+                      <div className="w-24 sm:w-28 flex-shrink-0 bg-primary/10 flex items-center justify-center">
+                        <Newspaper className="w-6 h-6 text-primary" />
+                      </div>
+                    )}
+                    <div className="p-3 flex-1 min-w-0 flex flex-col justify-center">
+                      <h3 className="font-bold text-xs sm:text-sm line-clamp-2">{news.title}</h3>
+                      {news.summary && (
+                        <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-1">{news.summary}</p>
+                      )}
+                      {news.published_at && (
+                        <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(news.published_at).toLocaleDateString("pt-BR")}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </DuoCard>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Featured Stores */}
       <div>
         <div className="flex items-center justify-between mb-3 sm:mb-4">
           <h2 className="text-base sm:text-lg font-black">{t("home_featured_stores", "Lojas em destaque")}</h2>
@@ -482,7 +546,7 @@ function LoggedInHome() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          {dbStores.slice(0, 4).map(store => (
+          {displayStores.map(store => (
             <Link key={store.id} to={`/lojas/${store.slug}`}>
               <DuoCard hover className="p-3 sm:p-5">
                 {store.logo_url ? (
