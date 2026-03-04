@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Loader2, RefreshCw, Pencil, X, Check, AlertTriangle } from "lucide-react";
+import { Search, Loader2, RefreshCw, Pencil, X, Check, AlertTriangle, Star } from "lucide-react";
 import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
