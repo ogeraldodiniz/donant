@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Camera, Loader2, Save, Pencil, MapPin, X } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Loader2, Save, Pencil, MapPin, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
@@ -22,19 +22,19 @@ export default function Settings() {
   const [showDelete, setShowDelete] = useState(false);
   const { ngos, loading: ngosLoading } = useNgos();
   const { theme, setTheme } = useTheme();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  
   const { t } = useSiteContent("settings");
 
   const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [userState, setUserState] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
+  
   const [notifyWeb, setNotifyWeb] = useState(true);
   const [notifyWhatsapp, setNotifyWhatsapp] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  
   const [savingPrefs, setSavingPrefs] = useState(false);
   const [editing, setEditing] = useState(false);
 
@@ -44,7 +44,7 @@ export default function Settings() {
       setPhone(user.phone ?? "");
       setCity(user.city ?? "");
       setUserState(user.state ?? "");
-      setAvatarUrl(user.avatar_url);
+      
       setNotifyWeb(user.notify_web);
       setNotifyWhatsapp(user.notify_whatsapp);
       setNotifyEmail(user.notify_email);
@@ -86,25 +86,6 @@ export default function Settings() {
     setEditing(false);
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-    if (!file.type.startsWith("image/")) { toast.error(t("avatar_type_error", "Selecione uma imagem")); return; }
-    if (file.size > 2 * 1024 * 1024) { toast.error(t("avatar_size_error", "Imagem deve ter no máximo 2MB")); return; }
-
-    setUploadingAvatar(true);
-    const ext = file.name.split(".").pop();
-    const path = `${user.id}/avatar.${ext}`;
-    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
-    if (uploadError) { toast.error(t("avatar_upload_error", "Erro ao enviar foto")); setUploadingAvatar(false); return; }
-
-    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-    const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
-    const { error: updateError } = await supabase.from("profiles").update({ avatar_url: newUrl }).eq("id", user.id);
-    setUploadingAvatar(false);
-    if (updateError) { toast.error(t("avatar_update_error", "Erro ao atualizar foto")); }
-    else { setAvatarUrl(newUrl); toast.success(t("avatar_success", "Foto atualizada")); await refreshProfile(); }
-  };
 
   const saveNotifPref = async (updates: Record<string, unknown>) => {
     if (!user) return;
@@ -145,21 +126,9 @@ export default function Settings() {
       <div className="space-y-4 sm:space-y-5">
         <DuoCard className="p-3.5 sm:p-5">
           <div className="flex items-start gap-3 sm:gap-4">
-            <button type="button" onClick={() => editing ? fileInputRef.current?.click() : undefined} className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 group ${editing ? 'cursor-pointer' : 'cursor-default'}`} disabled={uploadingAvatar || !editing}>
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="w-full h-full rounded-full object-cover" />
-              ) : (
-                <div className="w-full h-full rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold">
-                  {displayName?.charAt(0) || 'U'}
-                </div>
-              )}
-              {editing && (
-                <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  {uploadingAvatar ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-5 h-5 text-white" />}
-                </div>
-              )}
-              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
-            </button>
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold">
+              {displayName?.charAt(0) || 'U'}
+            </div>
             <div className="min-w-0 flex-1 space-y-2">
               {editing ? (
                 <>
