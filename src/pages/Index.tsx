@@ -545,8 +545,7 @@ function LoggedInHome() {
       {featuredNews.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <h2 className="text-base sm:text-lg font-black flex items-center gap-2">
-              <Newspaper className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <h2 className="text-base sm:text-lg font-black">
               {t("home_featured_news", "Notícias em destaque")}
             </h2>
             <Link to="/noticias" className="text-primary font-bold text-xs sm:text-sm flex items-center gap-1">
@@ -555,17 +554,24 @@ function LoggedInHome() {
           </div>
           {/* Desktop: 3 columns */}
           <div className="hidden md:grid md:grid-cols-3 gap-3">
-            {featuredNews.slice(0, 6).map(news => (
+            {featuredNews.slice(0, 3).map(news => (
               <FeaturedNewsCard key={news.id} news={news} />
             ))}
           </div>
           {/* Mobile: horizontal carousel */}
           <div className="md:hidden flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
-            {featuredNews.slice(0, 6).map(news => (
+            {featuredNews.slice(0, 3).map(news => (
               <div key={news.id} className="min-w-[75vw] snap-start">
                 <FeaturedNewsCard news={news} />
               </div>
             ))}
+          </div>
+          <div className="mt-3 text-center md:text-left">
+            <Link to="/noticias">
+              <DuoButton variant="outline" size="sm" className="text-xs">
+                {t("home_all_news_cta", "Ver todas as notícias")} <ArrowRight className="w-3.5 h-3.5" />
+              </DuoButton>
+            </Link>
           </div>
         </div>
       )}
