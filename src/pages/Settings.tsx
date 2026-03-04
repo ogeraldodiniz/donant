@@ -29,7 +29,7 @@ export default function Settings() {
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
   const [userState, setUserState] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>();
+  
   const [notifyWeb, setNotifyWeb] = useState(true);
   const [notifyWhatsapp, setNotifyWhatsapp] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState(true);
