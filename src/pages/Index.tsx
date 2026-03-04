@@ -530,21 +530,18 @@ function LoggedInHome() {
             {t("home_see_all", "Ver todas")} <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          {displayStores.map(store => (
-            <Link key={store.id} to={`/lojas/${store.slug}`}>
-              <DuoCard hover className="p-3 sm:p-5">
-                {store.logo_url ? (
-                  <img src={store.logo_url} alt={store.name} className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover bg-muted mb-2" />
-                ) : (
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center mb-2">
-                    <Store className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
-                  </div>
-                )}
-                <p className="font-bold text-xs sm:text-sm truncate">{store.name}</p>
-                <p className="text-[10px] sm:text-xs text-primary font-bold">{Number(store.cashback_rate)}% cashback</p>
-              </DuoCard>
-            </Link>
+        {/* Desktop: 3 columns */}
+        <div className="hidden md:grid md:grid-cols-3 gap-3">
+          {displayStores.slice(0, 6).map(store => (
+            <FeaturedStoreCard key={store.id} store={store} />
+          ))}
+        </div>
+        {/* Mobile: horizontal carousel */}
+        <div className="md:hidden flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+          {displayStores.slice(0, 6).map(store => (
+            <div key={store.id} className="min-w-[45vw] snap-start">
+              <FeaturedStoreCard store={store} />
+            </div>
           ))}
         </div>
       </div>
