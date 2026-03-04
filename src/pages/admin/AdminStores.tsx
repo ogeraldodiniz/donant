@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Loader2, RefreshCw, Pencil, X, Check, AlertTriangle } from "lucide-react";
+import { Search, Loader2, RefreshCw, Pencil, X, Check, AlertTriangle, Star } from "lucide-react";
 import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -20,6 +20,7 @@ interface StoreRow {
   category: string | null;
   cashback_rate: number;
   is_active: boolean;
+  is_featured: boolean;
   website_url: string | null;
   locale: string;
   terms: string | null;
@@ -43,7 +44,7 @@ export default function AdminStores() {
     setLoading(true);
     const { data, error } = await supabase
       .from("stores")
-      .select("id, name, slug, logo_url, category, cashback_rate, is_active, website_url, locale, terms, mycashbacks_store_id")
+      .select("id, name, slug, logo_url, category, cashback_rate, is_active, is_featured, website_url, locale, terms, mycashbacks_store_id")
       .eq("locale", adminLocale)
       .order("name");
     if (error) {
@@ -214,6 +215,17 @@ export default function AdminStores() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
+                  <button
+                    onClick={async () => {
+                      const next = !store.is_featured;
+                      const { error } = await supabase.from("stores").update({ is_featured: next }).eq("id", store.id);
+                      if (!error) { setStores((prev) => prev.map((s) => s.id === store.id ? { ...s, is_featured: next } : s)); toast.success(next ? "Destaque ativado" : "Destaque removido"); }
+                    }}
+                    className={`p-2 rounded-lg hover:bg-muted transition-colors ${store.is_featured ? "text-yellow-500" : "text-muted-foreground"}`}
+                    title={store.is_featured ? "Remover destaque" : "Marcar como destaque"}
+                  >
+                    <Star className="w-4 h-4" fill={store.is_featured ? "currentColor" : "none"} />
+                  </button>
                   <button onClick={() => openEdit(store)} className="p-2 rounded-lg hover:bg-muted transition-colors">
                     <Pencil className="w-4 h-4 text-muted-foreground" />
                   </button>

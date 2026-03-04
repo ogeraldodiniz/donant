@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Newspaper } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Newspaper, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
@@ -21,6 +21,7 @@ interface NewsRow {
   cover_url: string | null;
   locale: string;
   is_published: boolean;
+  is_featured: boolean;
   published_at: string | null;
   created_at: string;
 }
@@ -161,6 +162,9 @@ export default function AdminNews() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-bold text-sm truncate">{row.title}</h3>
+                    {row.is_featured && (
+                      <Badge variant="outline" className="text-[10px] border-yellow-500/30 text-yellow-600">⭐ Destaque</Badge>
+                    )}
                     <Badge variant={row.is_published ? "default" : "secondary"} className="text-[10px]">
                       {row.is_published ? "Publicada" : "Rascunho"}
                     </Badge>
@@ -173,6 +177,17 @@ export default function AdminNews() {
                   </p>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
+                  <button
+                    onClick={async () => {
+                      const next = !row.is_featured;
+                      const { error } = await supabase.from("news").update({ is_featured: next }).eq("id", row.id);
+                      if (!error) { setRows((prev) => prev.map((r) => r.id === row.id ? { ...r, is_featured: next } : r)); toast.success(next ? "Destaque ativado" : "Destaque removido"); }
+                    }}
+                    className={`p-2 rounded-lg hover:bg-muted transition-colors ${row.is_featured ? "text-yellow-500" : "text-muted-foreground"}`}
+                    title={row.is_featured ? "Remover destaque" : "Marcar como destaque"}
+                  >
+                    <Star className="w-4 h-4" fill={row.is_featured ? "currentColor" : "none"} />
+                  </button>
                   <button onClick={() => togglePublish(row)} className="p-2 rounded-lg hover:bg-muted transition-colors" title={row.is_published ? "Despublicar" : "Publicar"}>
                     {row.is_published ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
