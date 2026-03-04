@@ -31,6 +31,9 @@ import AdminBlog from "./pages/admin/AdminBlog";
 import AdminPush from "./pages/admin/AdminPush";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminClaims from "./pages/admin/AdminClaims";
+import AdminNews from "./pages/admin/AdminNews";
+import News from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
 import OAuthBridge from "./pages/OAuthBridge";
 import NotFound from "./pages/NotFound";
 
@@ -63,6 +66,8 @@ const App = () => (
               <Route path="/termos" element={<Terms />} />
               <Route path="/redefinir-senha" element={<ResetPassword />} />
               <Route path="/reclamar-cashback" element={<CashbackClaim />} />
+              <Route path="/noticias" element={<News />} />
+              <Route path="/noticias/:slug" element={<NewsDetail />} />
             </Route>
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<AdminDashboard />} />
@@ -72,6 +77,7 @@ const App = () => (
               <Route path="/admin/push" element={<AdminPush />} />
               <Route path="/admin/usuarios" element={<AdminUsers />} />
               <Route path="/admin/reclamacoes" element={<AdminClaims />} />
+              <Route path="/admin/noticias" element={<AdminNews />} />
             </Route>
             <Route path="/~oauth/initiate" element={<OAuthBridge mode="initiate" />} />
             <Route path="/~oauth/callback" element={<OAuthBridge mode="callback" />} />

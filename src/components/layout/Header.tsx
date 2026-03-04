@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe, Shield, Sun, Moon, Monitor, Eye, AlertTriangle, MoreHorizontal } from "lucide-react";
+import { Store, Heart, BarChart3, Bell, Menu, X, LogIn, Globe, Shield, Sun, Moon, Monitor, Eye, AlertTriangle, MoreHorizontal, Newspaper } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -83,6 +83,9 @@ export function Header() {
                     </Link>
                     <Link to="/reclamar-cashback" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-muted transition-colors">
                       <AlertTriangle className="w-4 h-4" /> {t("nav_claim", "Problemas com Cashback")}
+                    </Link>
+                    <Link to="/noticias" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-muted transition-colors">
+                      <Newspaper className="w-4 h-4" /> {t("nav_news", "Notícias")}
                     </Link>
                   </div>
                 </div>
@@ -167,6 +170,7 @@ export function Header() {
               <MobileLink to="/transparencia" label={t("nav_transparency", "Transparência")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/impacto" label={t("nav_impact", "Meu Impacto")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/reclamar-cashback" label={t("nav_claim", "Reclamar Cashback")} onClick={() => setMobileOpen(false)} />
+              <MobileLink to="/noticias" label={t("nav_news", "Notícias")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/notificacoes" label={t("nav_notifications", "Notificações")} onClick={() => setMobileOpen(false)} />
               <MobileLink to="/perfil" label={t("nav_settings", "Configurações")} onClick={() => setMobileOpen(false)} />
               {isAdmin && <MobileLink to="/admin" label="Painel Admin" onClick={() => setMobileOpen(false)} />}
