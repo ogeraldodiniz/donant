@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, ArrowRight, ChevronDown, ShoppingCart, Gift, PartyPopper, Search, Target, Rocket, BadgeCheck, TrendingUp, Store, Users, Quote, HelpCircle, UserPlus, ShoppingBag, HandHeart, Coins, Star, MessageCircle, Download, Pencil } from "lucide-react";
+import { Heart, ArrowRight, ChevronDown, ShoppingCart, Gift, PartyPopper, Search, Target, Rocket, BadgeCheck, TrendingUp, Store, Users, Quote, HelpCircle, UserPlus, ShoppingBag, HandHeart, Coins, Star, MessageCircle, Download, Pencil, Newspaper, Calendar } from "lucide-react";
 import { DuoButton } from "@/components/ui/duo-button";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
