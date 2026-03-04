@@ -20,6 +20,7 @@ interface StoreRow {
   category: string | null;
   cashback_rate: number;
   is_active: boolean;
+  is_featured: boolean;
   website_url: string | null;
   locale: string;
   terms: string | null;
