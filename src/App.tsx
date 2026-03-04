@@ -66,6 +66,8 @@ const App = () => (
               <Route path="/termos" element={<Terms />} />
               <Route path="/redefinir-senha" element={<ResetPassword />} />
               <Route path="/reclamar-cashback" element={<CashbackClaim />} />
+              <Route path="/noticias" element={<News />} />
+              <Route path="/noticias/:slug" element={<NewsDetail />} />
             </Route>
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<AdminDashboard />} />
