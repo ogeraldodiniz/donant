@@ -84,6 +84,9 @@ export function Header() {
                     <Link to="/reclamar-cashback" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-muted transition-colors">
                       <AlertTriangle className="w-4 h-4" /> {t("nav_claim", "Problemas com Cashback")}
                     </Link>
+                    <Link to="/noticias" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-muted transition-colors">
+                      <Newspaper className="w-4 h-4" /> {t("nav_news", "Notícias")}
+                    </Link>
                   </div>
                 </div>
               </div>
