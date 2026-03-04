@@ -31,6 +31,9 @@ import AdminBlog from "./pages/admin/AdminBlog";
 import AdminPush from "./pages/admin/AdminPush";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminClaims from "./pages/admin/AdminClaims";
+import AdminNews from "./pages/admin/AdminNews";
+import News from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
 import OAuthBridge from "./pages/OAuthBridge";
 import NotFound from "./pages/NotFound";
 
