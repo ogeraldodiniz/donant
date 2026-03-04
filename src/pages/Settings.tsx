@@ -126,21 +126,9 @@ export default function Settings() {
       <div className="space-y-4 sm:space-y-5">
         <DuoCard className="p-3.5 sm:p-5">
           <div className="flex items-start gap-3 sm:gap-4">
-            <button type="button" onClick={() => editing ? fileInputRef.current?.click() : undefined} className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 group ${editing ? 'cursor-pointer' : 'cursor-default'}`} disabled={uploadingAvatar || !editing}>
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="Avatar" className="w-full h-full rounded-full object-cover" />
-              ) : (
-                <div className="w-full h-full rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold">
-                  {displayName?.charAt(0) || 'U'}
-                </div>
-              )}
-              {editing && (
-                <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  {uploadingAvatar ? <Loader2 className="w-5 h-5 text-white animate-spin" /> : <Camera className="w-5 h-5 text-white" />}
-                </div>
-              )}
-              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
-            </button>
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full shrink-0 bg-primary flex items-center justify-center text-primary-foreground text-xl font-bold">
+              {displayName?.charAt(0) || 'U'}
+            </div>
             <div className="min-w-0 flex-1 space-y-2">
               {editing ? (
                 <>
