@@ -13,6 +13,8 @@ import { PushPermissionBanner } from "@/components/PushPermissionBanner";
 import { LevelBadge } from "@/components/LevelBadge";
 import { useNgos } from "@/hooks/useNgos";
 import { useStores } from "@/hooks/useStores";
+import { supabase } from "@/integrations/supabase/client";
+import { useLocale } from "@/hooks/useLocale";
 
 export default function Index() {
   const { isLoggedIn } = useAuth();
