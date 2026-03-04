@@ -215,6 +215,17 @@ export default function AdminStores() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
+                  <button
+                    onClick={async () => {
+                      const next = !store.is_featured;
+                      const { error } = await supabase.from("stores").update({ is_featured: next }).eq("id", store.id);
+                      if (!error) { setStores((prev) => prev.map((s) => s.id === store.id ? { ...s, is_featured: next } : s)); toast.success(next ? "Destaque ativado" : "Destaque removido"); }
+                    }}
+                    className={`p-2 rounded-lg hover:bg-muted transition-colors ${store.is_featured ? "text-yellow-500" : "text-muted-foreground"}`}
+                    title={store.is_featured ? "Remover destaque" : "Marcar como destaque"}
+                  >
+                    <Star className="w-4 h-4" fill={store.is_featured ? "currentColor" : "none"} />
+                  </button>
                   <button onClick={() => openEdit(store)} className="p-2 rounded-lg hover:bg-muted transition-colors">
                     <Pencil className="w-4 h-4 text-muted-foreground" />
                   </button>
