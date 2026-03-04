@@ -464,7 +464,7 @@ function LoggedInHome() {
       .eq("is_published", true)
       .eq("is_featured", true)
       .order("published_at", { ascending: false })
-      .limit(4)
+      .limit(3)
       .then(({ data }) => setFeaturedNews((data as any[]) || []));
   }, [locale]);
 
