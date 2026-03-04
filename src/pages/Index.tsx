@@ -586,17 +586,24 @@ function LoggedInHome() {
         </div>
         {/* Desktop: 3 columns */}
         <div className="hidden md:grid md:grid-cols-3 gap-3">
-          {displayStores.slice(0, 6).map(store => (
+          {displayStores.slice(0, 3).map(store => (
             <FeaturedStoreCard key={store.id} store={store} />
           ))}
         </div>
         {/* Mobile: horizontal carousel */}
         <div className="md:hidden flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
-          {displayStores.slice(0, 6).map(store => (
-            <div key={store.id} className="min-w-[45vw] snap-start">
+          {displayStores.slice(0, 3).map(store => (
+            <div key={store.id} className="min-w-[75vw] snap-start">
               <FeaturedStoreCard store={store} />
             </div>
           ))}
+        </div>
+        <div className="mt-3 text-center md:text-left">
+          <Link to="/lojas">
+            <DuoButton variant="outline" size="sm" className="text-xs">
+              {t("home_all_stores_cta", "Ver todas as lojas")} <ArrowRight className="w-3.5 h-3.5" />
+            </DuoButton>
+          </Link>
         </div>
       </div>
     </div>
