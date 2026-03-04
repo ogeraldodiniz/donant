@@ -574,13 +574,6 @@ function LoggedInHome() {
               </div>
             ))}
           </div>
-          <div className="mt-3 text-center md:text-left">
-            <Link to="/noticias">
-              <DuoButton variant="outline" size="sm" className="text-xs">
-                {t("home_all_news_cta", "Ver todas as notícias")} <ArrowRight className="w-3.5 h-3.5" />
-              </DuoButton>
-            </Link>
-          </div>
         </div>
       )}
 
@@ -605,13 +598,6 @@ function LoggedInHome() {
               <FeaturedStoreCard store={store} />
             </div>
           ))}
-        </div>
-        <div className="mt-3 text-center md:text-left">
-          <Link to="/lojas">
-            <DuoButton variant="outline" size="sm" className="text-xs">
-              {t("home_all_stores_cta", "Ver todas as lojas")} <ArrowRight className="w-3.5 h-3.5" />
-            </DuoButton>
-          </Link>
         </div>
       </div>
     </div>
