@@ -399,15 +399,15 @@ function FeaturedNewsCard({ news }: { news: { id: string; title: string; slug: s
   return (
     <Link to={`/noticias/${news.slug}`}>
       <DuoCard hover className="p-0 overflow-hidden h-full">
-        <div className="flex flex-col h-full">
+        <div className="flex flex-row h-full">
           {news.cover_url ? (
-            <img src={news.cover_url} alt="" className="w-full h-28 object-cover" />
+            <img src={news.cover_url} alt="" className="w-24 sm:w-28 aspect-square object-cover rounded-2xl m-2 shrink-0" />
           ) : (
-            <div className="w-full h-28 bg-primary/10 flex items-center justify-center">
-              <Newspaper className="w-8 h-8 text-primary" />
+            <div className="w-24 sm:w-28 aspect-square bg-primary/10 flex items-center justify-center rounded-2xl m-2 shrink-0">
+              <Newspaper className="w-7 h-7 text-primary" />
             </div>
           )}
-          <div className="p-3 flex-1 flex flex-col justify-center">
+          <div className="p-3 flex-1 min-w-0 flex flex-col justify-center">
             <h3 className="font-bold text-xs sm:text-sm line-clamp-2">{news.title}</h3>
             {news.summary && (
               <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-1">{news.summary}</p>
@@ -428,16 +428,20 @@ function FeaturedNewsCard({ news }: { news: { id: string; title: string; slug: s
 function FeaturedStoreCard({ store }: { store: { id: string; name: string; slug: string; logo_url: string | null; cashback_rate: number } }) {
   return (
     <Link to={`/lojas/${store.slug}`}>
-      <DuoCard hover className="p-3 sm:p-5 h-full">
-        {store.logo_url ? (
-          <img src={store.logo_url} alt={store.name} className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover bg-muted mb-2" />
-        ) : (
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center mb-2">
-            <Store className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+      <DuoCard hover className="p-0 overflow-hidden h-full">
+        <div className="flex flex-row h-full">
+          {store.logo_url ? (
+            <img src={store.logo_url} alt={store.name} className="w-24 sm:w-28 aspect-square object-cover rounded-2xl m-2 shrink-0 bg-muted" />
+          ) : (
+            <div className="w-24 sm:w-28 aspect-square bg-muted flex items-center justify-center rounded-2xl m-2 shrink-0">
+              <Store className="w-7 h-7 text-muted-foreground" />
+            </div>
+          )}
+          <div className="p-3 flex-1 min-w-0 flex flex-col justify-center">
+            <p className="font-bold text-xs sm:text-sm truncate">{store.name}</p>
+            <p className="text-[10px] sm:text-xs text-primary font-black mt-0.5">{Number(store.cashback_rate)}% cashback</p>
           </div>
-        )}
-        <p className="font-bold text-xs sm:text-sm truncate">{store.name}</p>
-        <p className="text-[10px] sm:text-xs text-primary font-bold">{Number(store.cashback_rate)}% cashback</p>
+        </div>
       </DuoCard>
     </Link>
   );
