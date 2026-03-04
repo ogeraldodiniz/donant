@@ -395,6 +395,54 @@ function FaqItem({ question, answer, index }: { question: string; answer: string
   );
 }
 
+function FeaturedNewsCard({ news }: { news: { id: string; title: string; slug: string; summary: string | null; cover_url: string | null; published_at: string | null } }) {
+  return (
+    <Link to={`/noticias/${news.slug}`}>
+      <DuoCard hover className="p-0 overflow-hidden h-full">
+        <div className="flex flex-col h-full">
+          {news.cover_url ? (
+            <img src={news.cover_url} alt="" className="w-full h-28 object-cover" />
+          ) : (
+            <div className="w-full h-28 bg-primary/10 flex items-center justify-center">
+              <Newspaper className="w-8 h-8 text-primary" />
+            </div>
+          )}
+          <div className="p-3 flex-1 flex flex-col justify-center">
+            <h3 className="font-bold text-xs sm:text-sm line-clamp-2">{news.title}</h3>
+            {news.summary && (
+              <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-1">{news.summary}</p>
+            )}
+            {news.published_at && (
+              <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1">
+                <Calendar className="w-3 h-3" />
+                {new Date(news.published_at).toLocaleDateString("pt-BR")}
+              </p>
+            )}
+          </div>
+        </div>
+      </DuoCard>
+    </Link>
+  );
+}
+
+function FeaturedStoreCard({ store }: { store: StoreDB }) {
+  return (
+    <Link to={`/lojas/${store.slug}`}>
+      <DuoCard hover className="p-3 sm:p-5 h-full">
+        {store.logo_url ? (
+          <img src={store.logo_url} alt={store.name} className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover bg-muted mb-2" />
+        ) : (
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center mb-2">
+            <Store className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+          </div>
+        )}
+        <p className="font-bold text-xs sm:text-sm truncate">{store.name}</p>
+        <p className="text-[10px] sm:text-xs text-primary font-bold">{Number(store.cashback_rate)}% cashback</p>
+      </DuoCard>
+    </Link>
+  );
+}
+
 function LoggedInHome() {
   const { user } = useAuth();
   const { t } = useSiteContent("home_logged");
