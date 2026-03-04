@@ -77,6 +77,7 @@ const App = () => (
               <Route path="/admin/push" element={<AdminPush />} />
               <Route path="/admin/usuarios" element={<AdminUsers />} />
               <Route path="/admin/reclamacoes" element={<AdminClaims />} />
+              <Route path="/admin/noticias" element={<AdminNews />} />
             </Route>
             <Route path="/~oauth/initiate" element={<OAuthBridge mode="initiate" />} />
             <Route path="/~oauth/callback" element={<OAuthBridge mode="callback" />} />

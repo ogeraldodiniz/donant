@@ -21,6 +21,7 @@ const items = [
   { title: "Push", url: "/admin/push", icon: Bell },
   { title: "Usuários", url: "/admin/usuarios", icon: Users },
   { title: "Reclamações", url: "/admin/reclamacoes", icon: AlertTriangle },
+  { title: "Notícias", url: "/admin/noticias", icon: Newspaper },
 ];
 
 export function AdminSidebar() {
