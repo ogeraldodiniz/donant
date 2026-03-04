@@ -425,7 +425,7 @@ function FeaturedNewsCard({ news }: { news: { id: string; title: string; slug: s
   );
 }
 
-function FeaturedStoreCard({ store }: { store: StoreDB }) {
+function FeaturedStoreCard({ store }: { store: { id: string; name: string; slug: string; logo_url: string | null; cashback_rate: number } }) {
   return (
     <Link to={`/lojas/${store.slug}`}>
       <DuoCard hover className="p-3 sm:p-5 h-full">
