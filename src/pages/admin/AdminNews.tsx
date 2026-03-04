@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Newspaper } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff, Newspaper, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdminLocale } from "@/hooks/useAdminLocale";
 import { DuoCard } from "@/components/ui/duo-card";
