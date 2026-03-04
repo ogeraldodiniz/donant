@@ -44,7 +44,7 @@ export default function AdminStores() {
     setLoading(true);
     const { data, error } = await supabase
       .from("stores")
-      .select("id, name, slug, logo_url, category, cashback_rate, is_active, website_url, locale, terms, mycashbacks_store_id")
+      .select("id, name, slug, logo_url, category, cashback_rate, is_active, is_featured, website_url, locale, terms, mycashbacks_store_id")
       .eq("locale", adminLocale)
       .order("name");
     if (error) {
