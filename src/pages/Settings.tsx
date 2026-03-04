@@ -34,7 +34,7 @@ export default function Settings() {
   const [notifyWhatsapp, setNotifyWhatsapp] = useState(false);
   const [notifyEmail, setNotifyEmail] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  
   const [savingPrefs, setSavingPrefs] = useState(false);
   const [editing, setEditing] = useState(false);
 
