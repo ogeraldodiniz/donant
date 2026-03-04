@@ -221,6 +221,48 @@ export type Database = {
           },
         ]
       }
+      news: {
+        Row: {
+          content: string
+          cover_url: string | null
+          created_at: string
+          id: string
+          is_published: boolean
+          locale: string
+          published_at: string | null
+          slug: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          locale?: string
+          published_at?: string | null
+          slug: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          locale?: string
+          published_at?: string | null
+          slug?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ngos: {
         Row: {
           created_at: string
