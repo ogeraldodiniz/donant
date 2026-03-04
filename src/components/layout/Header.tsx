@@ -117,13 +117,6 @@ export function Header() {
 
           {isLoggedIn ? (
             <Link to="/perfil" className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted transition-colors">
-              {user?.avatar_url ? (
-                <img src={user.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover" />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
-                  {user?.display_name?.charAt(0) || 'U'}
-                </div>
-              )}
               <span className="text-sm font-semibold">{user?.display_name?.split(' ')[0]}</span>
             </Link>
           ) : (
