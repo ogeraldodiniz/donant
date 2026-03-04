@@ -21,6 +21,7 @@ interface NewsRow {
   cover_url: string | null;
   locale: string;
   is_published: boolean;
+  is_featured: boolean;
   published_at: string | null;
   created_at: string;
 }
