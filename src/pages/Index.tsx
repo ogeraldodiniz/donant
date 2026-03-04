@@ -470,7 +470,7 @@ function LoggedInHome() {
 
   // Featured stores (prefer featured, fallback to first active)
   const featuredStores = dbStores.filter((s: any) => s.is_featured);
-  const displayStores = featuredStores.length > 0 ? featuredStores.slice(0, 4) : dbStores.slice(0, 4);
+  const displayStores = featuredStores.length > 0 ? featuredStores.slice(0, 3) : dbStores.slice(0, 3);
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
