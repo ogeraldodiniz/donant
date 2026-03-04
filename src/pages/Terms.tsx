@@ -22,7 +22,7 @@ export default function Terms() {
         <h2 className="text-lg font-bold text-foreground">{t("s4_title", "4. Doações")}</h2>
         <p>{t("s4_text", "O cashback confirmado é automaticamente doado para a ONG selecionada pelo usuário no momento da compra. Não é possível resgatar cashback em dinheiro.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s5_title", "5. Responsabilidades")}</h2>
-        <p>{t("s5_text", "O MyCashbacks não é responsável por problemas na compra junto à loja parceira. Questões de troca, devolução e garantia devem ser tratadas diretamente com a loja.")}</p>
+        <p>{t("s5_text", "O DonActivo não é responsável por problemas na compra junto à loja parceira. Questões de troca, devolução e garantia devem ser tratadas diretamente com a loja.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s6_title", "6. Cancelamento")}</h2>
         <p>{t("s6_text", "Você pode excluir sua conta a qualquer momento. Cashbacks pendentes serão perdidos. Cashbacks já doados não podem ser revertidos.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s7_title", "7. Alterações")}</h2>

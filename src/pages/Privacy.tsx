@@ -26,7 +26,7 @@ export default function Privacy() {
         <h2 className="text-lg font-bold text-foreground">{t("s6_title", "6. Cookies")}</h2>
         <p>{t("s6_text", "Utilizamos cookies essenciais para autenticação e cookies de rastreamento para contabilizar cashback corretamente.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s7_title", "7. Contato")}</h2>
-        <p>{t("s7_text", "Para dúvidas sobre privacidade, entre em contato: privacidade@mycashbacks.com.br")}</p>
+        <p>{t("s7_text", "Para dúvidas sobre privacidade, entre em contato: privacidade@donactivo.com.br")}</p>
       </div>
     </div>
   );
