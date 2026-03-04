@@ -412,12 +412,11 @@ function FeaturedNewsCard({ news }: { news: { id: string; title: string; slug: s
             {news.summary && (
               <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2 mt-1">{news.summary}</p>
             )}
-            {news.published_at && (
-              <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1">
-                <Calendar className="w-3 h-3" />
-                {new Date(news.published_at).toLocaleDateString("pt-BR")}
-              </p>
-            )}
+            <div className="mt-2">
+              <DuoButton size="sm" className="text-[10px] sm:text-xs px-3 py-1 h-auto">
+                Ler mais
+              </DuoButton>
+            </div>
           </div>
         </div>
       </DuoCard>
