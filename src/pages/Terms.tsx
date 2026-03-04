@@ -14,7 +14,7 @@ export default function Terms() {
       <div className="prose prose-sm max-w-none space-y-4 text-muted-foreground">
         <p className="font-semibold text-foreground">{t("last_update", "Última atualização: Março de 2026")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s1_title", "1. Aceitação")}</h2>
-        <p>{t("s1_text", "Ao utilizar a plataforma MyCashbacks, você concorda com estes termos de uso.")}</p>
+        <p>{t("s1_text", "Ao utilizar a plataforma DonActivo, você concorda com estes termos de uso.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s2_title", "2. Funcionamento")}</h2>
         <p>{t("s2_text", "O MyCashbacks intermedia a doação de cashback gerado por compras em lojas parceiras para ONGs cadastradas na plataforma. O cashback é 100% doado.")}</p>
         <h2 className="text-lg font-bold text-foreground">{t("s3_title", "3. Cashback")}</h2>
