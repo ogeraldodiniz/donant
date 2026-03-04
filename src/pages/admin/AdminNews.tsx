@@ -162,6 +162,9 @@ export default function AdminNews() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-bold text-sm truncate">{row.title}</h3>
+                    {row.is_featured && (
+                      <Badge variant="outline" className="text-[10px] border-yellow-500/30 text-yellow-600">⭐ Destaque</Badge>
+                    )}
                     <Badge variant={row.is_published ? "default" : "secondary"} className="text-[10px]">
                       {row.is_published ? "Publicada" : "Rascunho"}
                     </Badge>
