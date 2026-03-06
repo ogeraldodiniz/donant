@@ -272,6 +272,7 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean
+          is_featured: boolean
           locale: string
           logo_url: string | null
           mission: string | null
@@ -285,6 +286,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          is_featured?: boolean
           locale?: string
           logo_url?: string | null
           mission?: string | null
@@ -298,6 +300,7 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          is_featured?: boolean
           locale?: string
           logo_url?: string | null
           mission?: string | null

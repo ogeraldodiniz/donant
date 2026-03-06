@@ -37,7 +37,7 @@ function usePublicNgos() {
 function PublicHome() {
   const { t } = useSiteContent();
   const { stores: dbStores } = useStores();
-
+  const publicNgos = usePublicNgos();
   return (
     <div className="min-h-screen">
       {/* Hero */}
@@ -57,12 +57,12 @@ function PublicHome() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
               <Link to="/auth" className="w-full sm:w-auto">
                 <DuoButton size="lg" className="w-full sm:w-auto">
-                  {t("hero_cta_primary", "Comece agora — é grátis")} <ArrowRight className="w-5 h-5" />
+                  {t("hero_cta_primary", "Comece em 60 segundos")} <ArrowRight className="w-5 h-5" />
                 </DuoButton>
               </Link>
-              <Link to="/transparencia" className="w-full sm:w-auto">
+              <Link to="/auth" className="w-full sm:w-auto">
                 <DuoButton variant="outline" size="lg" className="w-full sm:w-auto">
-                  {t("hero_cta_secondary", "Ver impacto global")}
+                  {t("hero_cta_secondary", "Entrar")}
                 </DuoButton>
               </Link>
             </div>
@@ -82,7 +82,7 @@ function PublicHome() {
                       <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground font-bold">Compra na Amazon</p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground font-bold">Compra no Aliexpress</p>
                       <p className="text-xs sm:text-sm font-black text-primary">+ R$ 12,50 cashback</p>
                     </div>
                   </div>
@@ -96,7 +96,7 @@ function PublicHome() {
                     </div>
                     <div>
                       <p className="text-[10px] sm:text-xs text-muted-foreground font-bold">Doação automática</p>
-                      <p className="text-xs sm:text-sm font-black text-destructive">→ Instituto Criança Feliz</p>
+                      <p className="text-xs sm:text-sm font-black text-destructive">→ Cruz Vermelha</p>
                     </div>
                   </div>
                 </DuoCard>
@@ -216,24 +216,22 @@ function PublicHome() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3">{t("ngos_title", "ONGs parceiras")}</h2>
           <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">{t("ngos_subtitle", "Organizações verificadas que recebem 100% do cashback doado.")}</p>
         </motion.div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
-          {usePublicNgos().slice(0, 6).map((ngo, i) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
+          {publicNgos.slice(0, 10).map((ngo, i) => {
             const NgoIcon = ngoIcons[i % ngoIcons.length];
             return (
               <motion.div key={ngo.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
                 <Link to={`/ongs/${ngo.slug}`}>
-                  <DuoCard hover className="text-center py-3 sm:py-5 h-full">
-                    <div className="flex justify-center mb-2">
-                      {ngo.logo_url ? (
-                        <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
-                      ) : (
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                          <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                        </div>
-                      )}
-                    </div>
-                    <h3 className="font-bold text-xs sm:text-sm mb-1 truncate px-1">{ngo.name}</h3>
-                    <p className="text-[10px] sm:text-xs text-primary font-black">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
+                  <DuoCard hover className="text-center py-3 px-2 sm:py-4 sm:px-3">
+                    {ngo.logo_url ? (
+                      <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover mx-auto mb-2 bg-muted" />
+                    ) : (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-2">
+                        <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+                      </div>
+                    )}
+                    <p className="font-bold text-[11px] sm:text-xs truncate">{ngo.name}</p>
+                    <p className="text-primary font-black text-xs sm:text-sm">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
                   </DuoCard>
                 </Link>
               </motion.div>
@@ -247,27 +245,6 @@ function PublicHome() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-primary text-primary-foreground py-10 sm:py-14">
-        <div className="container">
-          <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            {([
-              { labelKey: "stat1_label", valueKey: "stat1_value", Icon: Coins, labelFb: "Total doado", valueFb: "R$ 158K+" },
-              { labelKey: "stat2_label", valueKey: "stat2_value", Icon: Heart, labelFb: "ONGs apoiadas", valueFb: "6" },
-              { labelKey: "stat3_label", valueKey: "stat3_value", Icon: Store, labelFb: "Lojas parceiras", valueFb: "10+" },
-              { labelKey: "stat4_label", valueKey: "stat4_value", Icon: Users, labelFb: "Usuários ativos", valueFb: "1.2K+" },
-            ] as const).map((s, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i}>
-                <div className="flex justify-center mb-1.5 sm:mb-2">
-                  <s.Icon className="w-6 h-6 sm:w-7 sm:h-7" />
-                </div>
-                <div className="text-2xl sm:text-3xl md:text-4xl font-black">{t(s.valueKey, s.valueFb)}</div>
-                <div className="text-xs sm:text-sm opacity-90 font-bold">{t(s.labelKey, s.labelFb)}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
       {/* Testimonials */}
       <section className="container py-12 sm:py-16">
@@ -303,8 +280,14 @@ function PublicHome() {
             {t("faq_title", "perguntas frequentes")}
           </motion.h2>
           <div className="space-y-3">
-            {[1, 2, 3, 4, 5].map(n => (
-              <FaqItem key={n} question={t(`faq_q${n}`, `FAQ ${n}`)} answer={t(`faq_a${n}`, "")} index={n} />
+            {[
+              { q: "É gratuito?", a: "Sim! Você não paga nada a mais. O cashback é gerado pela loja parceira." },
+              { q: "Como funciona o cashback?", a: "Ao comprar em uma loja parceira, parte do valor é devolvido como cashback e doado para a ONG que você escolheu." },
+              { q: "Posso escolher a ONG?", a: "Sim! Você escolhe a ONG que vai receber suas doações." },
+              { q: "Quanto tempo leva para confirmar?", a: "O cashback é confirmado pela loja em até 90 dias após a compra." },
+              { q: "Posso resgatar o cashback em dinheiro?", a: "Não. O cashback é 100% doado para a ONG escolhida. Essa é a essência da plataforma." },
+            ].map((item, n) => (
+              <FaqItem key={n} question={t(`faq_q${n+1}`, item.q)} answer={t(`faq_a${n+1}`, item.a)} index={n+1} />
             ))}
           </div>
         </div>

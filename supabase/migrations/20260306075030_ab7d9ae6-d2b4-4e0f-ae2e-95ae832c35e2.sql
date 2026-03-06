@@ -1,0 +1,1 @@
+ALTER TABLE public.ngos ADD COLUMN IF NOT EXISTS is_featured boolean NOT NULL DEFAULT false;
