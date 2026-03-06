@@ -25,6 +25,7 @@ export default function Stores() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("name_asc");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(18);
   const { stores, loading } = useStores();
   const { t } = useSiteContent("stores_page");
 
