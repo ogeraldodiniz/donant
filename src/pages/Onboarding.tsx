@@ -187,6 +187,59 @@ export default function Onboarding() {
                 <DuoButton size="lg" className="w-full" onClick={handlePhoneNext} disabled={saving}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
                 </DuoButton>
+                <button onClick={() => setStep("profile")} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  Pular por agora
+                </button>
+              </div>
+            )}
+
+            {/* STEP: Profile (gender + age) */}
+            {step === "profile" && (
+              <div className="space-y-5">
+                <div className="text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <User className="w-7 h-7 text-primary" />
+                  </div>
+                  <h2 className="text-xl font-black">Sobre você</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Nos ajude a personalizar sua experiência</p>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Gênero</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { value: "masculino", label: "Masculino" },
+                        { value: "feminino", label: "Feminino" },
+                        { value: "outro", label: "Outro" },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => setGender(opt.value)}
+                          className={`py-2.5 rounded-xl text-xs sm:text-sm font-semibold border-2 transition-all ${
+                            gender === opt.value
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border hover:border-primary/30 text-muted-foreground"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Data de nascimento</label>
+                    <Input
+                      type="date"
+                      value={birthDate}
+                      onChange={(e) => setBirthDate(e.target.value)}
+                      className="h-12 rounded-2xl border-2 text-base"
+                      max={new Date().toISOString().split("T")[0]}
+                    />
+                  </div>
+                </div>
+                <DuoButton size="lg" className="w-full" onClick={handleProfileNext} disabled={saving}>
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
+                </DuoButton>
                 <button onClick={() => setStep("location")} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
                   Pular por agora
                 </button>
