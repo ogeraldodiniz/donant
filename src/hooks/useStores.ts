@@ -12,6 +12,7 @@ export interface StoreDB {
   category: string | null;
   terms: string | null;
   is_active: boolean;
+  is_featured: boolean;
   locale: string;
 }
 
