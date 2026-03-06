@@ -103,8 +103,8 @@ export default function Stores() {
         <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Compre e gere cashback solidário")}</p>
       </div>
 
-      <div className="space-y-2">
-        <div className="relative">
+      <div className="flex flex-col sm:flex-row gap-2">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
           <Input
             placeholder={t("search_placeholder", "Buscar lojas...")}
@@ -116,7 +116,7 @@ export default function Stores() {
 
         <div className="flex items-center gap-2">
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold flex-1 shrink-0">
+            <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold flex-1 sm:w-[160px] sm:flex-none shrink-0">
               <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
               <SelectValue placeholder="Categoria" />
             </SelectTrigger>
@@ -131,7 +131,7 @@ export default function Stores() {
           </Select>
 
           <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
-            <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold flex-1 shrink-0">
+            <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold flex-1 sm:w-[160px] sm:flex-none shrink-0">
               <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
               <SelectValue />
             </SelectTrigger>
