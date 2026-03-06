@@ -44,8 +44,8 @@ export default function Settings() {
     if (user) {
       setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
-      setGender((user as any).gender ?? "");
-      setBirthDate((user as any).birth_date ?? "");
+      setGender(user.gender ?? "");
+      setBirthDate(user.birth_date ?? "");
       setCity(user.city ?? "");
       setUserState(user.state ?? "");
       
@@ -58,8 +58,8 @@ export default function Settings() {
   const hasProfileChanges = user && (
     displayName !== (user.display_name ?? "") ||
     phone !== (user.phone ?? "") ||
-    gender !== ((user as any).gender ?? "") ||
-    birthDate !== ((user as any).birth_date ?? "") ||
+    gender !== (user.gender ?? "") ||
+    birthDate !== (user.birth_date ?? "") ||
     city !== (user.city ?? "") ||
     userState !== (user.state ?? "")
   );
@@ -93,8 +93,8 @@ export default function Settings() {
     if (user) {
       setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
-      setGender((user as any).gender ?? "");
-      setBirthDate((user as any).birth_date ?? "");
+      setGender(user.gender ?? "");
+      setBirthDate(user.birth_date ?? "");
       setCity(user.city ?? "");
       setUserState(user.state ?? "");
     }

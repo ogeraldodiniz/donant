@@ -37,6 +37,8 @@ function mapUser(supaUser: User, profile?: Partial<AppUser>): AppUser {
     avatar_url: profile?.avatar_url ?? supaUser.user_metadata?.avatar_url,
     selected_ngo_id: profile?.selected_ngo_id,
     phone: profile?.phone,
+    gender: profile?.gender,
+    birth_date: profile?.birth_date,
     city: profile?.city,
     state: profile?.state,
     notify_web: profile?.notify_web ?? true,

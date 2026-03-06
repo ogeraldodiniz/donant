@@ -5,6 +5,8 @@ export interface User {
   avatar_url?: string;
   selected_ngo_id?: string;
   phone?: string;
+  gender?: string;
+  birth_date?: string;
   city?: string;
   state?: string;
   notify_web: boolean;
