@@ -83,26 +83,26 @@ export default function Ngos() {
           <div className="flex-1 min-w-0">
             <p className="font-bold text-sm sm:text-base truncate">{ngo.name}</p>
             <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-1">{ngo.description}</p>
-            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground">
-              Saiba mais
-            </span>
-
-            {isLoggedIn && !isSelected && (
-              <button
-                onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
-                disabled={saving !== null}
-                className="inline-flex items-center gap-1 mt-2 px-3 py-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:brightness-105 transition-all active:translate-y-0.5"
-              >
-                {saving === ngo.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Heart className="w-3 h-3" />{t("select_btn", "Selecionar")}</>}
-              </button>
-            )}
-
-            {isSelected && (
-              <span className="inline-flex items-center gap-1 mt-2 px-3 py-1 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-bold">
-                <Check className="w-3 h-3" />
-                {t("selected_label", "Sua escolha")}
+            <div className="flex items-center gap-3 mt-2">
+              {isLoggedIn && !isSelected && (
+                <button
+                  onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
+                  disabled={saving !== null}
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:brightness-105 transition-all active:translate-y-0.5"
+                >
+                  {saving === ngo.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Heart className="w-3 h-3" />{t("select_btn", "Selecionar")}</>}
+                </button>
+              )}
+              {isSelected && (
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-bold">
+                  <Check className="w-3 h-3" />
+                  {t("selected_label", "Sua escolha")}
+                </span>
+              )}
+              <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground">
+                Saiba mais
               </span>
-            )}
+            </div>
           </div>
         </DuoCard>
       </Link>
