@@ -27,6 +27,8 @@ export default function Settings() {
 
   const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [city, setCity] = useState("");
   const [userState, setUserState] = useState("");
   
