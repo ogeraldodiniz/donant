@@ -129,10 +129,8 @@ function PublicHome() {
 
           <div className="relative">
             {/* Connecting lines between circles (desktop only) */}
-            {/* Line from circle 1 right edge to circle 2 left edge */}
-            <div className="hidden md:block absolute top-12 left-[calc(16.67%+48px)] w-[calc(33.33%-96px)] h-0.5 bg-border z-0" />
-            {/* Line from circle 2 right edge to circle 3 left edge */}
-            <div className="hidden md:block absolute top-12 left-[calc(50%+48px)] w-[calc(33.33%-96px)] h-0.5 bg-border z-0" />
+            <div className="hidden md:block absolute top-12 left-[calc(16.67%+48px)] right-[calc(50%+48px)] h-0.5 bg-border z-0" />
+            <div className="hidden md:block absolute top-12 left-[calc(50%+48px)] right-[calc(16.67%+48px)] h-0.5 bg-border z-0" />
 
             <div className="grid md:grid-cols-3 gap-10 sm:gap-12 relative z-10">
               {([
