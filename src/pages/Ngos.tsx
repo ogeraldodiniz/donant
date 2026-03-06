@@ -48,52 +48,99 @@ export default function Ngos() {
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {filtered.map((ngo) => {
-            const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
+        <>
+          {/* Featured NGOs */}
+          {(() => {
+            const featured = ngos.filter(n => n.is_featured).slice(0, 3);
+            if (featured.length === 0) return null;
             return (
-              <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
-                <DuoCard hover className={`p-0 h-full overflow-hidden ${isSelected ? "border-primary bg-primary/5" : ""}`}>
-                  {ngo.logo_url ? (
-                    <div className="aspect-[4/3] w-full overflow-hidden bg-muted rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
-                      <img src={ngo.logo_url} alt={ngo.name} className="w-full h-full object-cover" />
-                    </div>
-                  ) : (
-                    <div className="aspect-[4/3] w-full bg-primary/10 flex items-center justify-center rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
-                      <Heart className="w-10 h-10 text-primary" />
-                    </div>
-                  )}
-                  <div className="p-3 sm:p-4 space-y-1.5">
-                    <p className="font-bold text-sm truncate">{ngo.name}</p>
-                    <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{ngo.description}</p>
-                    <p className="text-[10px] sm:text-xs text-primary font-bold">R$ {ngo.total_received.toLocaleString('pt-BR')} {t("received_label", "recebidos")}</p>
-                    {isLoggedIn && !isSelected && (
-                      <button
-                        onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
-                        disabled={saving !== null}
-                        className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center gap-1.5 hover:brightness-105 transition-all active:translate-y-0.5"
-                      >
-                        {saving === ngo.id ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <>
-                            <Heart className="w-3 h-3" />
-                            {t("select_btn", "Selecionar")}
-                          </>
-                        )}
-                      </button>
-                    )}
-                    {isSelected && (
-                      <div className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary/10 border border-primary/30 text-primary text-xs font-bold flex items-center justify-center gap-1.5">
-                        <Check className="w-3 h-3" /> {t("selected_label", "Sua escolha")}
-                      </div>
-                    )}
-                  </div>
-                </DuoCard>
-              </Link>
+              <div className="space-y-2">
+                <h2 className="text-sm sm:text-base font-black">{t("featured_title", "⭐ Destaques")}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  {featured.map((ngo) => {
+                    const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
+                    return (
+                      <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
+                        <DuoCard hover className={`p-0 h-full overflow-hidden border-primary/30 bg-primary/5 ${isSelected ? "border-primary" : ""}`}>
+                          {ngo.logo_url ? (
+                            <div className="aspect-[4/3] w-full overflow-hidden bg-muted rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
+                              <img src={ngo.logo_url} alt={ngo.name} className="w-full h-full object-cover" />
+                            </div>
+                          ) : (
+                            <div className="aspect-[4/3] w-full bg-primary/10 flex items-center justify-center rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
+                              <Heart className="w-10 h-10 text-primary" />
+                            </div>
+                          )}
+                          <div className="p-3 sm:p-4 space-y-1.5">
+                            <p className="font-bold text-sm truncate">{ngo.name}</p>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{ngo.description}</p>
+                            {isLoggedIn && !isSelected && (
+                              <button
+                                onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
+                                disabled={saving !== null}
+                                className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center gap-1.5 hover:brightness-105 transition-all active:translate-y-0.5"
+                              >
+                                {saving === ngo.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Heart className="w-3 h-3" />{t("select_btn", "Selecionar")}</>}
+                              </button>
+                            )}
+                            {isSelected && (
+                              <div className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary/10 border border-primary/30 text-primary text-xs font-bold flex items-center justify-center gap-1.5">
+                                <Check className="w-3 h-3" /> {t("selected_label", "Sua escolha")}
+                              </div>
+                            )}
+                          </div>
+                        </DuoCard>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
             );
-          })}
-        </div>
+          })()}
+
+          {/* All NGOs */}
+          <div className="space-y-2">
+            <h2 className="text-sm sm:text-base font-black">{t("all_title", "Todas as ONGs")}</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {filtered.map((ngo) => {
+                const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
+                return (
+                  <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
+                    <DuoCard hover className={`p-0 h-full overflow-hidden ${isSelected ? "border-primary bg-primary/5" : ""}`}>
+                      {ngo.logo_url ? (
+                        <div className="aspect-[4/3] w-full overflow-hidden bg-muted rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
+                          <img src={ngo.logo_url} alt={ngo.name} className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="aspect-[4/3] w-full bg-primary/10 flex items-center justify-center rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
+                          <Heart className="w-10 h-10 text-primary" />
+                        </div>
+                      )}
+                      <div className="p-3 sm:p-4 space-y-1.5">
+                        <p className="font-bold text-sm truncate">{ngo.name}</p>
+                        <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{ngo.description}</p>
+                        {isLoggedIn && !isSelected && (
+                          <button
+                            onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
+                            disabled={saving !== null}
+                            className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center gap-1.5 hover:brightness-105 transition-all active:translate-y-0.5"
+                          >
+                            {saving === ngo.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Heart className="w-3 h-3" />{t("select_btn", "Selecionar")}</>}
+                          </button>
+                        )}
+                        {isSelected && (
+                          <div className="w-full mt-2 h-8 sm:h-9 rounded-xl bg-primary/10 border border-primary/30 text-primary text-xs font-bold flex items-center justify-center gap-1.5">
+                            <Check className="w-3 h-3" /> {t("selected_label", "Sua escolha")}
+                          </div>
+                        )}
+                      </div>
+                    </DuoCard>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </>
       )}
 
       {!loading && filtered.length === 0 && (

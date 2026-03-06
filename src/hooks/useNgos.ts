@@ -12,6 +12,7 @@ export interface Ngo {
   website_url: string | null;
   total_received: number;
   is_active: boolean;
+  is_featured: boolean;
 }
 
 export function useNgos() {

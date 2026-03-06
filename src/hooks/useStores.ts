@@ -12,6 +12,7 @@ export interface StoreDB {
   category: string | null;
   terms: string | null;
   is_active: boolean;
+  is_featured: boolean;
   locale: string;
 }
 
@@ -28,7 +29,7 @@ export function useStores() {
       try {
         const { data, error } = await supabase
           .from("stores")
-          .select("id, name, slug, logo_url, website_url, cashback_rate, category, terms, is_active, locale")
+          .select("id, name, slug, logo_url, website_url, cashback_rate, category, terms, is_active, is_featured, locale")
           .eq("is_active", true)
           .eq("locale", locale)
           .order("name");
