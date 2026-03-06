@@ -251,7 +251,7 @@ function PublicHome() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-sm sm:text-base truncate">{ngo.name}</p>
-                        <p className="text-muted-foreground text-xs sm:text-sm">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
+                        
                         <span className="inline-block mt-2 px-3 py-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold">
                           Apoiar
                         </span>
