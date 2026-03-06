@@ -485,10 +485,6 @@ function LoggedInHome() {
 
   return (
     <div className="container py-5 sm:py-6 space-y-4 sm:space-y-5">
-      <div>
-        <h1 className="text-xl sm:text-2xl font-black">Olá, {user?.display_name?.split(' ')[0] || 'você'}!</h1>
-        <p className="text-muted-foreground text-xs sm:text-sm">{t("home_subtitle", "Veja o impacto das suas compras.")}</p>
-      </div>
 
       <InstallAppBanner />
       <PushPermissionBanner />
