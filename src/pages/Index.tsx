@@ -153,7 +153,7 @@ function PublicHome() {
 
       {/* Feature 1 */}
       <FeatureSection
-        reverse={false} Icon={Search} colorClass="primary" linkTo="/transparencia"
+        reverse={false} Icon={Search} colorClass="primary" linkTo="/auth"
         label={t("feat1_label", "transparência total")}
         title={t("feat1_title", "Acompanhe cada centavo.")}
         description={t("feat1_desc", "Todas as doações são públicas e rastreáveis.")}
@@ -161,7 +161,7 @@ function PublicHome() {
       />
       {/* Feature 2 */}
       <FeatureSection
-        reverse={true} Icon={Target} colorClass="secondary" linkTo="/ongs"
+        reverse={true} Icon={Target} colorClass="secondary" linkTo="/auth"
         label={t("feat2_label", "você escolhe")}
         title={t("feat2_title", "Apoie a causa que importa pra você.")}
         description={t("feat2_desc", "Escolha entre nossas ONGs parceiras verificadas.")}
@@ -169,7 +169,7 @@ function PublicHome() {
       />
       {/* Feature 3 */}
       <FeatureSection
-        reverse={false} Icon={Rocket} colorClass="accent" linkTo="/lojas"
+        reverse={false} Icon={Rocket} colorClass="accent" linkTo="/auth"
         label={t("feat3_label", "sem custo extra")}
         title={t("feat3_title", "Não muda nada na sua compra.")}
         description={t("feat3_desc", "Você paga o mesmo preço.")}
@@ -179,69 +179,75 @@ function PublicHome() {
       {/* Stores */}
       <section className="bg-card border-y-2 border-border py-12 sm:py-16">
         <div className="container">
-          <motion.div className="text-center mb-8 sm:mb-10" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3">{t("stores_title", "lojas parceiras")}</h2>
-            <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">{t("stores_subtitle", "Suas marcas favoritas gerando impacto social.")}</p>
+          <motion.div className="flex items-center justify-between mb-6 sm:mb-8" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+            <h2 className="text-xl sm:text-2xl font-black">{t("stores_title", "Lojas em destaque")}</h2>
+            <Link to="/auth" className="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
+              {t("stores_cta", "Ver todas")} <ArrowRight className="w-4 h-4" />
+            </Link>
           </motion.div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
-            {dbStores.slice(0, 10).map((store, i) => (
-              <motion.div key={store.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
-                <Link to={`/lojas/${store.slug}`}>
-                  <DuoCard hover className="text-center py-3 px-2 sm:py-4 sm:px-3">
-                    {store.logo_url ? (
-                      <img src={store.logo_url} alt={store.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover mx-auto mb-2 bg-muted" />
-                    ) : (
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-2">
-                        <Store className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
-                      </div>
-                    )}
-                    <p className="font-bold text-[11px] sm:text-xs truncate">{store.name}</p>
-                    <p className="text-primary font-black text-xs sm:text-sm">{Number(store.cashback_rate)}%</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {dbStores.slice(0, 6).map((store, i) => (
+              <motion.div key={store.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.3}>
+                <Link to="/auth">
+                  <DuoCard hover className="flex items-center gap-4 p-4">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                      {store.logo_url ? (
+                        <img src={store.logo_url} alt={store.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover" />
+                      ) : (
+                        <Store className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm sm:text-base truncate">{store.name}</p>
+                      <p className="text-muted-foreground text-xs sm:text-sm">Até {Number(store.cashback_rate)}% cashback</p>
+                      <span className="inline-block mt-2 px-3 py-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold">
+                        Comprar agora
+                      </span>
+                    </div>
                   </DuoCard>
                 </Link>
               </motion.div>
             ))}
           </div>
-          <div className="text-center">
-            <Link to="/lojas" className="w-full sm:w-auto inline-block">
-              <DuoButton variant="outline" className="w-full sm:w-auto">{t("stores_cta", "Ver todas as lojas")} <ArrowRight className="w-4 h-4" /></DuoButton>
-            </Link>
-          </div>
         </div>
       </section>
 
       {/* NGOs */}
-      <section className="container py-12 sm:py-16">
-        <motion.div className="text-center mb-8 sm:mb-10" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3">{t("ngos_title", "ONGs parceiras")}</h2>
-          <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">{t("ngos_subtitle", "Organizações verificadas que recebem 100% do cashback doado.")}</p>
-        </motion.div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
-          {publicNgos.slice(0, 10).map((ngo, i) => {
-            const NgoIcon = ngoIcons[i % ngoIcons.length];
-            return (
-              <motion.div key={ngo.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
-                <Link to={`/ongs/${ngo.slug}`}>
-                  <DuoCard hover className="text-center py-3 px-2 sm:py-4 sm:px-3">
-                    {ngo.logo_url ? (
-                      <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover mx-auto mb-2 bg-muted" />
-                    ) : (
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-2">
-                        <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+      <section className="py-12 sm:py-16">
+        <div className="container">
+          <motion.div className="flex items-center justify-between mb-6 sm:mb-8" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+            <h2 className="text-xl sm:text-2xl font-black">{t("ngos_title", "ONGs em destaque")}</h2>
+            <Link to="/auth" className="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
+              {t("ngos_cta", "Ver todas")} <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {publicNgos.slice(0, 6).map((ngo, i) => {
+              const NgoIcon = ngoIcons[i % ngoIcons.length];
+              return (
+                <motion.div key={ngo.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.3}>
+                  <Link to="/auth">
+                    <DuoCard hover className="flex items-center gap-4 p-4">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                        {ngo.logo_url ? (
+                          <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover" />
+                        ) : (
+                          <NgoIcon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+                        )}
                       </div>
-                    )}
-                    <p className="font-bold text-[11px] sm:text-xs truncate">{ngo.name}</p>
-                    <p className="text-primary font-black text-xs sm:text-sm">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
-                  </DuoCard>
-                </Link>
-              </motion.div>
-            );
-          })}
-        </div>
-        <div className="text-center">
-          <Link to="/ongs" className="w-full sm:w-auto inline-block">
-            <DuoButton variant="outline" className="w-full sm:w-auto">{t("ngos_cta", "Conhecer todas as ONGs")} <ArrowRight className="w-4 h-4" /></DuoButton>
-          </Link>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-sm sm:text-base truncate">{ngo.name}</p>
+                        <p className="text-muted-foreground text-xs sm:text-sm">R$ {ngo.total_received.toLocaleString('pt-BR')} recebidos</p>
+                        <span className="inline-block mt-2 px-3 py-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold">
+                          Apoiar
+                        </span>
+                      </div>
+                    </DuoCard>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
