@@ -19,6 +19,8 @@ const categoryIcons: Record<string, LucideIcon> = {
 
 type SortOption = "name_asc" | "name_desc" | "cashback_desc" | "cashback_asc";
 
+const getStoreCategory = (category: string | null) => category?.trim() || "Geral";
+
 export default function Stores() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("name_asc");
@@ -27,27 +29,36 @@ export default function Stores() {
   const { t } = useSiteContent("stores_page");
 
   const categories = useMemo(() => {
-    const cats = new Set(stores.map(s => s.category).filter(Boolean));
-    return Array.from(cats).sort() as string[];
+    const cats = new Set(stores.map((s) => getStoreCategory(s.category)));
+    return Array.from(cats).sort();
   }, [stores]);
 
   const filtered = useMemo(() => {
-    let result = stores.filter(s => s.name.toLowerCase().includes(search.toLowerCase()));
+    let result = stores.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()));
     if (categoryFilter !== "all") {
-      result = result.filter(s => s.category === categoryFilter);
+      result = result.filter((s) => getStoreCategory(s.category) === categoryFilter);
     }
+
     switch (sort) {
-      case "name_desc": result.sort((a, b) => b.name.localeCompare(a.name)); break;
-      case "cashback_desc": result.sort((a, b) => Number(b.cashback_rate) - Number(a.cashback_rate)); break;
-      case "cashback_asc": result.sort((a, b) => Number(a.cashback_rate) - Number(b.cashback_rate)); break;
-      default: result.sort((a, b) => a.name.localeCompare(b.name));
+      case "name_desc":
+        result.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "cashback_desc":
+        result.sort((a, b) => Number(b.cashback_rate) - Number(a.cashback_rate));
+        break;
+      case "cashback_asc":
+        result.sort((a, b) => Number(a.cashback_rate) - Number(b.cashback_rate));
+        break;
+      default:
+        result.sort((a, b) => a.name.localeCompare(b.name));
     }
+
     return result;
   }, [stores, search, sort, categoryFilter]);
 
-  const featured = useMemo(() => stores.filter(s => s.is_featured).slice(0, 3), [stores]);
+  const featured = useMemo(() => stores.filter((s) => s.is_featured).slice(0, 3), [stores]);
 
-  const renderStoreCard = (store: typeof stores[0], isFeatured = false) => (
+  const renderStoreCard = (store: (typeof stores)[0], isFeatured = false) => (
     <Link key={store.id} to={`/lojas/${store.slug}`}>
       <DuoCard hover className={`flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5 ${isFeatured ? "border-primary/30 bg-primary/5" : ""}`}>
         {store.logo_url ? (
@@ -60,8 +71,11 @@ export default function Stores() {
         <div className="flex-1 min-w-0">
           <p className="font-bold text-sm truncate">{store.name}</p>
           <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
-            {(() => { const CatIcon = categoryIcons[store.category || ''] || Tag; return <CatIcon className="w-3 h-3" />; })()}
-            <span>{store.category || 'Geral'}</span>
+            {(() => {
+              const CatIcon = categoryIcons[store.category || ""] || Tag;
+              return <CatIcon className="w-3 h-3" />;
+            })()}
+            <span>{getStoreCategory(store.category)}</span>
           </div>
         </div>
         <div className="text-right shrink-0">
@@ -79,49 +93,51 @@ export default function Stores() {
         <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Compre e gere cashback solidário")}</p>
       </div>
 
-      <div className="space-y-3">
-        <div className="relative">
+      <div className="flex items-center gap-2">
+        <div className="relative flex-1 min-w-[140px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
           <Input
             placeholder={t("search_placeholder", "Buscar lojas...")}
             value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="pl-10 h-11 sm:h-12 rounded-2xl border-2 font-semibold text-sm"
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 h-11 rounded-2xl border-2 font-semibold text-sm"
           />
         </div>
-        <div className="flex gap-2">
-          {categories.length > 1 && (
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="h-9 rounded-xl text-xs font-semibold flex-1 max-w-[180px]">
-                <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
-                <SelectValue placeholder="Categoria" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas categorias</SelectItem>
-                {categories.map(cat => (
-                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-          <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
-            <SelectTrigger className="h-9 rounded-xl text-xs font-semibold flex-1 max-w-[180px]">
-              <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="name_asc">Nome A–Z</SelectItem>
-              <SelectItem value="name_desc">Nome Z–A</SelectItem>
-              <SelectItem value="cashback_desc">Maior cashback</SelectItem>
-              <SelectItem value="cashback_asc">Menor cashback</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+
+        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+          <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold w-[148px] sm:w-[180px] shrink-0">
+            <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
+            <SelectValue placeholder="Categoria" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todas categorias</SelectItem>
+            {categories.map((cat) => (
+              <SelectItem key={cat} value={cat}>
+                {cat}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
+          <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold w-[148px] sm:w-[180px] shrink-0">
+            <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="name_asc">Nome A–Z</SelectItem>
+            <SelectItem value="name_desc">Nome Z–A</SelectItem>
+            <SelectItem value="cashback_desc">Maior cashback</SelectItem>
+            <SelectItem value="cashback_asc">Menor cashback</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 rounded-2xl" />)}
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-24 rounded-2xl" />
+          ))}
         </div>
       ) : (
         <>
@@ -131,17 +147,13 @@ export default function Stores() {
                 <Star className="w-4 h-4 text-primary" />
                 {t("featured_title", "Destaques")}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                {featured.map(store => renderStoreCard(store, true))}
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">{featured.map((store) => renderStoreCard(store, true))}</div>
             </div>
           )}
 
           <div className="space-y-2">
             <h2 className="text-sm sm:text-base font-black">{t("all_title", "Todas as Lojas")}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              {filtered.map(store => renderStoreCard(store))}
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">{filtered.map((store) => renderStoreCard(store))}</div>
           </div>
         </>
       )}
