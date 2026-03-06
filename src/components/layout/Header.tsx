@@ -57,7 +57,7 @@ export function Header() {
           <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
             <Heart className="w-5 h-5 text-primary-foreground" fill="currentColor" />
           </div>
-          <span className="font-extrabold text-xl text-foreground hidden sm:inline">DonActivo</span>
+          <span className="font-extrabold text-xl text-foreground">DonActivo</span>
         </Link>
 
         {/* Desktop nav */}
