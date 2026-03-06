@@ -162,7 +162,20 @@ export default function Stores() {
 
           <div className="space-y-2">
             <h2 className="text-sm sm:text-base font-black">{t("all_title", "Todas as Lojas")}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">{filtered.map((store) => renderStoreCard(store))}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {filtered.slice(0, visibleCount).map((store) => renderStoreCard(store))}
+            </div>
+            {visibleCount < filtered.length && (
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={() => setVisibleCount((c) => c + 18)}
+                  className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-2xl border-2 border-border bg-card text-sm font-bold hover:bg-muted transition-colors active:translate-y-0.5"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                  Ver mais ({filtered.length - visibleCount} restantes)
+                </button>
+              </div>
+            )}
           </div>
         </>
       )}
