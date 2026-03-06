@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Building2, Dumbbell, Plane, Shirt, Tag, ArrowUpDown, Star } from "lucide-react";
+import { Search, ShoppingCart, Building2, Dumbbell, Plane, Shirt, Tag, ArrowUpDown, Star, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,6 +25,7 @@ export default function Stores() {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("name_asc");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [visibleCount, setVisibleCount] = useState(18);
   const { stores, loading } = useStores();
   const { t } = useSiteContent("stores_page");
 
@@ -34,6 +35,7 @@ export default function Stores() {
   }, [stores]);
 
   const filtered = useMemo(() => {
+    setVisibleCount(18);
     let result = stores.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()));
     if (categoryFilter !== "all") {
       result = result.filter((s) => getStoreCategory(s.category) === categoryFilter);
@@ -161,7 +163,20 @@ export default function Stores() {
 
           <div className="space-y-2">
             <h2 className="text-sm sm:text-base font-black">{t("all_title", "Todas as Lojas")}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">{filtered.map((store) => renderStoreCard(store))}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {filtered.slice(0, visibleCount).map((store) => renderStoreCard(store))}
+            </div>
+            {visibleCount < filtered.length && (
+              <div className="flex justify-center pt-4">
+                <button
+                  onClick={() => setVisibleCount((c) => c + 18)}
+                  className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-2xl border-2 border-border bg-card text-sm font-bold hover:bg-muted transition-colors active:translate-y-0.5"
+                >
+                  <ChevronDown className="w-4 h-4" />
+                  Ver mais ({filtered.length - visibleCount} restantes)
+                </button>
+              </div>
+            )}
           </div>
         </>
       )}
