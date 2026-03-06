@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSiteContent } from "@/hooks/useSiteContent";
 import type { Ngo } from "@/hooks/useNgos";
 
-type SortOption = "name_asc" | "name_desc" | "received_desc";
+type SortOption = "name_asc" | "name_desc";
 
 const getNgoCategory = (ngo: Ngo) => {
   const text = `${ngo.name} ${ngo.description ?? ""} ${ngo.mission ?? ""}`.toLowerCase();
