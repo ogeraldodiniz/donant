@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { DuoCard } from "@/components/ui/duo-card";
 import { getLevelForAmount, DONATION_LEVELS, formatCurrency } from "@/lib/gamification";
 import { motion } from "framer-motion";
-import { ChevronRight, Trophy, Check } from "lucide-react";
+import { ChevronRight, Trophy, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useLocale } from "@/hooks/useLocale";
 
@@ -12,6 +13,7 @@ interface LevelBadgeProps {
 }
 
 export function LevelBadge({ totalDonated, compact = false, showAllLevels = false }: LevelBadgeProps) {
+  const [expanded, setExpanded] = useState(false);
   const { current, next, progress } = getLevelForAmount(totalDonated);
   const { t } = useSiteContent("gamification");
   const { locale } = useLocale();
@@ -28,6 +30,12 @@ export function LevelBadge({ totalDonated, compact = false, showAllLevels = fals
       </div>
     );
   }
+
+  // Determine which levels to show: previous, current, next
+  const prevLevel = DONATION_LEVELS.find(l => l.rank === current.rank - 1) || null;
+  const visibleLevels = expanded
+    ? DONATION_LEVELS
+    : [prevLevel, current, next].filter(Boolean) as typeof DONATION_LEVELS;
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -87,7 +95,7 @@ export function LevelBadge({ totalDonated, compact = false, showAllLevels = fals
             {t("all_levels", locale === "es" ? "Todos los niveles" : "Todos os níveis")}
           </h3>
           <div className="space-y-2">
-            {DONATION_LEVELS.map((level) => {
+            {visibleLevels.map((level) => {
               const LevelIcon = level.Icon;
               const isUnlocked = totalDonated >= level.minAmount;
               const isCurrent = level.rank === current.rank;
@@ -122,6 +130,22 @@ export function LevelBadge({ totalDonated, compact = false, showAllLevels = fals
               );
             })}
           </div>
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="w-full mt-3 inline-flex items-center justify-center gap-1.5 py-2 rounded-xl border-2 border-border bg-card text-xs font-bold hover:bg-muted transition-colors active:translate-y-0.5"
+          >
+            {expanded ? (
+              <>
+                <ChevronUp className="w-3.5 h-3.5" />
+                {locale === "es" ? "Ver menos" : "Ver menos"}
+              </>
+            ) : (
+              <>
+                <ChevronDown className="w-3.5 h-3.5" />
+                {locale === "es" ? "Ver todos" : "Ver todos"}
+              </>
+            )}
+          </button>
         </DuoCard>
       )}
     </div>
