@@ -153,7 +153,7 @@ function PublicHome() {
 
       {/* Feature 1 */}
       <FeatureSection
-        reverse={false} Icon={Search} colorClass="primary" linkTo="/transparencia"
+        reverse={false} Icon={Search} colorClass="primary" linkTo="/auth"
         label={t("feat1_label", "transparência total")}
         title={t("feat1_title", "Acompanhe cada centavo.")}
         description={t("feat1_desc", "Todas as doações são públicas e rastreáveis.")}
@@ -161,7 +161,7 @@ function PublicHome() {
       />
       {/* Feature 2 */}
       <FeatureSection
-        reverse={true} Icon={Target} colorClass="secondary" linkTo="/ongs"
+        reverse={true} Icon={Target} colorClass="secondary" linkTo="/auth"
         label={t("feat2_label", "você escolhe")}
         title={t("feat2_title", "Apoie a causa que importa pra você.")}
         description={t("feat2_desc", "Escolha entre nossas ONGs parceiras verificadas.")}
@@ -169,7 +169,7 @@ function PublicHome() {
       />
       {/* Feature 3 */}
       <FeatureSection
-        reverse={false} Icon={Rocket} colorClass="accent" linkTo="/lojas"
+        reverse={false} Icon={Rocket} colorClass="accent" linkTo="/auth"
         label={t("feat3_label", "sem custo extra")}
         title={t("feat3_title", "Não muda nada na sua compra.")}
         description={t("feat3_desc", "Você paga o mesmo preço.")}
