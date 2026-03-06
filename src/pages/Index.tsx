@@ -96,7 +96,7 @@ function PublicHome() {
                     </div>
                     <div>
                       <p className="text-[10px] sm:text-xs text-muted-foreground font-bold">Doação automática</p>
-                      <p className="text-xs sm:text-sm font-black text-destructive">→ Instituto Criança Feliz</p>
+                      <p className="text-xs sm:text-sm font-black text-destructive">→ Cruz Vermelha</p>
                     </div>
                   </div>
                 </DuoCard>
