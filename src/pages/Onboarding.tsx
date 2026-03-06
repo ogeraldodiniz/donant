@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone } from "lucide-react";
+import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -12,7 +12,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useInstallPWA } from "@/hooks/useInstallPWA";
 import { CityPicker } from "@/components/CityPicker";
 
-type Step = "phone" | "location" | "ngo" | "install";
+type Step = "phone" | "profile" | "location" | "ngo" | "install";
 
 export default function Onboarding() {
   const { user, refreshProfile, loading: authLoading } = useAuth();
@@ -23,14 +23,16 @@ export default function Onboarding() {
 
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [selectedNgoId, setSelectedNgoId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const showInstallStep = isMobile && !isInstalled;
-  const totalSteps = showInstallStep ? 4 : 3;
-  const stepIndex = step === "phone" ? 0 : step === "location" ? 1 : step === "ngo" ? 2 : 3;
+  const totalSteps = showInstallStep ? 5 : 4;
+  const stepIndex = step === "phone" ? 0 : step === "profile" ? 1 : step === "location" ? 2 : step === "ngo" ? 3 : 4;
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -62,6 +64,23 @@ export default function Onboarding() {
       toast.error("Erro ao salvar telefone");
       return;
     }
+    setStep("profile");
+  };
+
+  const handleProfileNext = async () => {
+    setSaving(true);
+    const updates: Record<string, unknown> = {};
+    if (gender) updates.gender = gender;
+    if (birthDate) updates.birth_date = birthDate;
+    if (Object.keys(updates).length > 0) {
+      const { error } = await supabase.from("profiles").update(updates).eq("id", user!.id);
+      if (error) {
+        setSaving(false);
+        toast.error("Erro ao salvar dados");
+        return;
+      }
+    }
+    setSaving(false);
     setStep("location");
   };
 
@@ -166,6 +185,59 @@ export default function Onboarding() {
                   />
                 </div>
                 <DuoButton size="lg" className="w-full" onClick={handlePhoneNext} disabled={saving}>
+                  {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
+                </DuoButton>
+                <button onClick={() => setStep("profile")} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  Pular por agora
+                </button>
+              </div>
+            )}
+
+            {/* STEP: Profile (gender + age) */}
+            {step === "profile" && (
+              <div className="space-y-5">
+                <div className="text-center">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                    <User className="w-7 h-7 text-primary" />
+                  </div>
+                  <h2 className="text-xl font-black">Sobre você</h2>
+                  <p className="text-sm text-muted-foreground mt-1">Nos ajude a personalizar sua experiência</p>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Gênero</label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { value: "masculino", label: "Masculino" },
+                        { value: "feminino", label: "Feminino" },
+                        { value: "outro", label: "Outro" },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => setGender(opt.value)}
+                          className={`py-2.5 rounded-xl text-xs sm:text-sm font-semibold border-2 transition-all ${
+                            gender === opt.value
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border hover:border-primary/30 text-muted-foreground"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-muted-foreground mb-1.5 block">Data de nascimento</label>
+                    <Input
+                      type="date"
+                      value={birthDate}
+                      onChange={(e) => setBirthDate(e.target.value)}
+                      className="h-12 rounded-2xl border-2 text-base"
+                      max={new Date().toISOString().split("T")[0]}
+                    />
+                  </div>
+                </div>
+                <DuoButton size="lg" className="w-full" onClick={handleProfileNext} disabled={saving}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
                 </DuoButton>
                 <button onClick={() => setStep("location")} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">

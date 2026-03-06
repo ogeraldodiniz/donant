@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Loader2, Save, Pencil, MapPin, X } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Loader2, Save, Pencil, MapPin, X, User, Calendar } from "lucide-react";
 import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
@@ -27,6 +27,8 @@ export default function Settings() {
 
   const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [city, setCity] = useState("");
   const [userState, setUserState] = useState("");
   
@@ -42,6 +44,8 @@ export default function Settings() {
     if (user) {
       setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
+      setGender((user as any).gender ?? "");
+      setBirthDate((user as any).birth_date ?? "");
       setCity(user.city ?? "");
       setUserState(user.state ?? "");
       
@@ -54,6 +58,8 @@ export default function Settings() {
   const hasProfileChanges = user && (
     displayName !== (user.display_name ?? "") ||
     phone !== (user.phone ?? "") ||
+    gender !== ((user as any).gender ?? "") ||
+    birthDate !== ((user as any).birth_date ?? "") ||
     city !== (user.city ?? "") ||
     userState !== (user.state ?? "")
   );
@@ -64,7 +70,14 @@ export default function Settings() {
     const rawPhone = phone.replace(/\D/g, "");
     const { error } = await supabase
       .from("profiles")
-      .update({ display_name: displayName, phone: rawPhone || null, city: city || null, state: userState || null })
+      .update({ 
+        display_name: displayName, 
+        phone: rawPhone || null, 
+        gender: gender || null,
+        birth_date: birthDate || null,
+        city: city || null, 
+        state: userState || null 
+      } as any)
       .eq("id", user.id);
     setSavingProfile(false);
     if (error) {
@@ -80,6 +93,8 @@ export default function Settings() {
     if (user) {
       setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
+      setGender((user as any).gender ?? "");
+      setBirthDate((user as any).birth_date ?? "");
       setCity(user.city ?? "");
       setUserState(user.state ?? "");
     }
@@ -147,6 +162,38 @@ export default function Settings() {
                     />
                   </div>
                   <CityPicker city={city} state={userState} onCityChange={setCity} onStateChange={setUserState} compact showDetect />
+                  <div>
+                    <label className="text-[10px] font-bold text-muted-foreground mb-1 block">Gênero</label>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      {[
+                        { value: "masculino", label: "Masculino" },
+                        { value: "feminino", label: "Feminino" },
+                        { value: "outro", label: "Outro" },
+                      ].map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => setGender(opt.value)}
+                          className={`py-1.5 rounded-xl text-[10px] sm:text-xs font-semibold border-2 transition-all ${
+                            gender === opt.value
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-border hover:border-primary/30 text-muted-foreground"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <Input
+                      type="date"
+                      value={birthDate}
+                      onChange={(e) => setBirthDate(e.target.value)}
+                      max={new Date().toISOString().split("T")[0]}
+                      className="rounded-xl h-9 text-xs sm:text-sm"
+                    />
+                  </div>
                 </>
               ) : (
                 <>
@@ -155,6 +202,16 @@ export default function Settings() {
                   {phone && (
                     <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
                       <Phone className="w-3.5 h-3.5" /> {phone}
+                    </p>
+                  )}
+                  {gender && (
+                    <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5" /> {gender.charAt(0).toUpperCase() + gender.slice(1)}
+                    </p>
+                  )}
+                  {birthDate && (
+                    <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5" /> {new Date(birthDate + "T00:00:00").toLocaleDateString("pt-BR")}
                     </p>
                   )}
                   {city && (
