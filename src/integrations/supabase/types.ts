@@ -393,11 +393,13 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          birth_date: string | null
           city: string | null
           created_at: string
           deleted_at: string | null
           display_name: string | null
           email: string | null
+          gender: string | null
           id: string
           locale: string
           notify_email: boolean
@@ -410,11 +412,13 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          birth_date?: string | null
           city?: string | null
           created_at?: string
           deleted_at?: string | null
           display_name?: string | null
           email?: string | null
+          gender?: string | null
           id: string
           locale?: string
           notify_email?: boolean
@@ -427,11 +431,13 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          birth_date?: string | null
           city?: string | null
           created_at?: string
           deleted_at?: string | null
           display_name?: string | null
           email?: string | null
+          gender?: string | null
           id?: string
           locale?: string
           notify_email?: boolean
