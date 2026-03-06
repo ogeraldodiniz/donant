@@ -79,10 +79,6 @@ export default function NgoDetail() {
         )}
       </div>
 
-      <DuoCard className="text-center bg-primary/5 border-primary/20">
-        <p className="text-xs sm:text-sm font-bold text-muted-foreground mb-1">Total recebido</p>
-        <p className="text-2xl sm:text-3xl font-black text-primary">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
-      </DuoCard>
 
       {ngo.mission && (
         <DuoCard>

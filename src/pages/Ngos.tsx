@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSiteContent } from "@/hooks/useSiteContent";
 import type { Ngo } from "@/hooks/useNgos";
 
-type SortOption = "name_asc" | "name_desc" | "received_desc";
+type SortOption = "name_asc" | "name_desc";
 
 const getNgoCategory = (ngo: Ngo) => {
   const text = `${ngo.name} ${ngo.description ?? ""} ${ngo.mission ?? ""}`.toLowerCase();
@@ -48,9 +48,6 @@ export default function Ngos() {
     switch (sort) {
       case "name_desc":
         result.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "received_desc":
-        result.sort((a, b) => Number(b.total_received) - Number(a.total_received));
         break;
       default:
         result.sort((a, b) => a.name.localeCompare(b.name));
@@ -195,7 +192,6 @@ export default function Ngos() {
             <SelectContent>
               <SelectItem value="name_asc">Nome A–Z</SelectItem>
               <SelectItem value="name_desc">Nome Z–A</SelectItem>
-              <SelectItem value="received_desc">Mais doações recebidas</SelectItem>
             </SelectContent>
           </Select>
         </div>
