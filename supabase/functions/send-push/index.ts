@@ -230,8 +230,8 @@ Deno.serve(async (req) => {
     // ---- Email (Brevo) ----
     if (activeChannels.includes("email")) {
       const brevoKey = Deno.env.get("BREVO_API_KEY");
-      const brevoSender = Deno.env.get("BREVO_SENDER_EMAIL") || "noreply@goodcause.com.br";
-      const brevoSenderName = Deno.env.get("BREVO_SENDER_NAME") || "GoodCause";
+      const brevoSender = Deno.env.get("BREVO_SENDER_EMAIL") || "noreply@donactivo.com.br";
+      const brevoSenderName = Deno.env.get("BREVO_SENDER_NAME") || "DonActivo";
 
       if (!brevoKey) {
         errors.push("email: Brevo não configurado (secret BREVO_API_KEY necessário)");
