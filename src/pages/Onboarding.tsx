@@ -23,14 +23,16 @@ export default function Onboarding() {
 
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [selectedNgoId, setSelectedNgoId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   const showInstallStep = isMobile && !isInstalled;
-  const totalSteps = showInstallStep ? 4 : 3;
-  const stepIndex = step === "phone" ? 0 : step === "location" ? 1 : step === "ngo" ? 2 : 3;
+  const totalSteps = showInstallStep ? 5 : 4;
+  const stepIndex = step === "phone" ? 0 : step === "profile" ? 1 : step === "location" ? 2 : step === "ngo" ? 3 : 4;
 
   useEffect(() => {
     if (!authLoading && !user) {
