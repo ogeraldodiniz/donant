@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone } from "lucide-react";
+import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { DuoButton } from "@/components/ui/duo-button";
