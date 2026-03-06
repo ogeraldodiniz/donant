@@ -70,7 +70,14 @@ export default function Settings() {
     const rawPhone = phone.replace(/\D/g, "");
     const { error } = await supabase
       .from("profiles")
-      .update({ display_name: displayName, phone: rawPhone || null, city: city || null, state: userState || null })
+      .update({ 
+        display_name: displayName, 
+        phone: rawPhone || null, 
+        gender: gender || null,
+        birth_date: birthDate || null,
+        city: city || null, 
+        state: userState || null 
+      } as any)
       .eq("id", user.id);
     setSavingProfile(false);
     if (error) {
