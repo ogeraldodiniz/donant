@@ -49,9 +49,6 @@ export default function Ngos() {
       case "name_desc":
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case "received_desc":
-        result.sort((a, b) => Number(b.total_received) - Number(a.total_received));
-        break;
       default:
         result.sort((a, b) => a.name.localeCompare(b.name));
     }
