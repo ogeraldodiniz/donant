@@ -64,6 +64,23 @@ export default function Onboarding() {
       toast.error("Erro ao salvar telefone");
       return;
     }
+    setStep("profile");
+  };
+
+  const handleProfileNext = async () => {
+    setSaving(true);
+    const updates: Record<string, unknown> = {};
+    if (gender) updates.gender = gender;
+    if (birthDate) updates.birth_date = birthDate;
+    if (Object.keys(updates).length > 0) {
+      const { error } = await supabase.from("profiles").update(updates).eq("id", user!.id);
+      if (error) {
+        setSaving(false);
+        toast.error("Erro ao salvar dados");
+        return;
+      }
+    }
+    setSaving(false);
     setStep("location");
   };
 
