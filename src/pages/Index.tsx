@@ -216,24 +216,22 @@ function PublicHome() {
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-2 sm:mb-3">{t("ngos_title", "ONGs parceiras")}</h2>
           <p className="text-muted-foreground text-sm sm:text-base max-w-md mx-auto">{t("ngos_subtitle", "Organizações verificadas que recebem 100% do cashback doado.")}</p>
         </motion.div>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
-          {usePublicNgos().slice(0, 6).map((ngo, i) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4 max-w-4xl mx-auto mb-6 sm:mb-8">
+          {publicNgos.slice(0, 10).map((ngo, i) => {
             const NgoIcon = ngoIcons[i % ngoIcons.length];
             return (
               <motion.div key={ngo.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i * 0.5}>
                 <Link to={`/ongs/${ngo.slug}`}>
-                  <DuoCard hover className="text-center py-3 sm:py-5 h-full">
-                    <div className="flex justify-center mb-2">
-                      {ngo.logo_url ? (
-                        <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover" />
-                      ) : (
-                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
-                          <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                        </div>
-                      )}
-                    </div>
-                    <h3 className="font-bold text-xs sm:text-sm mb-1 truncate px-1">{ngo.name}</h3>
-                    <p className="text-[10px] sm:text-xs text-primary font-black">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
+                  <DuoCard hover className="text-center py-3 px-2 sm:py-4 sm:px-3">
+                    {ngo.logo_url ? (
+                      <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl object-cover mx-auto mb-2 bg-muted" />
+                    ) : (
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-2">
+                        <NgoIcon className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground" />
+                      </div>
+                    )}
+                    <p className="font-bold text-[11px] sm:text-xs truncate">{ngo.name}</p>
+                    <p className="text-primary font-black text-xs sm:text-sm">R$ {ngo.total_received.toLocaleString('pt-BR')}</p>
                   </DuoCard>
                 </Link>
               </motion.div>
