@@ -160,8 +160,8 @@ export default function Ngos() {
         <p className="text-muted-foreground text-xs sm:text-sm">{t("subtitle", "Escolha a ONG que vai receber suas doações")}</p>
       </div>
 
-      <div className="flex items-center gap-2">
-        <div className="relative flex-1 min-w-[140px]">
+      <div className="space-y-2">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
           <Input
             placeholder={t("search_placeholder", "Buscar ONGs...")}
@@ -171,32 +171,34 @@ export default function Ngos() {
           />
         </div>
 
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold w-[148px] sm:w-[180px] shrink-0">
-            <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
-            <SelectValue placeholder="Categoria" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas categorias</SelectItem>
-            {categories.map((cat) => (
-              <SelectItem key={cat} value={cat}>
-                {cat}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold flex-1 shrink-0">
+              <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
+              <SelectValue placeholder="Categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todas categorias</SelectItem>
+              {categories.map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
-          <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold w-[148px] sm:w-[180px] shrink-0">
-            <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="name_asc">Nome A–Z</SelectItem>
-            <SelectItem value="name_desc">Nome Z–A</SelectItem>
-            <SelectItem value="received_desc">Mais doações recebidas</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
+            <SelectTrigger className="h-11 rounded-2xl text-xs font-semibold flex-1 shrink-0">
+              <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="name_asc">Nome A–Z</SelectItem>
+              <SelectItem value="name_desc">Nome Z–A</SelectItem>
+              <SelectItem value="received_desc">Mais doações recebidas</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {loading ? (
