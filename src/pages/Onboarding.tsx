@@ -12,7 +12,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useInstallPWA } from "@/hooks/useInstallPWA";
 import { CityPicker } from "@/components/CityPicker";
 
-type Step = "phone" | "location" | "ngo" | "install";
+type Step = "phone" | "profile" | "location" | "ngo" | "install";
 
 export default function Onboarding() {
   const { user, refreshProfile, loading: authLoading } = useAuth();
