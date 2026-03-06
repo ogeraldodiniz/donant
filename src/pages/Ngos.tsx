@@ -192,7 +192,6 @@ export default function Ngos() {
             <SelectContent>
               <SelectItem value="name_asc">Nome A–Z</SelectItem>
               <SelectItem value="name_desc">Nome Z–A</SelectItem>
-              <SelectItem value="received_desc">Mais doações recebidas</SelectItem>
             </SelectContent>
           </Select>
         </div>
