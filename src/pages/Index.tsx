@@ -37,7 +37,7 @@ function usePublicNgos() {
 function PublicHome() {
   const { t } = useSiteContent();
   const { stores: dbStores } = useStores();
-
+  const publicNgos = usePublicNgos();
   return (
     <div className="min-h-screen">
       {/* Hero */}
