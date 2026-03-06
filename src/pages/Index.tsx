@@ -247,27 +247,6 @@ function PublicHome() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="bg-primary text-primary-foreground py-10 sm:py-14">
-        <div className="container">
-          <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            {([
-              { labelKey: "stat1_label", valueKey: "stat1_value", Icon: Coins, labelFb: "Total doado", valueFb: "R$ 158K+" },
-              { labelKey: "stat2_label", valueKey: "stat2_value", Icon: Heart, labelFb: "ONGs apoiadas", valueFb: "6" },
-              { labelKey: "stat3_label", valueKey: "stat3_value", Icon: Store, labelFb: "Lojas parceiras", valueFb: "10+" },
-              { labelKey: "stat4_label", valueKey: "stat4_value", Icon: Users, labelFb: "Usuários ativos", valueFb: "1.2K+" },
-            ] as const).map((s, i) => (
-              <motion.div key={i} variants={fadeUp} custom={i}>
-                <div className="flex justify-center mb-1.5 sm:mb-2">
-                  <s.Icon className="w-6 h-6 sm:w-7 sm:h-7" />
-                </div>
-                <div className="text-2xl sm:text-3xl md:text-4xl font-black">{t(s.valueKey, s.valueFb)}</div>
-                <div className="text-xs sm:text-sm opacity-90 font-bold">{t(s.labelKey, s.labelFb)}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
 
       {/* Testimonials */}
       <section className="container py-12 sm:py-16">
