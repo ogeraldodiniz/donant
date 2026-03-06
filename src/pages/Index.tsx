@@ -282,8 +282,14 @@ function PublicHome() {
             {t("faq_title", "perguntas frequentes")}
           </motion.h2>
           <div className="space-y-3">
-            {[1, 2, 3, 4, 5].map(n => (
-              <FaqItem key={n} question={t(`faq_q${n}`, `FAQ ${n}`)} answer={t(`faq_a${n}`, "")} index={n} />
+            {[
+              { q: "É gratuito?", a: "Sim! Você não paga nada a mais. O cashback é gerado pela loja parceira." },
+              { q: "Como funciona o cashback?", a: "Ao comprar em uma loja parceira, parte do valor é devolvido como cashback e doado para a ONG que você escolheu." },
+              { q: "Posso escolher a ONG?", a: "Sim! Você escolhe a ONG que vai receber suas doações." },
+              { q: "Quanto tempo leva para confirmar?", a: "O cashback é confirmado pela loja em até 90 dias após a compra." },
+              { q: "Posso resgatar o cashback em dinheiro?", a: "Não. O cashback é 100% doado para a ONG escolhida. Essa é a essência da plataforma." },
+            ].map((item, n) => (
+              <FaqItem key={n} question={t(`faq_q${n+1}`, item.q)} answer={t(`faq_a${n+1}`, item.a)} index={n+1} />
             ))}
           </div>
         </div>
