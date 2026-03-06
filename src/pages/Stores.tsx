@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Building2, Dumbbell, Plane, Shirt, Tag, ArrowUpDown } from "lucide-react";
+import { Search, ShoppingCart, Building2, Dumbbell, Plane, Shirt, Tag, ArrowUpDown, Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -93,7 +93,7 @@ export default function Stores() {
           {categories.length > 1 && (
             <Select value={categoryFilter} onValueChange={setCategoryFilter}>
               <SelectTrigger className="h-9 rounded-xl text-xs font-semibold flex-1 max-w-[180px]">
-                <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+                <Tag className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
                 <SelectValue placeholder="Categoria" />
               </SelectTrigger>
               <SelectContent>
@@ -106,7 +106,7 @@ export default function Stores() {
           )}
           <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
             <SelectTrigger className="h-9 rounded-xl text-xs font-semibold flex-1 max-w-[180px]">
-              <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+              <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -127,7 +127,10 @@ export default function Stores() {
         <>
           {featured.length > 0 && (
             <div className="space-y-2">
-              <h2 className="text-sm sm:text-base font-black">{t("featured_title", "⭐ Destaques")}</h2>
+              <h2 className="text-sm sm:text-base font-black flex items-center gap-1.5">
+                <Star className="w-4 h-4 text-primary" />
+                {t("featured_title", "Destaques")}
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {featured.map(store => renderStoreCard(store, true))}
               </div>

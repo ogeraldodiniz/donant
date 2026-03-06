@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Search, Check, Heart, Loader2, ArrowUpDown } from "lucide-react";
+import { Search, Check, Heart, Loader2, ArrowUpDown, Star, Store } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
 import { useAuth } from "@/hooks/useAuth";
@@ -38,11 +38,48 @@ export default function Ngos() {
     selectNgo(ngoId, ngoName);
   };
 
-  const renderNgoCard = (ngo: typeof ngos[0], isFeatured = false) => {
+  // Horizontal card (same pattern as logged-in home)
+  const renderFeaturedNgoCard = (ngo: typeof ngos[0]) => {
     const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
     return (
       <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
-        <DuoCard hover className={`p-0 h-full overflow-hidden ${isFeatured ? "border-primary/30 bg-primary/5" : ""} ${isSelected ? "border-primary" : ""}`}>
+        <DuoCard hover className={`flex items-center gap-4 p-4 border-primary/30 bg-primary/5 ${isSelected ? "border-primary" : ""}`}>
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+            {ngo.logo_url ? (
+              <img src={ngo.logo_url} alt={ngo.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover" />
+            ) : (
+              <Heart className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-sm sm:text-base truncate">{ngo.name}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-1">{ngo.description}</p>
+            {isLoggedIn && !isSelected && (
+              <button
+                onClick={(e) => handleSelect(e, ngo.id, ngo.name)}
+                disabled={saving !== null}
+                className="inline-block mt-2 px-3 py-1 rounded-lg bg-primary text-primary-foreground text-xs font-bold hover:brightness-105 transition-all active:translate-y-0.5"
+              >
+                {saving === ngo.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Heart className="w-3 h-3 inline mr-1" />{t("select_btn", "Selecionar")}</>}
+              </button>
+            )}
+            {isSelected && (
+              <span className="inline-flex items-center gap-1 mt-2 px-3 py-1 rounded-lg bg-primary/10 border border-primary/30 text-primary text-xs font-bold">
+                <Check className="w-3 h-3" /> {t("selected_label", "Sua escolha")}
+              </span>
+            )}
+          </div>
+        </DuoCard>
+      </Link>
+    );
+  };
+
+  // Vertical card for grid listing
+  const renderNgoCard = (ngo: typeof ngos[0]) => {
+    const isSelected = isLoggedIn && user?.selected_ngo_id === ngo.id;
+    return (
+      <Link key={ngo.id} to={`/ongs/${ngo.slug}`}>
+        <DuoCard hover className={`p-0 h-full overflow-hidden ${isSelected ? "border-primary bg-primary/5" : ""}`}>
           {ngo.logo_url ? (
             <div className="aspect-[4/3] w-full overflow-hidden bg-muted rounded-xl m-2 mb-0" style={{ width: 'calc(100% - 1rem)' }}>
               <img src={ngo.logo_url} alt={ngo.name} className="w-full h-full object-cover" />
@@ -95,7 +132,7 @@ export default function Ngos() {
         <div className="flex gap-2">
           <Select value={sort} onValueChange={(v) => setSort(v as SortOption)}>
             <SelectTrigger className="h-9 rounded-xl text-xs font-semibold flex-1 max-w-[200px]">
-              <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
+              <ArrowUpDown className="w-3.5 h-3.5 mr-1.5 text-muted-foreground shrink-0" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -117,9 +154,12 @@ export default function Ngos() {
         <>
           {featured.length > 0 && (
             <div className="space-y-2">
-              <h2 className="text-sm sm:text-base font-black">{t("featured_title", "⭐ Destaques")}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                {featured.map(ngo => renderNgoCard(ngo, true))}
+              <h2 className="text-sm sm:text-base font-black flex items-center gap-1.5">
+                <Star className="w-4 h-4 text-primary" />
+                {t("featured_title", "Destaques")}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                {featured.map(ngo => renderFeaturedNgoCard(ngo))}
               </div>
             </div>
           )}
