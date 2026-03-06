@@ -35,6 +35,7 @@ export default function Stores() {
   }, [stores]);
 
   const filtered = useMemo(() => {
+    setVisibleCount(18);
     let result = stores.filter((s) => s.name.toLowerCase().includes(search.toLowerCase()));
     if (categoryFilter !== "all") {
       result = result.filter((s) => getStoreCategory(s.category) === categoryFilter);
