@@ -127,7 +127,7 @@ export default function Ngos() {
           <div className="p-3 sm:p-4 space-y-1.5">
             <p className="font-bold text-sm truncate">{ngo.name}</p>
             <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{ngo.description}</p>
-            <span className="inline-block mt-1.5 px-3 py-1 rounded-lg bg-muted text-foreground text-[10px] sm:text-xs font-bold">
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground">
               Saiba mais
             </span>
 
