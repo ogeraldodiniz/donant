@@ -128,8 +128,8 @@ function PublicHome() {
           </motion.p>
 
           <div className="relative">
-            {/* Connecting line (desktop only) */}
-            <div className="hidden md:block absolute top-12 left-[16.67%] right-[16.67%] h-0.5 bg-border z-0" />
+            {/* Connecting line between circles (desktop only) */}
+            <div className="hidden md:block absolute top-12 left-[calc(16.67%+60px)] right-[calc(16.67%+60px)] h-0.5 bg-border z-0" />
 
             <div className="grid md:grid-cols-3 gap-10 sm:gap-12 relative z-10">
               {([
