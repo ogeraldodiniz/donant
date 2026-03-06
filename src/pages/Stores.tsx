@@ -77,12 +77,12 @@ export default function Stores() {
             })()}
             <span>{getStoreCategory(store.category)}</span>
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="inline-block px-3 py-1 rounded-lg bg-muted text-foreground text-[10px] sm:text-xs font-bold">
-              Saiba mais
-            </span>
+          <div className="flex items-center gap-3 mt-2">
             <span className="inline-block px-3 py-1 rounded-lg bg-primary text-primary-foreground text-[10px] sm:text-xs font-bold">
               Comprar agora
+            </span>
+            <span className="text-[10px] sm:text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
+              Saiba mais
             </span>
           </div>
         </div>
