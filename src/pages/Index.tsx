@@ -82,7 +82,7 @@ function PublicHome() {
                       <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground font-bold">Compra na Amazon</p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground font-bold">Compra no Aliexpress</p>
                       <p className="text-xs sm:text-sm font-black text-primary">+ R$ 12,50 cashback</p>
                     </div>
                   </div>
