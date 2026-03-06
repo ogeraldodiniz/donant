@@ -119,34 +119,47 @@ function PublicHome() {
 
       {/* How it works */}
       <section className="bg-card border-y-2 border-border py-12 sm:py-16 md:py-24">
-        <div className="container">
+        <div className="container max-w-5xl">
           <motion.h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-center mb-3 sm:mb-4" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             {t("how_title", "como funciona?")}
           </motion.h2>
-          <motion.p className="text-center text-muted-foreground text-sm sm:text-base mb-8 sm:mb-12 max-w-md mx-auto" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}>
+          <motion.p className="text-center text-muted-foreground text-sm sm:text-base mb-10 sm:mb-14 max-w-md mx-auto" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}>
             {t("how_subtitle", "Em 3 passos simples, suas compras viram doações.")}
           </motion.p>
-          <div className="grid md:grid-cols-3 gap-8 sm:gap-10 max-w-4xl mx-auto">
-            {([
-              { Icon: UserPlus, titleKey: "how_step1_title", descKey: "how_step1_desc", titleFb: "Cadastre-se grátis", descFb: "Crie sua conta em segundos e escolha a ONG que quer apoiar." },
-              { Icon: ShoppingBag, titleKey: "how_step2_title", descKey: "how_step2_desc", titleFb: "Compre normalmente", descFb: "Acesse as lojas parceiras pelo nosso link e compre o que já ia comprar." },
-              { Icon: Gift, titleKey: "how_step3_title", descKey: "how_step3_desc", titleFb: "Cashback vira doação", descFb: "O cashback gerado é enviado diretamente para a ONG escolhida. Sem custo pra você!" },
-            ] as const).map((step, i) => (
-              <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}>
-                <DuoCard className="text-center relative pt-16 sm:pt-18 pb-5 h-full">
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-black text-lg">
-                    {i + 1}
-                  </div>
-                  <div className="flex justify-center mb-4 mt-2">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-                      <step.Icon className="w-6 h-6 sm:w-7 sm:h-7 text-primary" strokeWidth={1.5} />
+
+          <div className="relative">
+            {/* Connecting line (desktop only) */}
+            <div className="hidden md:block absolute top-12 left-[16.67%] right-[16.67%] h-0.5 bg-border z-0" />
+
+            <div className="grid md:grid-cols-3 gap-10 sm:gap-12 relative z-10">
+              {([
+                { Icon: UserPlus, emoji: "👤", titleKey: "how_step1_title", descKey: "how_step1_desc", titleFb: "Cadastre-se grátis", descFb: "Crie sua conta em segundos e escolha a ONG que quer apoiar." },
+                { Icon: ShoppingBag, emoji: "🛒", titleKey: "how_step2_title", descKey: "how_step2_desc", titleFb: "Compre normalmente", descFb: "Acesse as lojas parceiras pelo nosso link e compre o que já ia comprar." },
+                { Icon: Gift, emoji: "💚", titleKey: "how_step3_title", descKey: "how_step3_desc", titleFb: "Cashback vira doação", descFb: "O cashback gerado é enviado diretamente para a ONG escolhida. Sem custo pra você!" },
+              ] as const).map((step, i) => (
+                <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i} className="flex flex-col items-center text-center">
+                  {/* Step circle with emoji */}
+                  <div className="relative mb-5">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-3xl sm:text-4xl">{step.emoji}</span>
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-black text-xs sm:text-sm shadow-md">
+                      {i + 1}
                     </div>
                   </div>
+
                   <h3 className="text-base sm:text-lg font-black mb-2">{t(step.titleKey, step.titleFb)}</h3>
-                  <p className="text-muted-foreground text-xs sm:text-sm">{t(step.descKey, step.descFb)}</p>
-                </DuoCard>
-              </motion.div>
-            ))}
+                  <p className="text-muted-foreground text-xs sm:text-sm max-w-[260px]">{t(step.descKey, step.descFb)}</p>
+
+                  {/* Arrow between steps (mobile) */}
+                  {i < 2 && (
+                    <div className="md:hidden mt-4 text-muted-foreground/50">
+                      <ChevronDown className="w-6 h-6" />
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
