@@ -44,32 +44,75 @@ export default function Stores() {
           {[1, 2, 3].map(i => <Skeleton key={i} className="h-24 rounded-2xl" />)}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {filtered.map(store => (
-            <Link key={store.id} to={`/lojas/${store.slug}`}>
-              <DuoCard hover className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5">
-                {store.logo_url ? (
-                  <img src={store.logo_url} alt={store.name} className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover bg-muted shrink-0" />
-                ) : (
-                  <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-muted flex items-center justify-center text-xl sm:text-2xl font-bold shrink-0">
-                    {store.name.charAt(0)}
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-sm truncate">{store.name}</p>
-                  <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
-                    {(() => { const CatIcon = categoryIcons[store.category || ''] || Tag; return <CatIcon className="w-3 h-3" />; })()}
-                    <span>{store.category || 'Geral'}</span>
-                  </div>
+        <>
+          {/* Featured stores */}
+          {(() => {
+            const featured = stores.filter(s => s.is_featured).slice(0, 3);
+            if (featured.length === 0) return null;
+            return (
+              <div className="space-y-2">
+                <h2 className="text-sm sm:text-base font-black">{t("featured_title", "⭐ Destaques")}</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                  {featured.map(store => (
+                    <Link key={store.id} to={`/lojas/${store.slug}`}>
+                      <DuoCard hover className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5 border-primary/30 bg-primary/5">
+                        {store.logo_url ? (
+                          <img src={store.logo_url} alt={store.name} className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover bg-muted shrink-0" />
+                        ) : (
+                          <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-muted flex items-center justify-center text-xl sm:text-2xl font-bold shrink-0">
+                            {store.name.charAt(0)}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-sm truncate">{store.name}</p>
+                          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                            {(() => { const CatIcon = categoryIcons[store.category || ''] || Tag; return <CatIcon className="w-3 h-3" />; })()}
+                            <span>{store.category || 'Geral'}</span>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-base sm:text-lg font-black text-primary">{Number(store.cashback_rate)}%</p>
+                          <p className="text-[10px] text-muted-foreground font-bold">{t("cashback_label", "cashback")}</p>
+                        </div>
+                      </DuoCard>
+                    </Link>
+                  ))}
                 </div>
-                <div className="text-right shrink-0">
-                  <p className="text-base sm:text-lg font-black text-primary">{Number(store.cashback_rate)}%</p>
-                  <p className="text-[10px] text-muted-foreground font-bold">{t("cashback_label", "cashback")}</p>
-                </div>
-              </DuoCard>
-            </Link>
-          ))}
-        </div>
+              </div>
+            );
+          })()}
+
+          {/* All stores */}
+          <div className="space-y-2">
+            <h2 className="text-sm sm:text-base font-black">{t("all_title", "Todas as Lojas")}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              {filtered.map(store => (
+                <Link key={store.id} to={`/lojas/${store.slug}`}>
+                  <DuoCard hover className="flex items-center gap-3 sm:gap-4 p-3.5 sm:p-5">
+                    {store.logo_url ? (
+                      <img src={store.logo_url} alt={store.name} className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl object-cover bg-muted shrink-0" />
+                    ) : (
+                      <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-muted flex items-center justify-center text-xl sm:text-2xl font-bold shrink-0">
+                        {store.name.charAt(0)}
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm truncate">{store.name}</p>
+                      <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-muted-foreground">
+                        {(() => { const CatIcon = categoryIcons[store.category || ''] || Tag; return <CatIcon className="w-3 h-3" />; })()}
+                        <span>{store.category || 'Geral'}</span>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-base sm:text-lg font-black text-primary">{Number(store.cashback_rate)}%</p>
+                      <p className="text-[10px] text-muted-foreground font-bold">{t("cashback_label", "cashback")}</p>
+                    </div>
+                  </DuoCard>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </>
       )}
 
       {!loading && filtered.length === 0 && (
