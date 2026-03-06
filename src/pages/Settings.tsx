@@ -93,6 +93,8 @@ export default function Settings() {
     if (user) {
       setDisplayName(user.display_name ?? "");
       setPhone(user.phone ?? "");
+      setGender((user as any).gender ?? "");
+      setBirthDate((user as any).birth_date ?? "");
       setCity(user.city ?? "");
       setUserState(user.state ?? "");
     }
