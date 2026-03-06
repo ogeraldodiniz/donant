@@ -57,12 +57,12 @@ function PublicHome() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
               <Link to="/auth" className="w-full sm:w-auto">
                 <DuoButton size="lg" className="w-full sm:w-auto">
-                  {t("hero_cta_primary", "Comece agora — é grátis")} <ArrowRight className="w-5 h-5" />
+                  {t("hero_cta_primary", "Comece em 60 segundos")} <ArrowRight className="w-5 h-5" />
                 </DuoButton>
               </Link>
-              <Link to="/transparencia" className="w-full sm:w-auto">
+              <Link to="/auth" className="w-full sm:w-auto">
                 <DuoButton variant="outline" size="lg" className="w-full sm:w-auto">
-                  {t("hero_cta_secondary", "Ver impacto global")}
+                  {t("hero_cta_secondary", "Entrar")}
                 </DuoButton>
               </Link>
             </div>
