@@ -149,6 +149,26 @@ export default function AdminPush() {
           <Input id="push-url" placeholder="/notificacoes" value={url} onChange={(e) => setUrl(e.target.value)} />
         </div>
 
+        {/* Categoria */}
+        <div className="space-y-2">
+          <Label>Categoria da notificação</Label>
+          <div className="flex gap-2">
+            {([
+              { key: "warning" as NotifCategory, label: "Aviso" },
+              { key: "promotion" as NotifCategory, label: "Promoção" },
+            ]).map(c => (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => setCategory(c.key)}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold border-2 transition-colors ${category === c.key ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Channels */}
         <div className="space-y-2">
           <Label>Canais de envio</Label>
