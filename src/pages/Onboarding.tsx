@@ -62,7 +62,7 @@ export default function Onboarding() {
       .eq("id", user!.id);
     setSaving(false);
     if (error) {
-      toast.error("Erro ao salvar telefone");
+      toast.error("Erro ao salvar WhatsApp");
       return;
     }
     setStep("profile");
