@@ -202,7 +202,7 @@ export default function Settings() {
                   <p className="text-xs sm:text-sm text-muted-foreground truncate">{user?.email}</p>
                   {phone && (
                     <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
-                      <Phone className="w-3.5 h-3.5" /> {phone}
+                      <WhatsAppIcon className="w-3.5 h-3.5" /> {phone}
                     </p>
                   )}
                   {gender && (
