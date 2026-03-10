@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { title, body, url, targetLocale, targetState, targetCity, channels } = await req.json();
+    const { title, body, url, category, targetLocale, targetState, targetCity, channels } = await req.json();
     if (!title) {
       return new Response(JSON.stringify({ error: "Título é obrigatório" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
