@@ -52,7 +52,7 @@ export default function Onboarding() {
   const handlePhoneNext = async () => {
     const rawPhone = phone.replace(/\D/g, "");
     if (rawPhone.length < 10) {
-      toast.error("Informe um telefone válido");
+      toast.error("Informe um WhatsApp válido");
       return;
     }
     setSaving(true);
