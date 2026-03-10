@@ -6,6 +6,8 @@ import { useSiteContent } from "@/hooks/useSiteContent";
 import { useLocale } from "@/hooks/useLocale";
 import { Heart } from "lucide-react";
 import { formatCurrency } from "@/lib/gamification";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
+import { DuoButton } from "@/components/ui/duo-button";
 
 const statusColors: Record<CashbackStatus, string> = {
   tracked: 'bg-muted text-muted-foreground',
@@ -54,6 +56,20 @@ export default function Impact() {
         </DuoCard>
       </div>
 
+      {/* Share on WhatsApp */}
+      <DuoButton
+        variant="outline"
+        className="w-full gap-2"
+        onClick={() => {
+          const donated = formatCurrency(totals(['donated']), locale);
+          const text = `🌟 Já doei ${donated} só fazendo compras online pelo Donant! Meu cashback vira doação para ONGs. Vem fazer parte também! 💚`;
+          const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+          window.open(url, "_blank");
+        }}
+      >
+        <WhatsAppIcon className="w-5 h-5" />
+        {t("share_whatsapp", "Compartilhar no WhatsApp")}
+      </DuoButton>
       <DuoCard className="p-3.5 sm:p-5">
         <h3 className="font-bold text-sm sm:text-base mb-3 sm:mb-4">{t("transactions_title", "Transações")}</h3>
         <div className="space-y-2 sm:space-y-3">
