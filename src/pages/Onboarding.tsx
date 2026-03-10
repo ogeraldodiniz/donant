@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Phone, Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone, User } from "lucide-react";
+import { Heart, ArrowRight, Check, Loader2, MapPin, Share, Plus, Smartphone, User } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { DuoButton } from "@/components/ui/duo-button";
@@ -51,7 +52,7 @@ export default function Onboarding() {
   const handlePhoneNext = async () => {
     const rawPhone = phone.replace(/\D/g, "");
     if (rawPhone.length < 10) {
-      toast.error("Informe um telefone válido");
+      toast.error("Informe um WhatsApp válido");
       return;
     }
     setSaving(true);
@@ -61,7 +62,7 @@ export default function Onboarding() {
       .eq("id", user!.id);
     setSaving(false);
     if (error) {
-      toast.error("Erro ao salvar telefone");
+      toast.error("Erro ao salvar WhatsApp");
       return;
     }
     setStep("profile");
@@ -168,13 +169,13 @@ export default function Onboarding() {
               <div className="space-y-5">
                 <div className="text-center">
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-3">
-                    <Phone className="w-7 h-7 text-primary" />
+                    <WhatsAppIcon className="w-7 h-7 text-primary" />
                   </div>
-                  <h2 className="text-xl font-black">Seu telefone</h2>
+                  <h2 className="text-xl font-black">Seu WhatsApp</h2>
                   <p className="text-sm text-muted-foreground mt-1">Para enviarmos atualizações sobre suas doações</p>
                 </div>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <WhatsAppIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
                     type="tel"
                     placeholder="(11) 99999-9999"

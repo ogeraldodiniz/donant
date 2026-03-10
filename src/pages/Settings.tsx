@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Phone, Loader2, Save, Pencil, MapPin, X, User, Calendar } from "lucide-react";
+import { Heart, LogOut, Trash2, Check, Sun, Moon, Monitor, Bell, Loader2, Save, Pencil, MapPin, X, User, Calendar } from "lucide-react";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { useTheme } from "next-themes";
 import { LevelBadge } from "@/components/LevelBadge";
 import { mockTransactions } from "@/lib/mock-data";
@@ -147,7 +148,7 @@ export default function Settings() {
                   <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("name_placeholder", "Seu nome")} className="rounded-xl h-9 text-sm font-semibold" />
                   <p className="text-xs sm:text-sm text-muted-foreground truncate px-1">{user?.email}</p>
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <WhatsAppIcon className="w-4 h-4 text-muted-foreground shrink-0" />
                     <Input
                       type="tel" placeholder="(11) 99999-9999" value={phone}
                       onChange={(e) => {
@@ -201,7 +202,7 @@ export default function Settings() {
                   <p className="text-xs sm:text-sm text-muted-foreground truncate">{user?.email}</p>
                   {phone && (
                     <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-1.5">
-                      <Phone className="w-3.5 h-3.5" /> {phone}
+                      <WhatsAppIcon className="w-3.5 h-3.5" /> {phone}
                     </p>
                   )}
                   {gender && (
