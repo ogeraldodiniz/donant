@@ -148,7 +148,7 @@ export default function Settings() {
                   <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={t("name_placeholder", "Seu nome")} className="rounded-xl h-9 text-sm font-semibold" />
                   <p className="text-xs sm:text-sm text-muted-foreground truncate px-1">{user?.email}</p>
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <WhatsAppIcon className="w-4 h-4 text-muted-foreground shrink-0" />
                     <Input
                       type="tel" placeholder="(11) 99999-9999" value={phone}
                       onChange={(e) => {
