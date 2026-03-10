@@ -1,7 +1,1 @@
-project_id = "onfuxzstzavzgnydunkr"
-
-[functions.sync-stores]
-verify_jwt = false
-
-[functions.send-push]
-verify_jwt = false
+project_id = "qiwbetahwhiogjonmuxd"
