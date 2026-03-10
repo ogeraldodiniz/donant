@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, Check, Loader2, RefreshCw, Heart, Megaphone, Trash2 } from "lucide-react";
+import { Bell, Check, Loader2, RefreshCw, Heart, Megaphone, Trash2, AlertTriangle, Tag } from "lucide-react";
 import { DuoCard } from "@/components/ui/duo-card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,7 +16,7 @@ interface NotificationRow {
   created_at: string;
 }
 
-type Filter = "all" | "transaction" | "communication";
+type Filter = "all" | "transactions" | "warnings" | "promotions";
 
 const TRANSACTION_TYPES = ["status_change", "donation_confirmed"];
 
@@ -39,7 +39,6 @@ export default function Notifications() {
         setNotifications(data || []);
         setLoading(false);
 
-        // Mark all unread as read when the page is viewed
         const unreadIds = (data || []).filter(n => !n.is_read).map(n => n.id);
         if (unreadIds.length > 0) {
           supabase
@@ -73,13 +72,25 @@ export default function Notifications() {
     status_change: RefreshCw,
     donation_confirmed: Heart,
     general: Megaphone,
+    warning: AlertTriangle,
+    promotion: Tag,
   };
 
   const filtered = notifications.filter(n => {
     if (filter === "all") return true;
-    if (filter === "transaction") return TRANSACTION_TYPES.includes(n.type);
-    return !TRANSACTION_TYPES.includes(n.type);
+    if (filter === "transactions") return TRANSACTION_TYPES.includes(n.type);
+    if (filter === "warnings") return n.type === "warning";
+    if (filter === "promotions") return n.type === "promotion";
+    return true;
   });
+
+  const countByFilter = (f: Filter) => {
+    if (f === "all") return notifications.length;
+    if (f === "transactions") return notifications.filter(n => TRANSACTION_TYPES.includes(n.type)).length;
+    if (f === "warnings") return notifications.filter(n => n.type === "warning").length;
+    if (f === "promotions") return notifications.filter(n => n.type === "promotion").length;
+    return 0;
+  };
 
   const unreadCount = filtered.filter(n => !n.is_read).length;
 
@@ -99,22 +110,25 @@ export default function Notifications() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-1">
         {([
-          { key: "all" as Filter, label: t("filter_all", "Todas") },
-          { key: "transaction" as Filter, label: t("filter_transactions", "Transações") },
-          { key: "communication" as Filter, label: t("filter_communication", "Comunicação") },
+          { key: "all" as Filter, label: t("filter_all", "Todas"), icon: Bell },
+          { key: "transactions" as Filter, label: t("filter_transactions", "Transações"), icon: RefreshCw },
+          { key: "warnings" as Filter, label: t("filter_warnings", "Avisos"), icon: AlertTriangle },
+          { key: "promotions" as Filter, label: t("filter_promotions", "Promoções"), icon: Tag },
         ]).map(f => (
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border-2 transition-colors ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border-2 transition-colors whitespace-nowrap ${
               filter === f.key
                 ? "border-primary bg-primary/10 text-primary"
                 : "border-border text-muted-foreground hover:border-primary/30"
             }`}
           >
+            <f.icon className="w-3.5 h-3.5" />
             {f.label}
+            <span className="text-[10px] opacity-70">({countByFilter(f.key)})</span>
           </button>
         ))}
       </div>

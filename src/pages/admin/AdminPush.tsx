@@ -86,6 +86,7 @@ export default function AdminPush() {
           title: title.trim(),
           body: body.trim(),
           url: url.trim() || "/notificacoes",
+          category,
           targetLocale: targetLocale === "all" ? undefined : targetLocale,
           targetState: selectedState === "all" ? undefined : selectedState,
           targetCity: selectedCity === "all" ? undefined : selectedCity,
