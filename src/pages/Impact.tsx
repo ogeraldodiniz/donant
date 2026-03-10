@@ -6,6 +6,8 @@ import { useSiteContent } from "@/hooks/useSiteContent";
 import { useLocale } from "@/hooks/useLocale";
 import { Heart } from "lucide-react";
 import { formatCurrency } from "@/lib/gamification";
+import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
+import { DuoButton } from "@/components/ui/duo-button";
 
 const statusColors: Record<CashbackStatus, string> = {
   tracked: 'bg-muted text-muted-foreground',
