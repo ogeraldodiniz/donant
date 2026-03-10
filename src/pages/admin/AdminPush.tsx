@@ -12,11 +12,13 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { toast } from "sonner";
 
 type Channel = "web_push" | "whatsapp" | "email";
+type NotifCategory = "warning" | "promotion";
 
 export default function AdminPush() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("/notificacoes");
+  const [category, setCategory] = useState<NotifCategory>("warning");
   const [targetLocale, setTargetLocale] = useState<"all" | "pt" | "es">("all");
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedCity, setSelectedCity] = useState<string>("all");
@@ -84,6 +86,7 @@ export default function AdminPush() {
           title: title.trim(),
           body: body.trim(),
           url: url.trim() || "/notificacoes",
+          category,
           targetLocale: targetLocale === "all" ? undefined : targetLocale,
           targetState: selectedState === "all" ? undefined : selectedState,
           targetCity: selectedCity === "all" ? undefined : selectedCity,
@@ -144,6 +147,26 @@ export default function AdminPush() {
         <div className="space-y-1.5">
           <Label htmlFor="push-url">URL ao clicar</Label>
           <Input id="push-url" placeholder="/notificacoes" value={url} onChange={(e) => setUrl(e.target.value)} />
+        </div>
+
+        {/* Categoria */}
+        <div className="space-y-2">
+          <Label>Categoria da notificação</Label>
+          <div className="flex gap-2">
+            {([
+              { key: "warning" as NotifCategory, label: "Aviso" },
+              { key: "promotion" as NotifCategory, label: "Promoção" },
+            ]).map(c => (
+              <button
+                key={c.key}
+                type="button"
+                onClick={() => setCategory(c.key)}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold border-2 transition-colors ${category === c.key ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:border-primary/30"}`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Channels */}

@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { title, body, url, targetLocale, targetState, targetCity, channels } = await req.json();
+    const { title, body, url, category, targetLocale, targetState, targetCity, channels } = await req.json();
     if (!title) {
       return new Response(JSON.stringify({ error: "Título é obrigatório" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -145,8 +145,9 @@ Deno.serve(async (req) => {
       // Insert in-app notifications
       const userIds = [...new Set(pushSubs.map((s: any) => s.user_id).filter(Boolean))] as string[];
       if (userIds.length > 0) {
+        const notifType = category === "promotion" ? "promotion" : category === "warning" ? "warning" : "general";
         const notifRows = userIds.map((uid: string) => ({
-          user_id: uid, title, body: body || "", type: "general" as const,
+          user_id: uid, title, body: body || "", type: notifType as const,
         }));
         await adminClient.from("notifications").insert(notifRows);
       }

@@ -602,7 +602,12 @@ export type Database = {
         | "confirmed"
         | "donated"
         | "reverted"
-      notification_type: "status_change" | "donation_confirmed" | "general"
+      notification_type:
+        | "status_change"
+        | "donation_confirmed"
+        | "general"
+        | "warning"
+        | "promotion"
       payout_status: "pending" | "processing" | "completed"
     }
     CompositeTypes: {
@@ -739,7 +744,13 @@ export const Constants = {
         "donated",
         "reverted",
       ],
-      notification_type: ["status_change", "donation_confirmed", "general"],
+      notification_type: [
+        "status_change",
+        "donation_confirmed",
+        "general",
+        "warning",
+        "promotion",
+      ],
       payout_status: ["pending", "processing", "completed"],
     },
   },
