@@ -34,7 +34,7 @@ import AdminClaims from "./pages/admin/AdminClaims";
 import AdminNews from "./pages/admin/AdminNews";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
-import OAuthBridge from "./pages/OAuthBridge";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -79,8 +79,6 @@ const App = () => (
               <Route path="/admin/reclamacoes" element={<AdminClaims />} />
               <Route path="/admin/noticias" element={<AdminNews />} />
             </Route>
-            <Route path="/~oauth/initiate" element={<OAuthBridge mode="initiate" />} />
-            <Route path="/~oauth/callback" element={<OAuthBridge mode="callback" />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
