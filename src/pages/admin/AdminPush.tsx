@@ -12,11 +12,13 @@ import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { toast } from "sonner";
 
 type Channel = "web_push" | "whatsapp" | "email";
+type NotifCategory = "warning" | "promotion";
 
 export default function AdminPush() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("/notificacoes");
+  const [category, setCategory] = useState<NotifCategory>("warning");
   const [targetLocale, setTargetLocale] = useState<"all" | "pt" | "es">("all");
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedCity, setSelectedCity] = useState<string>("all");
