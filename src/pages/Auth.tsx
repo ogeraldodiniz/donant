@@ -73,47 +73,11 @@ export default function Auth() {
   };
 
   const handleGoogle = async () => {
-    const hostname = window.location.hostname;
-    const isCustomDomain =
-      !hostname.includes("lovable.app") &&
-      !hostname.includes("lovableproject.com") &&
-      !hostname.includes("localhost");
-
-    if (isCustomDomain) {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin,
-          skipBrowserRedirect: true,
-        },
-      });
-
-      if (error) {
-        toast.error(t("google_error", "Erro ao entrar com Google"));
-        return;
-      }
-
-      try {
-        if (!data?.url) throw new Error("OAuth URL ausente");
-
-        const oauthUrl = new URL(data.url);
-        const backendHost = new URL(import.meta.env.VITE_SUPABASE_URL).hostname;
-        const allowedHosts = ["accounts.google.com", backendHost];
-
-        if (!allowedHosts.some((host) => oauthUrl.hostname.includes(host))) {
-          throw new Error("Invalid OAuth redirect URL");
-        }
-
-        window.location.href = data.url;
-        return;
-      } catch {
-        toast.error(t("google_error", "Erro ao entrar com Google"));
-        return;
-      }
-    }
-
-    const { error } = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin,
+      },
     });
 
     if (error) {
