@@ -72,14 +72,17 @@ async function getMycToken(apiUrl: string): Promise<string> {
 }
 
 async function fetchAllPrograms(apiUrl: string, token: string): Promise<MycProgram[]> {
-  const fullUrl = `${apiUrl}/api/extension_get_programs_on_ext_install`;
+  const fullUrl = `${apiUrl}/api/programs/search`;
   console.log(`Fetching programs from ${fullUrl}...`);
   const res = await fetch(fullUrl, {
-    method: "GET",
+    method: "POST",
     headers: {
+      "Content-Type": "application/json",
       "x-myc-access-token": token,
       "x-myc-ambiente": "10",
+      "x-hasura-role": "external-publisher",
     },
+    body: JSON.stringify({ query: {}, limit: 1000, offset: 0 }),
   });
 
   if (!res.ok) {
