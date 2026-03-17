@@ -21,7 +21,7 @@ export default function Redirect() {
   const { session } = useAuth();
   const [store, setStore] = useState<StoreInfo | null>(null);
   const [step, setStep] = useState(0);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(3);
   const [clickoutDone, setClickoutDone] = useState(false);
   const openedRef = useRef(false);
 
