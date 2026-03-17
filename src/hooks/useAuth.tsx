@@ -75,12 +75,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
+      (event, newSession) => {
         setSession(newSession);
         setLoading(false);
 
         if (newSession?.user) {
           void fetchProfile(newSession.user);
+          // Sync new users (e.g. Google OAuth) to Brevo on first sign-in
+          if (event === "SIGNED_IN") {
+            const u = newSession.user;
+            void supabase.functions.invoke("brevo-sync", {
+              body: {
+                action: "create_or_update",
+                email: u.email,
+                attributes: { FIRSTNAME: u.user_metadata?.full_name || u.email },
+              },
+            });
+          }
         } else {
           setUser(null);
         }
@@ -156,6 +167,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     if (!error && data.user) {
       void saveGeolocation(data.user.id);
+      // Sync contact to Brevo
+      void supabase.functions.invoke("brevo-sync", {
+        body: { action: "create_or_update", email, attributes: { FIRSTNAME: name } },
+      });
+      // Send welcome email via Brevo
+      void supabase.functions.invoke("brevo-email", {
+        body: { type: "welcome", to: { email, name }, data: { name } },
+      });
     }
     return { error: error ? new Error(error.message) : null };
   };

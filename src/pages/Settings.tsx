@@ -87,6 +87,23 @@ export default function Settings() {
       toast.success(t("save_success", "Perfil salvo"));
       setEditing(false);
       await refreshProfile();
+      // Sync updated profile to Brevo
+      if (user.email) {
+        void supabase.functions.invoke("brevo-sync", {
+          body: {
+            action: "create_or_update",
+            email: user.email,
+            attributes: {
+              FIRSTNAME: displayName,
+              PHONE: rawPhone || undefined,
+              CITY: city || undefined,
+              STATE: userState || undefined,
+              GENDER: gender || undefined,
+              BIRTHDATE: birthDate || undefined,
+            },
+          },
+        });
+      }
     }
   };
 
@@ -125,6 +142,12 @@ export default function Settings() {
   };
 
   const handleDelete = async () => {
+    // Delete contact from Brevo before logout
+    if (user?.email) {
+      void supabase.functions.invoke("brevo-sync", {
+        body: { action: "delete", email: user.email },
+      });
+    }
     await logout();
     toast.success(t("delete_msg", "Conta excluída. Seus dados serão anonimizados conforme LGPD."));
     navigate("/");
