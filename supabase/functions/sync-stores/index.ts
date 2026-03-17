@@ -72,50 +72,33 @@ async function getMycToken(apiUrl: string): Promise<string> {
 }
 
 async function fetchAllPrograms(apiUrl: string, token: string): Promise<MycProgram[]> {
-  const allPrograms: MycProgram[] = [];
-  let offset = 0;
-  const limit = 1000;
+  const fullUrl = `${apiUrl}/extensao/api/programas`;
+  console.log(`Fetching programs from ${fullUrl}...`);
+  const res = await fetch(fullUrl, {
+    method: "GET",
+    headers: {
+      "x-myc-access-token": token,
+      "x-myc-ambiente": "10",
+    },
+  });
 
-  while (true) {
-    const fullUrl = `${apiUrl}/api/programs/search`;
-    console.log(`Fetching programs (offset=${offset}) from ${fullUrl}...`);
-    const res = await fetch(fullUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-myc-access-token": token,
-        "x-myc-ambiente": "10",
-      },
-      body: JSON.stringify({
-        query: {},
-        limit,
-        offset,
-      }),
-    });
-
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`Programs fetch failed [${res.status}]: ${body}`);
-    }
-
-    const result = await res.json();
-    if (offset === 0) {
-      const sample = Array.isArray(result.data) ? result.data[0] : null;
-      console.log("SAMPLE PROGRAM RAW:", JSON.stringify(sample));
-      console.log("META:", JSON.stringify(result.meta));
-    }
-    const programs: MycProgram[] = Array.isArray(result.data)
-      ? result.data
-      : Array.isArray(result)
-        ? result
-        : [];
-    allPrograms.push(...programs);
-
-    if (programs.length < limit) break;
-    offset += limit;
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Programs fetch failed [${res.status}]: ${body}`);
   }
 
-  return allPrograms;
+  const result = await res.json();
+  const programs: MycProgram[] = Array.isArray(result.data)
+    ? result.data
+    : Array.isArray(result)
+      ? result
+      : [];
+  
+  if (programs.length > 0) {
+    console.log("SAMPLE PROGRAM RAW:", JSON.stringify(programs[0]));
+  }
+  console.log(`Total programs fetched: ${programs.length}`);
+  return programs;
 }
 
 async function fetchAllCashbackContracts(apiUrl: string, token: string): Promise<MycCashbackContract[]> {
