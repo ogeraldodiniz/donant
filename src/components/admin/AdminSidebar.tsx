@@ -22,6 +22,7 @@ const items = [
   { title: "Usuários", url: "/admin/usuarios", icon: Users },
   { title: "Reclamações", url: "/admin/reclamacoes", icon: AlertTriangle },
   { title: "Notícias", url: "/admin/noticias", icon: Newspaper },
+  { title: "Rallys", url: "/admin/rallys", icon: Trophy },
 ];
 
 export function AdminSidebar() {
