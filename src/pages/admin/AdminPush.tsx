@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Bell, Send, Loader2, MapPin, Globe, MessageSquare, Mail, CheckCircle, XCircle, BarChart3 } from "lucide-react";
+import { Bell, Send, Loader2, MapPin, Globe, MessageSquare, Mail, CheckCircle, XCircle, BarChart3, Users, X } from "lucide-react";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { toast } from "sonner";
