@@ -267,7 +267,7 @@ export default function Onboarding() {
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
                 </DuoButton>
                 <button onClick={() => setStep("ngo")} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
-                  Pular por agora
+                  Não quero informar
                 </button>
               </div>
             )}
