@@ -489,6 +489,12 @@ function LoggedInHome() {
       <InstallAppBanner />
       <PushPermissionBanner />
 
+      <Link to="/lojas" className="block">
+        <DuoButton size="lg" className="w-full text-base gap-2">
+          <ShoppingBag className="w-5 h-5" /> Comprar e doar
+        </DuoButton>
+      </Link>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 items-start">
         <LevelBadge totalDonated={donated} />
 
