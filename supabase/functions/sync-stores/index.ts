@@ -108,7 +108,7 @@ async function fetchAllCashbackContracts(apiUrl: string, token: string): Promise
   const allContracts: MycCashbackContract[] = [];
   let offset = 0;
   const limit = 1000;
-  const fullUrl = `${apiUrl}/api/application_cashback_contracts/search`;
+  const fullUrl = `${apiUrl}/publisher/application_cashback_contracts/search`;
 
   while (true) {
     console.log(`Fetching cashback contracts (offset=${offset}) from ${fullUrl}...`);
