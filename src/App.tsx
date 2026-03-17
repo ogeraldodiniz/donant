@@ -33,6 +33,7 @@ import AdminPush from "./pages/admin/AdminPush";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminClaims from "./pages/admin/AdminClaims";
 import AdminNews from "./pages/admin/AdminNews";
+import AdminRallys from "./pages/admin/AdminRallys";
 import News from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 
@@ -80,6 +81,7 @@ const App = () => (
               <Route path="/admin/usuarios" element={<AdminUsers />} />
               <Route path="/admin/reclamacoes" element={<AdminClaims />} />
               <Route path="/admin/noticias" element={<AdminNews />} />
+              <Route path="/admin/rallys" element={<AdminRallys />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
