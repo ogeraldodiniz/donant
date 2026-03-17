@@ -485,6 +485,56 @@ export type Database = {
         }
         Relationships: []
       }
+      rallys: {
+        Row: {
+          created_at: string
+          end_date: string
+          goal: number
+          id: string
+          is_active: boolean
+          locale: string
+          ngo_id: string
+          reward: string | null
+          start_date: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          goal?: number
+          id?: string
+          is_active?: boolean
+          locale?: string
+          ngo_id: string
+          reward?: string | null
+          start_date: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          goal?: number
+          id?: string
+          is_active?: boolean
+          locale?: string
+          ngo_id?: string
+          reward?: string | null
+          start_date?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rallys_ngo_id_fkey"
+            columns: ["ngo_id"]
+            isOneToOne: false
+            referencedRelation: "ngos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_content: {
         Row: {
           content_key: string
