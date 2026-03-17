@@ -31,11 +31,10 @@ export function LevelBadge({ totalDonated, compact = false, showAllLevels = fals
     );
   }
 
-  // Determine which levels to show: previous, current, next
-  const prevLevel = DONATION_LEVELS.find(l => l.rank === current.rank - 1) || null;
+  // Show current and next only (no previous)
   const visibleLevels = expanded
     ? DONATION_LEVELS
-    : [prevLevel, current, next].filter(Boolean) as typeof DONATION_LEVELS;
+    : [current, next].filter(Boolean) as typeof DONATION_LEVELS;
 
   return (
     <div className="space-y-3 sm:space-y-4">
