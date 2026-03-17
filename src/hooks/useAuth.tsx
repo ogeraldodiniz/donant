@@ -75,12 +75,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, newSession) => {
+      (event, newSession) => {
         setSession(newSession);
         setLoading(false);
 
         if (newSession?.user) {
           void fetchProfile(newSession.user);
+          // Sync new users (e.g. Google OAuth) to Brevo on first sign-in
+          if (event === "SIGNED_IN") {
+            const u = newSession.user;
+            void supabase.functions.invoke("brevo-sync", {
+              body: {
+                action: "create_or_update",
+                email: u.email,
+                attributes: { FIRSTNAME: u.user_metadata?.full_name || u.email },
+              },
+            });
+          }
         } else {
           setUser(null);
         }
