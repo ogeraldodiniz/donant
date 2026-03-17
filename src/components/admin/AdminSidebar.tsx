@@ -1,4 +1,4 @@
-import { Heart, Store, FileText, Bell, LayoutDashboard, Users, ArrowLeft, Languages, AlertTriangle, Newspaper } from "lucide-react";
+import { Heart, Store, FileText, Bell, LayoutDashboard, Users, ArrowLeft, Languages, AlertTriangle, Newspaper, Trophy } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
