@@ -73,7 +73,7 @@ export function InstallAppBanner({ forceShow = false }: InstallAppBannerProps) {
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-sm">Instale o MyCashbacks</p>
+            <p className="font-bold text-sm">Instale o Donant</p>
 
             {isIOS ? (
               <p className="text-xs text-muted-foreground flex items-center gap-1 flex-wrap">
