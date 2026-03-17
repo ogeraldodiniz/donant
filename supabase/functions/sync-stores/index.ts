@@ -15,9 +15,7 @@ interface MycProgram {
   logo_url?: string;
   status?: string;
   published?: boolean;
-  network?: string;
   network_description?: string;
-  network_countries?: string[];
   network_program_id?: string | number;
   categories?: Array<{ name?: string; id?: number }> | string[];
   details?: Record<string, unknown>;
@@ -33,13 +31,13 @@ interface MycCashbackContract {
   status?: string;
 }
 
-async function getMycToken(): Promise<string> {
-  const apiUrl = Deno.env.get("MYCASHBACKS_API_URL")!.replace(/\/+$/, "");
+async function getMycToken(apiUrl: string): Promise<string> {
   const username = Deno.env.get("MYCASHBACKS_USERNAME")!;
   const password = Deno.env.get("MYCASHBACKS_PASSWORD")!;
   const appId = Deno.env.get("MYCASHBACKS_APP_ID")!;
 
   const authUrl = `${apiUrl}/api/auth`;
+  console.log(`Auth URL: ${authUrl}`);
 
   const res = await fetch(authUrl, {
     method: "POST",
@@ -60,21 +58,14 @@ async function getMycToken(): Promise<string> {
   return data.token;
 }
 
-function getBaseUrl(): string {
-  const rawUrl = Deno.env.get("MYCASHBACKS_API_URL")!.replace(/\/+$/, "");
-  const parsed = new URL(rawUrl);
-  return `${parsed.protocol}//${parsed.host}`;
-}
-
-async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
-  const baseUrl = getBaseUrl();
+async function fetchAllPrograms(apiUrl: string, token: string): Promise<MycProgram[]> {
   const allPrograms: MycProgram[] = [];
   let offset = 0;
   const limit = 1000;
 
   while (true) {
-    const fullUrl = `${baseUrl}/v1/publisher/programs/search`;
-    console.log(`Fetching programs (offset=${offset})...`);
+    const fullUrl = `${apiUrl}/api/programs/search`;
+    console.log(`Fetching programs (offset=${offset}) from ${fullUrl}...`);
     const res = await fetch(fullUrl, {
       method: "POST",
       headers: {
@@ -83,7 +74,6 @@ async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
       },
       body: JSON.stringify({
         query: {},
-        allowlistOnly: false,
         limit,
         offset,
       }),
@@ -95,18 +85,16 @@ async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
     }
 
     const result = await res.json();
-    // Log first program raw data to understand structure
     if (offset === 0) {
-      const sample = Array.isArray(result.programs) ? result.programs[0] : Array.isArray(result.data) ? result.data[0] : null;
+      const sample = Array.isArray(result.data) ? result.data[0] : null;
       console.log("SAMPLE PROGRAM RAW:", JSON.stringify(sample));
+      console.log("META:", JSON.stringify(result.meta));
     }
-    const programs: MycProgram[] = Array.isArray(result.programs)
-      ? result.programs
-      : Array.isArray(result.data)
-        ? result.data
-        : Array.isArray(result)
-          ? result
-          : [];
+    const programs: MycProgram[] = Array.isArray(result.data)
+      ? result.data
+      : Array.isArray(result)
+        ? result
+        : [];
     allPrograms.push(...programs);
 
     if (programs.length < limit) break;
@@ -116,57 +104,15 @@ async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
   return allPrograms;
 }
 
-async function fetchAllCashbackContracts(token: string): Promise<MycCashbackContract[]> {
-  const baseUrl = getBaseUrl();
+async function fetchAllCashbackContracts(apiUrl: string, token: string): Promise<MycCashbackContract[]> {
   const allContracts: MycCashbackContract[] = [];
-
-  // Discover working endpoint
-  const endpointCandidates = [
-    `${baseUrl}/v1/publisher/application_cashback_contracts/search`,
-    `${baseUrl}/api/application_cashback_contracts/search`,
-    `${baseUrl}/v1/application_cashback_contracts/search`,
-  ];
-
-  let workingEndpoint: string | null = null;
-
-  for (const ep of endpointCandidates) {
-    console.log(`Trying contracts endpoint: ${ep}`);
-    const probe = await fetch(ep, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-myc-access-token": token,
-      },
-      body: JSON.stringify({ query: {}, limit: 1, offset: 0 }),
-    });
-    if (probe.ok) {
-      workingEndpoint = ep;
-      const probeData = await probe.json();
-      const probeItems = Array.isArray(probeData.data) ? probeData.data : Array.isArray(probeData) ? probeData : [];
-      allContracts.push(...probeItems);
-      console.log(`Contracts endpoint found: ${ep}`);
-      break;
-    }
-    const errBody = await probe.text();
-    console.warn(`Endpoint ${ep} failed [${probe.status}]: ${errBody.substring(0, 200)}`);
-  }
-
-  if (!workingEndpoint) {
-    console.warn("No working contracts endpoint found. Cashback rates won't be synced.");
-    return allContracts;
-  }
-
-  // Now paginate using the working endpoint
   let offset = 0;
   const limit = 1000;
-
-  // If probe returned less than limit, we might already have all (but probe used limit=1)
-  // Reset and fetch properly
-  allContracts.length = 0;
+  const fullUrl = `${apiUrl}/api/application_cashback_contracts/search`;
 
   while (true) {
-    console.log(`Fetching cashback contracts (offset=${offset})...`);
-    const res = await fetch(workingEndpoint, {
+    console.log(`Fetching cashback contracts (offset=${offset}) from ${fullUrl}...`);
+    const res = await fetch(fullUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -182,6 +128,10 @@ async function fetchAllCashbackContracts(token: string): Promise<MycCashbackCont
     }
 
     const result = await res.json();
+    if (offset === 0) {
+      const sample = Array.isArray(result.data) ? result.data[0] : null;
+      console.log("SAMPLE CONTRACT RAW:", JSON.stringify(sample));
+    }
     const contracts: MycCashbackContract[] = Array.isArray(result.data)
       ? result.data
       : Array.isArray(result)
@@ -210,7 +160,6 @@ function extractCashbackRate(contract: MycCashbackContract): number {
   switch (contract.share_type) {
     case "factor_cashback":
     case "factor_commission":
-      // These are typically percentage multipliers (e.g., 0.05 = 5%)
       return share > 1 ? share : share * 100;
     case "fix":
     case "factor_value":
@@ -232,32 +181,32 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const requiredVars = ["MYCASHBACKS_API_URL", "MYCASHBACKS_USERNAME", "MYCASHBACKS_PASSWORD", "MYCASHBACKS_APP_ID"];
+    const apiUrl = Deno.env.get("MYCASHBACKS_API_URL")!.replace(/\/+$/, "");
+    const requiredVars = ["MYCASHBACKS_USERNAME", "MYCASHBACKS_PASSWORD", "MYCASHBACKS_APP_ID"];
     for (const v of requiredVars) {
       if (!Deno.env.get(v)) {
         throw new Error(`Missing environment variable: ${v}`);
       }
     }
 
+    console.log(`API Base URL: ${apiUrl}`);
     console.log("Authenticating with MyCashbacks API...");
-    const token = await getMycToken();
+    const token = await getMycToken(apiUrl);
     console.log("Authenticated. Fetching data...");
 
-    // Fetch programs and contracts in parallel
     const [programs, contracts] = await Promise.all([
-      fetchAllPrograms(token),
-      fetchAllCashbackContracts(token),
+      fetchAllPrograms(apiUrl, token),
+      fetchAllCashbackContracts(apiUrl, token),
     ]);
 
     console.log(`Fetched ${programs.length} programs, ${contracts.length} cashback contracts`);
 
-    // Build a map: program_id -> best cashback rate
+    // Build map: program_id -> best cashback rate
     const cashbackMap = new Map<number, number>();
     for (const c of contracts) {
       if (!c.fk_program_id) continue;
       const rate = extractCashbackRate(c);
       const existing = cashbackMap.get(c.fk_program_id) ?? 0;
-      // Keep the highest rate for each program
       if (rate > existing) {
         cashbackMap.set(c.fk_program_id, rate);
       }
@@ -272,16 +221,14 @@ Deno.serve(async (req) => {
       const name = prog.display_name || prog.name;
       if (!name) { skipped++; continue; }
 
-      // Build website URL from domain if url not available
       const websiteUrl = prog.url || (prog.domain ? `https://${prog.domain}` : null);
 
-      // Extract category from categories array or network
       const category = (() => {
         if (prog.categories && Array.isArray(prog.categories) && prog.categories.length > 0) {
           const first = prog.categories[0];
           return typeof first === "string" ? first : first?.name || null;
         }
-        return prog.network_description || prog.network || null;
+        return prog.network_description || null;
       })();
 
       const cashbackRate = cashbackMap.get(prog.id) ?? 0;
@@ -295,7 +242,6 @@ Deno.serve(async (req) => {
         category,
       };
 
-      // Only set cashback_rate if we got a value from contracts
       if (cashbackRate > 0) {
         storeData.cashback_rate = Math.round(cashbackRate * 100) / 100;
       }
