@@ -135,6 +135,25 @@ Deno.serve(async (req) => {
     const errors: string[] = [];
     let totalRecipients = 0;
 
+    // ---- Insert in-app notifications for ALL channels (not just web_push) ----
+    {
+      let recipientIds: string[] = [];
+      if (filteredIds) {
+        recipientIds = filteredIds;
+      } else {
+        // All users
+        const { data: allProfiles } = await adminClient.from("profiles").select("id");
+        recipientIds = (allProfiles || []).map((p: { id: string }) => p.id);
+      }
+      if (recipientIds.length > 0) {
+        const notifType = category === "promotion" ? "promotion" : category === "warning" ? "warning" : "general";
+        const notifRows = recipientIds.map((uid: string) => ({
+          user_id: uid, title, body: body || "", type: notifType as const,
+        }));
+        await adminClient.from("notifications").insert(notifRows);
+      }
+    }
+
     // ---- Web Push ----
     if (activeChannels.includes("web_push")) {
       let subQuery = adminClient.from("push_subscriptions").select("*");
@@ -146,16 +165,6 @@ Deno.serve(async (req) => {
 
       const pushSubs = subs || [];
       totalRecipients += pushSubs.length;
-
-      // Insert in-app notifications
-      const userIds = [...new Set(pushSubs.map((s: any) => s.user_id).filter(Boolean))] as string[];
-      if (userIds.length > 0) {
-        const notifType = category === "promotion" ? "promotion" : category === "warning" ? "warning" : "general";
-        const notifRows = userIds.map((uid: string) => ({
-          user_id: uid, title, body: body || "", type: notifType as const,
-        }));
-        await adminClient.from("notifications").insert(notifRows);
-      }
 
       const vapidPublicKey = "BJkEEqX8DmY0AkSp1ffwvMTqrQdE852M4KmYhI2z2mwSGCbKWCEVvRCjQrgwZfoeZo3IemSUgalu43tTJUOrCwk";
       const vapidPrivateKey = Deno.env.get("VAPID_PRIVATE_KEY")!;
