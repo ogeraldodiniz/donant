@@ -72,7 +72,7 @@ async function getMycToken(apiUrl: string): Promise<string> {
 }
 
 async function fetchAllPrograms(apiUrl: string, token: string): Promise<MycProgram[]> {
-  const fullUrl = `${apiUrl}/api/programs/search`;
+  const fullUrl = `${apiUrl}/publisher/programs/search`;
   console.log(`Fetching programs from ${fullUrl}...`);
   const res = await fetch(fullUrl, {
     method: "POST",
