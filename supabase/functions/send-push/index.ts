@@ -228,52 +228,61 @@ Deno.serve(async (req) => {
       }
     }
 
-    // ---- Email (Brevo) ----
+    // ---- Email (via brevo-email function for branded HTML) ----
     if (activeChannels.includes("email")) {
-      const brevoKey = Deno.env.get("BREVO_API_KEY");
-      const brevoSender = Deno.env.get("BREVO_SENDER_EMAIL") || "noreply@donactivo.com.br";
-      const brevoSenderName = Deno.env.get("BREVO_SENDER_NAME") || "DonActivo";
+      let profileQuery = adminClient.from("profiles").select("id, email, display_name, notify_email").eq("notify_email", true).not("email", "is", null);
+      if (filteredIds) {
+        profileQuery = profileQuery.in("id", filteredIds);
+      }
+      const { data: profiles } = await profileQuery;
+      const emailProfiles = profiles || [];
+      totalRecipients += emailProfiles.length;
 
-      if (!brevoKey) {
-        errors.push("email: Brevo não configurado (secret BREVO_API_KEY necessário)");
-      } else {
-        let profileQuery = adminClient.from("profiles").select("id, email, notify_email").eq("notify_email", true).not("email", "is", null);
-        if (filteredIds) {
-          profileQuery = profileQuery.in("id", filteredIds);
-        }
-        const { data: profiles } = await profileQuery;
-        const emailProfiles = profiles || [];
-        totalRecipients += emailProfiles.length;
+      if (emailProfiles.length > 0) {
+        const recipients = emailProfiles.map((p: any) => ({ email: p.email, name: p.display_name || undefined }));
 
-        // Send in batches of 50
-        const batchSize = 50;
-        for (let i = 0; i < emailProfiles.length; i += batchSize) {
-          const batch = emailProfiles.slice(i, i + batchSize);
-          const to = batch.map((p: any) => ({ email: p.email }));
-          try {
-            const res = await fetch("https://api.brevo.com/v3/smtp/email", {
-              method: "POST",
-              headers: {
-                "api-key": brevoKey,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                sender: { name: brevoSenderName, email: brevoSender },
-                to,
-                subject: title,
-                htmlContent: `<h2>${title}</h2><p>${body || ""}</p>`,
-              }),
-            });
-            if (res.ok) {
-              sent += batch.length;
-            } else {
+        // Call brevo-email edge function internally
+        const brevoKey = Deno.env.get("BREVO_API_KEY");
+        const brevoSender = Deno.env.get("BREVO_SENDER_EMAIL") || "noreply@donactivo.com.br";
+        const brevoSenderName = Deno.env.get("BREVO_SENDER_NAME") || "DonActivo";
+
+        if (!brevoKey) {
+          errors.push("email: BREVO_API_KEY não configurado");
+        } else {
+          // Build branded HTML inline (same template as brevo-email)
+          const PRIMARY = "#1a9e4f";
+          const PRIMARY_DARK = "#167a3d";
+          const BG = "#f3f7f4";
+          const TEXT_COLOR = "#1a2e1f";
+          const MUTED = "#6b7c70";
+          const BORDER = "#dce5de";
+
+          const htmlContent = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/><style>body{margin:0;padding:0;background:${BG};font-family:'Nunito',Arial,sans-serif;color:${TEXT_COLOR};}.container{max-width:580px;margin:0 auto;padding:32px 16px;}.card{background:#fff;border-radius:16px;padding:32px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}.logo{width:48px;height:48px;background:${PRIMARY};border-radius:12px;color:#fff;font-size:28px;font-weight:900;text-align:center;line-height:48px;margin:0 auto 16px;}h1{font-size:22px;font-weight:900;margin:0 0 8px;}p{font-size:14px;line-height:1.6;color:${MUTED};margin:0 0 16px;}.btn{display:inline-block;padding:14px 28px;background:${PRIMARY};color:#fff!important;border-radius:12px;text-decoration:none;font-weight:800;font-size:14px;}.footer{text-align:center;padding:24px 16px;font-size:11px;color:${MUTED};}</style></head><body><div class="container"><div class="card"><div class="logo">D</div><h1>${title}</h1>${body ? `<p style="color:${TEXT_COLOR};font-size:15px;">${body}</p>` : ''}<div style="text-align:center;margin:24px 0"><a href="https://donactivo.com.br${url || '/notificacoes'}" class="btn">Ver mais</a></div></div><div class="footer">&copy; ${new Date().getFullYear()} DonActivo &mdash; Transformando compras em doações<br/><a href="https://donactivo.com.br" style="color:${PRIMARY};text-decoration:none;font-weight:700;">donactivo.com.br</a></div></div></body></html>`;
+
+          const batchSize = 50;
+          for (let i = 0; i < recipients.length; i += batchSize) {
+            const batch = recipients.slice(i, i + batchSize);
+            const to = batch.map((r: any) => ({ email: r.email, name: r.name }));
+            try {
+              const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+                method: "POST",
+                headers: { "api-key": brevoKey, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  sender: { name: brevoSenderName, email: brevoSender },
+                  to,
+                  subject: title,
+                  htmlContent,
+                }),
+              });
+              if (res.ok) { sent += batch.length; } else {
+                failed += batch.length;
+                const txt = await res.text();
+                errors.push(`email ${res.status}: ${txt.slice(0, 100)}`);
+              }
+            } catch (e) {
               failed += batch.length;
-              const txt = await res.text();
-              errors.push(`email ${res.status}: ${txt.slice(0, 100)}`);
+              errors.push(`email: ${String(e).slice(0, 80)}`);
             }
-          } catch (e) {
-            failed += batch.length;
-            errors.push(`email: ${String(e).slice(0, 80)}`);
           }
         }
       }
