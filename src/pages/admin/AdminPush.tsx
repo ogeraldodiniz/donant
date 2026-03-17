@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Bell, Send, Loader2, MapPin, Globe, MessageSquare, Mail, CheckCircle, XCircle, BarChart3 } from "lucide-react";
+import { Bell, Send, Loader2, MapPin, Globe, MessageSquare, Mail, CheckCircle, XCircle, BarChart3, Users, X } from "lucide-react";
 import { DuoCard } from "@/components/ui/duo-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { toast } from "sonner";
@@ -27,6 +28,11 @@ export default function AdminPush() {
   const [lastResult, setLastResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
   const { permission, subscribing, subscribe, isSupported } = usePushNotifications();
 
+  // User selection for targeted sends
+  const [allUsers, setAllUsers] = useState<{ id: string; email: string | null; display_name: string | null }[]>([]);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [userSearch, setUserSearch] = useState("");
+
   // Fetch distinct states and cities for segmentation
   const [locations, setLocations] = useState<{ city: string | null; state: string | null }[]>([]);
   useEffect(() => {
@@ -37,7 +43,33 @@ export default function AdminPush() {
       .then(({ data }) => {
         if (data) setLocations(data);
       });
+
+    // Fetch all users for the selector
+    supabase
+      .from("profiles")
+      .select("id, email, display_name")
+      .is("deleted_at", null)
+      .order("display_name")
+      .then(({ data }) => {
+        if (data) setAllUsers(data);
+      });
   }, []);
+
+  const filteredUsers = useMemo(() => {
+    if (!userSearch.trim()) return allUsers;
+    const q = userSearch.toLowerCase();
+    return allUsers.filter(
+      (u) =>
+        (u.display_name || "").toLowerCase().includes(q) ||
+        (u.email || "").toLowerCase().includes(q)
+    );
+  }, [allUsers, userSearch]);
+
+  const toggleUser = (id: string) => {
+    setSelectedUserIds((prev) =>
+      prev.includes(id) ? prev.filter((uid) => uid !== id) : [...prev, id]
+    );
+  };
 
   const states = useMemo(() => {
     const unique = [...new Set(locations.map((l) => l.state).filter(Boolean))] as string[];
@@ -90,6 +122,7 @@ export default function AdminPush() {
           targetLocale: targetLocale === "all" ? undefined : targetLocale,
           targetState: selectedState === "all" ? undefined : selectedState,
           targetCity: selectedCity === "all" ? undefined : selectedCity,
+          targetUserIds: selectedUserIds.length > 0 ? selectedUserIds : undefined,
           channels,
         },
       });
@@ -236,6 +269,56 @@ export default function AdminPush() {
               </SelectContent>
             </Select>
           </div>
+        </div>
+
+        {/* User selector */}
+        <div className="space-y-2">
+          <Label className="flex items-center gap-1.5">
+            <Users className="w-4 h-4" /> Selecionar usuários específicos
+          </Label>
+          {selectedUserIds.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {selectedUserIds.map((uid) => {
+                const u = allUsers.find((usr) => usr.id === uid);
+                return (
+                  <Badge key={uid} variant="secondary" className="gap-1 pr-1">
+                    {u?.display_name || u?.email || uid.slice(0, 8)}
+                    <button onClick={() => toggleUser(uid)} className="ml-0.5 rounded-full hover:bg-muted-foreground/20 p-0.5">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                );
+              })}
+              <button onClick={() => setSelectedUserIds([])} className="text-xs text-muted-foreground hover:text-destructive">
+                Limpar todos
+              </button>
+            </div>
+          )}
+          <Input
+            placeholder="Buscar por nome ou email..."
+            value={userSearch}
+            onChange={(e) => setUserSearch(e.target.value)}
+          />
+          <div className="max-h-40 overflow-y-auto border rounded-lg divide-y">
+            {filteredUsers.slice(0, 50).map((u) => (
+              <label key={u.id} className="flex items-center gap-2 px-3 py-2 hover:bg-muted/50 cursor-pointer text-sm">
+                <Checkbox
+                  checked={selectedUserIds.includes(u.id)}
+                  onCheckedChange={() => toggleUser(u.id)}
+                />
+                <span className="font-medium truncate">{u.display_name || "Sem nome"}</span>
+                <span className="text-muted-foreground text-xs truncate ml-auto">{u.email}</span>
+              </label>
+            ))}
+            {filteredUsers.length === 0 && (
+              <p className="text-xs text-muted-foreground text-center py-3">Nenhum usuário encontrado</p>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {selectedUserIds.length === 0
+              ? "Nenhum selecionado → envia para todos (respeitando filtros acima)"
+              : `${selectedUserIds.length} usuário(s) selecionado(s)`}
+          </p>
         </div>
 
         <Button onClick={handleSend} disabled={sending || !title.trim() || channels.length === 0} className="w-full gap-2">
