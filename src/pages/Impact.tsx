@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { mockTransactions } from "@/lib/mock-data";
 import { DuoCard } from "@/components/ui/duo-card";
 import { CashbackStatus } from "@/types";
 import { LevelBadge } from "@/components/LevelBadge";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import { useLocale } from "@/hooks/useLocale";
-import { Heart, ChevronDown, ChevronUp, Trophy, Check, Lock } from "lucide-react";
+import { Heart, ChevronDown, ChevronUp, Trophy, Check, Lock, Flag, ShoppingBag, Zap } from "lucide-react";
 import { formatCurrency, getLevelForAmount, DONATION_LEVELS } from "@/lib/gamification";
 import { WhatsAppIcon } from "@/components/icons/WhatsAppIcon";
 import { DuoButton } from "@/components/ui/duo-button";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const statusColors: Record<CashbackStatus, string> = {
   tracked: 'bg-muted text-muted-foreground',
