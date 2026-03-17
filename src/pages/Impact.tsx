@@ -127,14 +127,42 @@ export default function Impact() {
             {t("conquistas_title", "Conquistas")}
           </h3>
           <span className="text-[10px] sm:text-xs font-bold text-muted-foreground">
-            {unlockedLevels.length}/{DONATION_LEVELS.length}
+            {totalUnlocked}/{allConquistas.length}
           </span>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {visibleConquistas.map((level) => {
+          {visibleConquistas.map((item, idx) => {
+            if (item.type === "special") {
+              const badge = item.data;
+              const BadgeIcon = badge.icon;
+              return (
+                <div
+                  key={badge.id}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all ${
+                    badge.isUnlocked
+                      ? `${badge.bgColor} ${badge.borderColor} border`
+                      : "bg-muted/30 border-border opacity-40"
+                  }`}
+                >
+                  <BadgeIcon className={`w-4 h-4 ${badge.isUnlocked ? badge.color : "text-muted-foreground"}`} />
+                  <span className={`text-xs font-bold ${badge.isUnlocked ? badge.color : "text-muted-foreground"}`}>
+                    {badge.label}
+                  </span>
+                  {badge.isUnlocked ? (
+                    <span className={`text-[10px] font-black ${badge.color} bg-background/50 px-1.5 py-0.5 rounded-full`}>
+                      {badge.count}
+                    </span>
+                  ) : (
+                    <Lock className="w-3 h-3 text-muted-foreground" />
+                  )}
+                </div>
+              );
+            }
+
+            const level = item.data;
             const LevelIcon = level.Icon;
-            const isUnlocked = donated >= level.minAmount;
+            const isUnlocked = item.isUnlocked;
             const isCurrent = level.rank === current.rank;
 
             return (
@@ -162,7 +190,7 @@ export default function Impact() {
           })}
         </div>
 
-        {conquistas.length > 3 && (
+        {allConquistas.length > 4 && (
           <button
             onClick={() => setShowAllConquistas(!showAllConquistas)}
             className="w-full mt-3 inline-flex items-center justify-center gap-1.5 py-2 rounded-xl border-2 border-border bg-card text-xs font-bold hover:bg-muted transition-colors active:translate-y-0.5"
@@ -170,7 +198,7 @@ export default function Impact() {
             {showAllConquistas ? (
               <><ChevronUp className="w-3.5 h-3.5" /> Ver menos</>
             ) : (
-              <><ChevronDown className="w-3.5 h-3.5" /> Ver todos ({conquistas.length - 3} restantes)</>
+              <><ChevronDown className="w-3.5 h-3.5" /> Ver todos ({allConquistas.length - 4} restantes)</>
             )}
           </button>
         )}
