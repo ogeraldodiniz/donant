@@ -23,11 +23,14 @@ const getStoreCategory = (category: string | null) => category?.trim() || "Geral
 
 export default function Stores() {
   const [search, setSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
   const [sort, setSort] = useState<SortOption>("name_asc");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [visibleCount, setVisibleCount] = useState(18);
   const { stores, loading } = useStores();
   const { t } = useSiteContent("stores_page");
+  const navigate = useNavigate();
+  const searchRef = useRef<HTMLDivElement>(null);
 
   const categories = useMemo(() => {
     const cats = new Set(stores.map((s) => getStoreCategory(s.category)));
