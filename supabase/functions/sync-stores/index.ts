@@ -121,6 +121,7 @@ async function fetchAllCashbackContracts(apiUrl: string, token: string): Promise
       headers: {
         "Content-Type": "application/json",
         "x-myc-access-token": token,
+        "x-myc-ambiente": "10",
       },
       body: JSON.stringify({ query: {}, limit, offset }),
     });
