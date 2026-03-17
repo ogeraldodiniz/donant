@@ -142,6 +142,12 @@ export default function Settings() {
   };
 
   const handleDelete = async () => {
+    // Delete contact from Brevo before logout
+    if (user?.email) {
+      void supabase.functions.invoke("brevo-sync", {
+        body: { action: "delete", email: user.email },
+      });
+    }
     await logout();
     toast.success(t("delete_msg", "Conta excluída. Seus dados serão anonimizados conforme LGPD."));
     navigate("/");

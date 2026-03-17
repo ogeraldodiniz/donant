@@ -156,6 +156,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     if (!error && data.user) {
       void saveGeolocation(data.user.id);
+      // Sync contact to Brevo
+      void supabase.functions.invoke("brevo-sync", {
+        body: { action: "create_or_update", email, attributes: { FIRSTNAME: name } },
+      });
+      // Send welcome email via Brevo
+      void supabase.functions.invoke("brevo-email", {
+        body: { type: "welcome", to: { email, name }, data: { name } },
+      });
     }
     return { error: error ? new Error(error.message) : null };
   };
