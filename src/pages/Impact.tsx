@@ -23,15 +23,25 @@ const statusColors: Record<CashbackStatus, string> = {
 export default function Impact() {
   const { t } = useSiteContent("impact");
   const { locale } = useLocale();
+  const { user } = useAuth();
   const txns = mockTransactions;
   const totals = (statuses: CashbackStatus[]) =>
     txns.filter(t => statuses.includes(t.status)).reduce((s, t) => s + t.amount, 0);
 
   const donated = totals(['donated']);
+  const confirmedCount = txns.filter(t => t.status === 'confirmed' || t.status === 'donated').length;
   const { current } = getLevelForAmount(donated);
 
   const [showAllConquistas, setShowAllConquistas] = useState(false);
   const [showAllTxns, setShowAllTxns] = useState(false);
+  const [rallyCount, setRallyCount] = useState(0);
+
+  // Fetch rally participation count
+  useEffect(() => {
+    // For now rally count is 0 since participation tracking isn't built yet
+    // This will be updated when rally participation is implemented
+    setRallyCount(0);
+  }, [user?.id]);
 
   const statusLabels: Record<CashbackStatus, string> = {
     tracked: t("status_tracked", "Rastreado"),
@@ -44,11 +54,56 @@ export default function Impact() {
   const levelTitle = (level: typeof DONATION_LEVELS[0]) =>
     t(level.titleKey, locale === "es" ? level.titleEs : level.titlePt);
 
-  // Conquistas: unlocked levels first, then locked
+  // Level conquistas
   const unlockedLevels = DONATION_LEVELS.filter(l => donated >= l.minAmount);
   const lockedLevels = DONATION_LEVELS.filter(l => donated < l.minAmount);
-  const conquistas = [...unlockedLevels, ...lockedLevels];
-  const visibleConquistas = showAllConquistas ? conquistas : conquistas.slice(0, 3);
+  const levelConquistas = [...unlockedLevels, ...lockedLevels];
+
+  // Special badges
+  type SpecialBadge = {
+    id: string;
+    icon: typeof Trophy;
+    label: string;
+    count?: number;
+    isUnlocked: boolean;
+    color: string;
+    bgColor: string;
+    borderColor: string;
+  };
+
+  const specialBadges: SpecialBadge[] = [
+    {
+      id: "donations",
+      icon: ShoppingBag,
+      label: locale === "es" ? "Donaciones" : "Doações",
+      count: confirmedCount,
+      isUnlocked: confirmedCount > 0,
+      color: "text-primary",
+      bgColor: "bg-primary/10",
+      borderColor: "border-primary/30",
+    },
+    {
+      id: "rally_participant",
+      icon: Flag,
+      label: locale === "es" ? "Rallys" : "Rallys",
+      count: rallyCount,
+      isUnlocked: rallyCount > 0,
+      color: "text-accent-foreground",
+      bgColor: "bg-accent/10",
+      borderColor: "border-accent/30",
+    },
+  ];
+
+  const allConquistas = [
+    ...specialBadges.map(b => ({ type: "special" as const, data: b, isUnlocked: b.isUnlocked })),
+    ...levelConquistas.map(l => ({ type: "level" as const, data: l, isUnlocked: donated >= l.minAmount })),
+  ];
+
+  // Sort: unlocked first
+  allConquistas.sort((a, b) => (a.isUnlocked === b.isUnlocked ? 0 : a.isUnlocked ? -1 : 1));
+
+  const totalUnlocked = allConquistas.filter(c => c.isUnlocked).length;
+  const visibleConquistas = showAllConquistas ? allConquistas : allConquistas.slice(0, 4);
 
   const visibleTxns = showAllTxns ? txns : txns.slice(0, 3);
 
