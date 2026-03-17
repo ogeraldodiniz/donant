@@ -125,8 +125,27 @@ export default function AdminNews() {
       is_published: next,
       published_at: next ? new Date().toISOString() : null,
     }).eq("id", row.id);
-    if (error) toast.error("Erro");
-    else { toast.success(next ? "Publicada!" : "Despublicada!"); fetch(); }
+    if (error) {
+      toast.error("Erro");
+    } else {
+      toast.success(next ? "Publicada!" : "Despublicada!");
+      fetch();
+      // Send email to all users with notify_email=true when publishing
+      if (next) {
+        supabase.functions.invoke("brevo-email", {
+          body: {
+            type: "news",
+            to: [], // empty = will be populated server-side
+            data: {
+              title: row.title,
+              summary: row.summary || "",
+              slug: row.slug,
+              cover_url: row.cover_url || undefined,
+            },
+          },
+        }).catch(() => {}); // fire and forget
+      }
+    }
   };
 
   return (
