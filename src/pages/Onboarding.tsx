@@ -188,8 +188,11 @@ export default function Onboarding() {
                 <DuoButton size="lg" className="w-full" onClick={handlePhoneNext} disabled={saving}>
                   {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Continuar <ArrowRight className="w-4 h-4" /></>}
                 </DuoButton>
-                <button onClick={() => setStep("profile")} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
-                  Pular por agora
+                <button onClick={async () => {
+                  await supabase.from("profiles").update({ phone: "não informado" }).eq("id", user!.id);
+                  setStep("profile");
+                }} className="w-full text-center text-xs text-muted-foreground hover:text-foreground transition-colors">
+                  Não quero informar
                 </button>
               </div>
             )}
