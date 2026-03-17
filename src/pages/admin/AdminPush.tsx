@@ -28,6 +28,11 @@ export default function AdminPush() {
   const [lastResult, setLastResult] = useState<{ sent: number; failed: number; total: number } | null>(null);
   const { permission, subscribing, subscribe, isSupported } = usePushNotifications();
 
+  // User selection for targeted sends
+  const [allUsers, setAllUsers] = useState<{ id: string; email: string | null; display_name: string | null }[]>([]);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [userSearch, setUserSearch] = useState("");
+
   // Fetch distinct states and cities for segmentation
   const [locations, setLocations] = useState<{ city: string | null; state: string | null }[]>([]);
   useEffect(() => {
@@ -38,7 +43,33 @@ export default function AdminPush() {
       .then(({ data }) => {
         if (data) setLocations(data);
       });
+
+    // Fetch all users for the selector
+    supabase
+      .from("profiles")
+      .select("id, email, display_name")
+      .is("deleted_at", null)
+      .order("display_name")
+      .then(({ data }) => {
+        if (data) setAllUsers(data);
+      });
   }, []);
+
+  const filteredUsers = useMemo(() => {
+    if (!userSearch.trim()) return allUsers;
+    const q = userSearch.toLowerCase();
+    return allUsers.filter(
+      (u) =>
+        (u.display_name || "").toLowerCase().includes(q) ||
+        (u.email || "").toLowerCase().includes(q)
+    );
+  }, [allUsers, userSearch]);
+
+  const toggleUser = (id: string) => {
+    setSelectedUserIds((prev) =>
+      prev.includes(id) ? prev.filter((uid) => uid !== id) : [...prev, id]
+    );
+  };
 
   const states = useMemo(() => {
     const unique = [...new Set(locations.map((l) => l.state).filter(Boolean))] as string[];
