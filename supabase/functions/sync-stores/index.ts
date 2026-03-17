@@ -82,7 +82,7 @@ async function fetchAllPrograms(token: string): Promise<MycProgram[]> {
         "x-myc-access-token": token,
       },
       body: JSON.stringify({
-        query: { network_countries: { _eq: "BR" } },
+        query: {},
         allowlistOnly: false,
         limit,
         offset,
