@@ -161,13 +161,41 @@ export default function Ngos() {
 
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground z-10" />
           <Input
             placeholder={t("search_placeholder", "Buscar ONGs...")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
             className="pl-10 h-11 rounded-2xl border-2 font-semibold text-sm"
           />
+          {searchFocused && search.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-card border-2 border-border rounded-2xl shadow-lg z-50 max-h-64 overflow-y-auto">
+              {filtered.slice(0, 6).map((ngo) => (
+                <button
+                  key={ngo.id}
+                  onMouseDown={() => navigate(`/ongs/${ngo.slug}`)}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-muted/50 transition-colors text-left first:rounded-t-2xl last:rounded-b-2xl"
+                >
+                  {ngo.logo_url ? (
+                    <img src={ngo.logo_url} alt={ngo.name} className="w-8 h-8 rounded-xl object-cover bg-muted shrink-0" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                      <Heart className="w-4 h-4 text-primary" />
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">{ngo.name}</p>
+                    <p className="text-[10px] text-muted-foreground">{getNgoCategory(ngo)}</p>
+                  </div>
+                </button>
+              ))}
+              {filtered.length === 0 && (
+                <p className="px-4 py-3 text-sm text-muted-foreground text-center">Nenhuma ONG encontrada</p>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

@@ -107,14 +107,43 @@ export default function Stores() {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
+        <div className="relative flex-1" ref={searchRef}>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground z-10" />
           <Input
             placeholder={t("search_placeholder", "Buscar lojas...")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setTimeout(() => setSearchFocused(false), 200)}
             className="pl-10 h-11 rounded-2xl border-2 font-semibold text-sm"
           />
+          {searchFocused && search.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-card border-2 border-border rounded-2xl shadow-lg z-50 max-h-64 overflow-y-auto">
+              {filtered.slice(0, 6).map((store) => (
+                <button
+                  key={store.id}
+                  onMouseDown={() => navigate(`/lojas/${store.slug}`)}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-muted/50 transition-colors text-left first:rounded-t-2xl last:rounded-b-2xl"
+                >
+                  {store.logo_url ? (
+                    <img src={store.logo_url} alt={store.name} className="w-8 h-8 rounded-xl object-cover bg-muted shrink-0" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-xl bg-muted flex items-center justify-center text-sm font-bold shrink-0">
+                      {store.name.charAt(0)}
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-sm truncate">{store.name}</p>
+                    <p className="text-[10px] text-muted-foreground">{getStoreCategory(store.category)}</p>
+                  </div>
+                  <span className="text-xs font-black text-primary shrink-0">{Number(store.cashback_rate)}%</span>
+                </button>
+              ))}
+              {filtered.length === 0 && (
+                <p className="px-4 py-3 text-sm text-muted-foreground text-center">Nenhuma loja encontrada</p>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
