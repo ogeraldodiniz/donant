@@ -105,7 +105,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { title, body, url, category, targetLocale, targetState, targetCity, channels } = await req.json();
+    const { title, body, url, category, targetLocale, targetState, targetCity, targetUserIds, channels } = await req.json();
     if (!title) {
       return new Response(JSON.stringify({ error: "Título é obrigatório" }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -114,8 +114,13 @@ Deno.serve(async (req) => {
 
     const activeChannels: string[] = channels || ["web_push"];
 
-    // Get filtered user IDs
-    const filteredIds = await getFilteredUserIds(adminClient, targetLocale, targetState, targetCity);
+    // If specific user IDs provided, use them directly; otherwise use location/locale filters
+    let filteredIds: string[] | null = null;
+    if (targetUserIds && Array.isArray(targetUserIds) && targetUserIds.length > 0) {
+      filteredIds = targetUserIds;
+    } else {
+      filteredIds = await getFilteredUserIds(adminClient, targetLocale, targetState, targetCity);
+    }
 
     // If filter returned empty array, no recipients
     if (filteredIds && filteredIds.length === 0) {
