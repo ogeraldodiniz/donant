@@ -119,10 +119,24 @@ Deno.serve(async (req) => {
     // to: [{ email, name? }] or { email, name? }
     // data: depends on type
 
-    const recipients = Array.isArray(to) ? to : [to];
+    let recipients = Array.isArray(to) ? to : [to];
+
+    // If recipients is empty (e.g. news broadcast), fetch all users with notify_email=true
     if (!recipients.length || !recipients[0]?.email) {
-      return new Response(JSON.stringify({ error: "recipients required" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const adminClient = createClient(supabaseUrl, serviceRoleKey);
+      const { data: profiles } = await adminClient
+        .from("profiles")
+        .select("email, display_name, notify_email")
+        .eq("notify_email", true)
+        .not("email", "is", null);
+      recipients = (profiles || []).map((p: any) => ({ email: p.email, name: p.display_name || undefined }));
+    }
+
+    if (!recipients.length) {
+      return new Response(JSON.stringify({ sent: 0, failed: 0, errors: ["no recipients"] }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
