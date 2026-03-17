@@ -39,14 +39,17 @@ async function getMycToken(apiUrl: string): Promise<string> {
   const authUrl = `${apiUrl}/api/auth`;
   console.log(`Auth URL: ${authUrl}`);
 
+  const payload = {
+    user_name: username,
+    password: password,
+    application_id: appId,
+  };
+  console.log("Auth payload:", JSON.stringify({ user_name: username, application_id: appId }));
+
   const res = await fetch(authUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      user_name: username,
-      password: password,
-      application_id: appId,
-    }),
+    body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
