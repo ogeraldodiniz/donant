@@ -1,5 +1,5 @@
-import { useState, useMemo, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState, useMemo, useCallback, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Search, ShoppingCart, Building2, Dumbbell, Plane, Shirt, Tag, ArrowUpDown, Star, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { DuoCard } from "@/components/ui/duo-card";
