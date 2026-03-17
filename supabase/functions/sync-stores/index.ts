@@ -36,22 +36,19 @@ async function getMycToken(apiUrl: string): Promise<string> {
   const password = Deno.env.get("MYCASHBACKS_PASSWORD")!;
   const appId = Deno.env.get("MYCASHBACKS_APP_ID")!;
 
-  const authUrl = `${apiUrl}/usr/auth/login`;
+  const authUrl = `${apiUrl}/api/auth`;
   console.log(`Auth URL: ${authUrl}`);
 
   const payload = {
-    email: username,
+    user_name: username,
     password: password,
     application_id: appId,
   };
-  console.log("Auth payload:", JSON.stringify({ email: username, application_id: appId }));
+  console.log("Auth payload:", JSON.stringify({ user_name: username, application_id: appId }));
 
   const res = await fetch(authUrl, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-myc-ambiente": "10",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
 
