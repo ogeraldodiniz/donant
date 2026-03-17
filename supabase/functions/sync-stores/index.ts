@@ -39,14 +39,17 @@ async function getMycToken(apiUrl: string): Promise<string> {
   const authUrl = `${apiUrl}/api/auth`;
   console.log(`Auth URL: ${authUrl}`);
 
+  const payload = {
+    user_name: username,
+    password: password,
+    application_id: appId,
+  };
+  console.log("Auth payload:", JSON.stringify({ user_name: username, application_id: appId }));
+
   const res = await fetch(authUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      user_name: username,
-      password: password,
-      application_id: appId,
-    }),
+    body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
@@ -55,53 +58,50 @@ async function getMycToken(apiUrl: string): Promise<string> {
   }
 
   const data = await res.json();
+  console.log("Auth response keys:", Object.keys(data));
+  console.log("Token preview:", data.token?.substring(0, 50) + "...");
+  // Decode JWT payload to check audiences
+  try {
+    const parts = data.token.split(".");
+    const payload = JSON.parse(atob(parts[1]));
+    console.log("JWT payload:", JSON.stringify(payload));
+  } catch (e) {
+    console.log("Could not decode JWT");
+  }
   return data.token;
 }
 
 async function fetchAllPrograms(apiUrl: string, token: string): Promise<MycProgram[]> {
-  const allPrograms: MycProgram[] = [];
-  let offset = 0;
-  const limit = 1000;
+  const fullUrl = `${apiUrl}/api/programs/search`;
+  console.log(`Fetching programs from ${fullUrl}...`);
+  const res = await fetch(fullUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-myc-access-token": token,
+      "x-myc-ambiente": "10",
+      "x-hasura-role": "external-publisher",
+    },
+    body: JSON.stringify({ query: {}, limit: 1000, offset: 0 }),
+  });
 
-  while (true) {
-    const fullUrl = `${apiUrl}/api/programs/search`;
-    console.log(`Fetching programs (offset=${offset}) from ${fullUrl}...`);
-    const res = await fetch(fullUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-myc-access-token": token,
-      },
-      body: JSON.stringify({
-        query: {},
-        limit,
-        offset,
-      }),
-    });
-
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`Programs fetch failed [${res.status}]: ${body}`);
-    }
-
-    const result = await res.json();
-    if (offset === 0) {
-      const sample = Array.isArray(result.data) ? result.data[0] : null;
-      console.log("SAMPLE PROGRAM RAW:", JSON.stringify(sample));
-      console.log("META:", JSON.stringify(result.meta));
-    }
-    const programs: MycProgram[] = Array.isArray(result.data)
-      ? result.data
-      : Array.isArray(result)
-        ? result
-        : [];
-    allPrograms.push(...programs);
-
-    if (programs.length < limit) break;
-    offset += limit;
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Programs fetch failed [${res.status}]: ${body}`);
   }
 
-  return allPrograms;
+  const result = await res.json();
+  const programs: MycProgram[] = Array.isArray(result.data)
+    ? result.data
+    : Array.isArray(result)
+      ? result
+      : [];
+  
+  if (programs.length > 0) {
+    console.log("SAMPLE PROGRAM RAW:", JSON.stringify(programs[0]));
+  }
+  console.log(`Total programs fetched: ${programs.length}`);
+  return programs;
 }
 
 async function fetchAllCashbackContracts(apiUrl: string, token: string): Promise<MycCashbackContract[]> {
@@ -117,6 +117,7 @@ async function fetchAllCashbackContracts(apiUrl: string, token: string): Promise
       headers: {
         "Content-Type": "application/json",
         "x-myc-access-token": token,
+        "x-myc-ambiente": "10",
       },
       body: JSON.stringify({ query: {}, limit, offset }),
     });
