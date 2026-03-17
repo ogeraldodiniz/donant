@@ -26,12 +26,14 @@ const getNgoCategory = (ngo: Ngo) => {
 
 export default function Ngos() {
   const [search, setSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
   const [sort, setSort] = useState<SortOption>("name_asc");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const { isLoggedIn, user } = useAuth();
   const { ngos, loading } = useNgos();
   const { selectNgo, saving } = useSelectNgo();
   const { t } = useSiteContent("ngos_page");
+  const navigate = useNavigate();
 
   const categories = useMemo(() => {
     const cats = new Set(ngos.map((ngo) => getNgoCategory(ngo)));
