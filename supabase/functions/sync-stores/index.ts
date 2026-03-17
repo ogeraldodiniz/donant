@@ -58,6 +58,16 @@ async function getMycToken(apiUrl: string): Promise<string> {
   }
 
   const data = await res.json();
+  console.log("Auth response keys:", Object.keys(data));
+  console.log("Token preview:", data.token?.substring(0, 50) + "...");
+  // Decode JWT payload to check audiences
+  try {
+    const parts = data.token.split(".");
+    const payload = JSON.parse(atob(parts[1]));
+    console.log("JWT payload:", JSON.stringify(payload));
+  } catch (e) {
+    console.log("Could not decode JWT");
+  }
   return data.token;
 }
 
