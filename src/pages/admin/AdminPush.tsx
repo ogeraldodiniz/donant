@@ -122,6 +122,7 @@ export default function AdminPush() {
           targetLocale: targetLocale === "all" ? undefined : targetLocale,
           targetState: selectedState === "all" ? undefined : selectedState,
           targetCity: selectedCity === "all" ? undefined : selectedCity,
+          targetUserIds: selectedUserIds.length > 0 ? selectedUserIds : undefined,
           channels,
         },
       });
